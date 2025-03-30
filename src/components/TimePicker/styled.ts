@@ -10,7 +10,7 @@ export const styles = StyleSheet.create({
   },
   timeText: {
     fontSize: 14,
-    color: '#888', // Серый цвет для времени
+    color: Colors.disabled, // Заменяем '#888' на Colors.disabled (серый)
     textAlign: 'left',
     height: 20, // Фиксированная высота для timeText
     lineHeight: 20, // Центрируем текст по вертикали
@@ -20,26 +20,26 @@ export const styles = StyleSheet.create({
   },
   slot: {
     height: 60, // Высота одного слота
-    backgroundColor: '#fff', // Белый цвет для свободных слотов
+    backgroundColor: Colors.white, // Заменяем '#fff' на Colors.white
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
   },
   slotAvailable: {
-    backgroundColor: '#fff', // Свободные слоты — белые
+    backgroundColor: Colors.white, // Заменяем '#fff' на Colors.white
   },
   slotBooked: {
-    backgroundColor: '#E0E0E0', // Занятые слоты — серые
+    backgroundColor: Colors.border, // Заменяем '#E0E0E0' на Colors.border (светло-серый)
   },
   slotSelected: {
-    backgroundColor: '#007AFF', // Синий цвет для выбранных слотов
+    backgroundColor: Colors.primary, // Заменяем '#007AFF' на Colors.primary (синий)
   },
   slotText: {
     fontSize: 16,
-    color: Colors.text,
+    color: Colors.text, // Уже использует Colors.text
   },
   slotTextSelected: {
-    color: '#fff', // Белый текст для выбранных слотов
+    color: Colors.white, // Заменяем '#fff' на Colors.white
   },
   currentTimeLine: {
     position: 'absolute',
@@ -52,14 +52,14 @@ export const styles = StyleSheet.create({
     width: 10,
     height: 10,
     borderRadius: 5,
-    backgroundColor: '#007AFF', // Синий цвет точки
+    backgroundColor: Colors.primary, // Заменяем '#007AFF' на Colors.primary (синий)
   },
   currentTimeLineBar: {
     flex: 1,
     height: 2,
-    backgroundColor: '#007AFF', // Синий цвет линии
+    backgroundColor: Colors.primary, // Заменяем '#007AFF' на Colors.primary (синий)
     borderStyle: 'dashed',
     borderWidth: 1,
-    borderColor: '#007AFF',
+    borderColor: Colors.primary, // Заменяем '#007AFF' на Colors.primary (синий)
   },
 });

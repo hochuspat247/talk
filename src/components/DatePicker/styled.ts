@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { Colors } from '@constants/Colors';
 
 export const styles = StyleSheet.create({
   container: {
@@ -14,7 +15,7 @@ export const styles = StyleSheet.create({
   },
   selectedDateContainer: {
     borderRadius: 14,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.white, // Заменяем '#fff' на Colors.white
     flex: 1,
     width: '100%',
     height: 59,
@@ -22,10 +23,10 @@ export const styles = StyleSheet.create({
   },
   dateText: {
     fontSize: 16,
-    color: '#000',
+    color: Colors.text, // Заменяем '#000' на Colors.text (темно-серый)
   },
   weekendText: {
-    color: 'red', // Красный цвет для выходных
+    color: Colors.error, // Заменяем 'red' на Colors.error (красный)
   },
   dot: {
     width: 6,
@@ -34,9 +35,9 @@ export const styles = StyleSheet.create({
     marginTop: 5,
   },
   dotAvailable: {
-    backgroundColor: 'green', // Зеленый цвет, если есть места
+    backgroundColor: Colors.success, // Заменяем 'green' на Colors.success (зеленый)
   },
   dotUnavailable: {
-    backgroundColor: '#ccc', // Серый цвет, если мест нет
+    backgroundColor: Colors.disabled, // Заменяем '#ccc' на Colors.disabled (серый)
   },
 });

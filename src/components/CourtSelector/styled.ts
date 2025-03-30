@@ -1,4 +1,5 @@
 import { StyleSheet, Platform } from 'react-native';
+import { Colors } from '@constants/Colors';
 
 export const styles = StyleSheet.create({
   container: {
@@ -9,29 +10,29 @@ export const styles = StyleSheet.create({
   },
   label: {
     fontSize: 16,
-    color: '#000',
+    color: Colors.text, // Заменяем '#000' на Colors.text (темно-серый)
   },
   pickerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: Colors.white, // Заменяем '#fff' на Colors.white
     borderRadius: 14,
     paddingHorizontal: 10,
     paddingVertical: 8,
   },
   selectedCourtText: {
     fontSize: 16, // Размер текста выбранного корта
-    color: '#000',
+    color: Colors.text, // Заменяем '#000' на Colors.text (темно-серый)
     marginRight: 5,
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Оставляем как есть, так как это полупрозрачный цвет
     justifyContent: 'center',
     alignItems: 'center',
   },
   modalContent: {
-    backgroundColor: '#fff',
+    backgroundColor: Colors.white, // Заменяем '#fff' на Colors.white
     borderRadius: 10,
     width: '80%',
     maxHeight: '50%',
@@ -40,11 +41,11 @@ export const styles = StyleSheet.create({
   courtItem: {
     paddingVertical: 10,
     borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    borderBottomColor: Colors.disabled, // Заменяем '#ccc' на Colors.disabled (серый)
   },
   courtItemText: {
     fontSize: 16, // Размер текста в списке кортов
-    color: '#000',
+    color: Colors.text, // Заменяем '#000' на Colors.text (темно-серый)
   },
   closeButton: {
     marginTop: 10,
@@ -53,6 +54,6 @@ export const styles = StyleSheet.create({
   },
   closeButtonText: {
     fontSize: 16,
-    color: '#007AFF',
+    color: Colors.primary, // Заменяем '#007AFF' на Colors.primary (синий)
   },
 });

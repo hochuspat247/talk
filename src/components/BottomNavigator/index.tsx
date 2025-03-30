@@ -5,17 +5,17 @@ import { useNavigation } from '@react-navigation/native';
 import { styles } from './styled';
 
 interface BottomNavigatorProps {
-  activeTab: 'Home' | 'Bookings' | 'Profile'; // Определяем активную вкладку
+  activeTab: 'Home' | 'MyBookings' | 'Profile'; // Определяем активную вкладку
 }
 
 const BottomNavigator: React.FC<BottomNavigatorProps> = ({ activeTab }) => {
   const navigation = useNavigation();
 
-  const handleTabPress = (tab: 'Home' | 'Bookings' | 'Profile') => {
+  const handleTabPress = (tab: 'Home' | 'MyBookings' | 'Profile') => {
     if (tab === 'Home') {
       navigation.navigate('Home'); // Переход на экран "Главная"
-    } else if (tab === 'Bookings') {
-      navigation.navigate('Bookings'); // Переход на экран "Мои брони"
+    } else if (tab === 'MyBookings') {
+      navigation.navigate('MyBookings'); // Переход на экран "Мои брони"
     } else if (tab === 'Profile') {
       navigation.navigate('Profile'); // Переход на экран "Профиль"
     }
@@ -32,13 +32,13 @@ const BottomNavigator: React.FC<BottomNavigatorProps> = ({ activeTab }) => {
         <Text style={[styles.tabText, activeTab === 'Home' && styles.activeTabText]}>Главная</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.tab} onPress={() => handleTabPress('Bookings')}>
+      <TouchableOpacity style={styles.tab} onPress={() => handleTabPress('MyBookings')}>
         <Ionicons
           name="calendar-outline"
           size={24}
-          color={activeTab === 'Bookings' ? '#007AFF' : '#000'}
+          color={activeTab === 'MyBookings' ? '#007AFF' : '#000'}
         />
-        <Text style={[styles.tabText, activeTab === 'Bookings' && styles.activeTabText]}>Мои брони</Text>
+        <Text style={[styles.tabText, activeTab === 'MyBookings' && styles.activeTabText]}>Мои брони</Text>
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.tab} onPress={() => handleTabPress('Profile')}>

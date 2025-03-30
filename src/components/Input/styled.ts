@@ -1,4 +1,3 @@
-// src/components/Input/styles.ts
 import { StyleSheet, Dimensions } from 'react-native';
 import { Colors } from '@constants/Colors';
 
@@ -11,6 +10,10 @@ export const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'flex-start',
   },
+  inputWrapper: {
+    position: 'relative',
+    width: '100%',
+  },
   input: {
     width: '100%',
     height: 55,
@@ -19,6 +22,9 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 20,
     fontSize: 14,
     color: Colors.text,
+  },
+  whiteBackground: {
+    backgroundColor: '#fff', // Белый фон для полей
   },
   inputsCode: {
     width: '100%',
@@ -71,6 +77,13 @@ export const styles = StyleSheet.create({
   iconButton: {
     position: 'absolute',
     right: 15,
+    padding: 5,
+  },
+  checkIcon: {
+    position: 'absolute',
+    right: 15,
+    top: '50%',
+    transform: [{ translateY: -12 }], // Центрируем по вертикали
     padding: 5,
   },
 });

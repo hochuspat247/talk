@@ -1,15 +1,16 @@
 import { StyleSheet } from 'react-native';
+import { Colors } from '@constants/Colors';
 
 export const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: Colors.white, // Заменяем '#fff' на Colors.white
     paddingVertical: 10,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    shadowColor: '#000',
+    shadowColor: Colors.text, // Заменяем '#000' на Colors.text (темно-серый)
     shadowOffset: { width: 0, height: -2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -20,10 +21,10 @@ export const styles = StyleSheet.create({
   },
   tabText: {
     fontSize: 12,
-    color: '#000',
+    color: Colors.text, // Заменяем '#000' на Colors.text (темно-серый)
     marginTop: 4,
   },
   activeTabText: {
-    color: '#007AFF', // Синий цвет для активной вкладки
+    color: Colors.primary, // Заменяем '#007AFF' на Colors.primary (синий)
   },
 });

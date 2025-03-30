@@ -7,8 +7,7 @@
       "@components/*": ["components/*"],
       "@constants/*": ["constants/*"],
       "@navigation/*": ["navigation/*"],
-      "@screens/*": ["screens/*"],
-      "@types/*": ["types/*"]
+      "@screens/*": ["screens/*"]
     }
   }
 }

@@ -1,7 +1,5 @@
-// src/components/styled.ts
-
 import { StyleSheet } from 'react-native';
-import { Colors } from '@constants/Colors'; // Используем @ для импорта
+import { Colors } from '@constants/Colors';
 
 export const styles = StyleSheet.create({
   safeArea: {

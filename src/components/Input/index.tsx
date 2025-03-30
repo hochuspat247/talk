@@ -12,7 +12,11 @@ interface InputProps {
   isCode?: boolean;
   hasIcon?: boolean;
   hasError?: boolean;
-  isSuccess?: boolean; // Новый проп для успешного ввода
+  isSuccess?: boolean;
+  isWhiteBackground?: boolean; // Новый проп для белого фона
+  editable?: boolean; // Проп для редактируемости
+  onSave?: () => void; // Проп для сохранения данных
+  isEditing?: boolean; // Проп для отображения галочки
 }
 
 const Input: React.FC<InputProps> = ({
@@ -24,6 +28,10 @@ const Input: React.FC<InputProps> = ({
   hasIcon = false,
   hasError = false,
   isSuccess = false,
+  isWhiteBackground = false,
+  editable = true,
+  onSave,
+  isEditing = false,
 }) => {
   const [isSecure, setIsSecure] = useState(true);
   const [focusedIndex, setFocusedIndex] = useState<number | null>(null); // Индекс активного поля
@@ -81,13 +89,14 @@ const Input: React.FC<InputProps> = ({
     return (
       <View style={styles.iconContainer}>
         <TextInput
-          style={styles.inputWithIcon}
+          style={[styles.inputWithIcon, isWhiteBackground && styles.whiteBackground]}
           placeholder={placeholder}
           placeholderTextColor={Colors.disabled}
           value={value}
           onChangeText={onChangeText}
           keyboardType={keyboardType}
           secureTextEntry={isSecure}
+          editable={editable}
         />
         <TouchableOpacity style={styles.iconButton} onPress={() => setIsSecure(!isSecure)}>
           <Ionicons name={isSecure ? 'eye-off' : 'eye'} size={24} color={Colors.text} />
@@ -98,14 +107,22 @@ const Input: React.FC<InputProps> = ({
 
   return (
     <View style={styles.container}>
-      <TextInput
-        style={styles.input}
-        placeholder={placeholder}
-        placeholderTextColor={Colors.disabled}
-        value={value}
-        onChangeText={onChangeText}
-        keyboardType={keyboardType}
-      />
+      <View style={styles.inputWrapper}>
+        <TextInput
+          style={[styles.input, isWhiteBackground && styles.whiteBackground]}
+          placeholder={placeholder}
+          placeholderTextColor={Colors.disabled}
+          value={value}
+          onChangeText={onChangeText}
+          keyboardType={keyboardType}
+          editable={editable}
+        />
+        {isEditing && (
+          <TouchableOpacity style={styles.checkIcon} onPress={onSave}>
+            <Ionicons name="checkmark" size={24} color={Colors.primary} />
+          </TouchableOpacity>
+        )}
+      </View>
     </View>
   );
 };
