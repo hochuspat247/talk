@@ -6,18 +6,20 @@ interface TimeSlot {
   start: string;
   end: string;
   isBooked: boolean;
+  name?: string; // Имя того, кто забронировал
 }
 
 interface TimePickerProps {
   onSelectionChange?: (selectedSlots: string[]) => void;
-  resetSelection?: () => void; // Новый проп для сброса выбора
+  bookedSlots?: TimeSlot[]; // Забронированные слоты с именами
 }
 
-const TimePicker: React.FC<TimePickerProps> = ({ onSelectionChange, resetSelection }) => {
+const TimePicker: React.FC<TimePickerProps> = ({ onSelectionChange, bookedSlots = [] }) => {
   const [currentTimePosition, setCurrentTimePosition] = useState<number>(0);
   const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
   const [selectedSlots, setSelectedSlots] = useState<string[]>([]);
 
+  // Генерация слотов и синхронизация с bookedSlots
   useEffect(() => {
     const updateSlots = () => {
       const now = new Date();
@@ -30,22 +32,36 @@ const TimePicker: React.FC<TimePickerProps> = ({ onSelectionChange, resetSelecti
       for (let hour = 8; hour < 24; hour++) {
         const start = `${hour}:00`;
         const end = `${hour + 1}:00`;
+        const slotKey = `${start}-${end}`;
         const isPast = hour < currentHour;
+        const bookedSlot = bookedSlots.find((bs) => bs.start === start && bs.end === end);
+
         slots.push({
           start,
           end,
-          isBooked: isPast || Math.random() > 0.5,
+          isBooked: isPast || (bookedSlot ? bookedSlot.isBooked : false),
+          name: bookedSlot?.name,
         });
       }
       setTimeSlots(slots);
+
+      // Фильтруем selectedSlots, но не вызываем onSelectionChange
+      const updatedSelectedSlots = selectedSlots.filter((slot) => {
+        const [start] = slot.split('-');
+        const hour = parseInt(start.split(':')[0]);
+        const isStillAvailable = hour >= currentHour && !bookedSlots.some((bs) => `${bs.start}-${bs.end}` === slot);
+        return isStillAvailable;
+      });
+      setSelectedSlots(updatedSelectedSlots);
     };
 
     updateSlots();
-    const timer = setInterval(updateSlots, 60000); // Обновляем слоты каждую минуту
+    const timer = setInterval(updateSlots, 60000); // Обновляем каждую минуту
 
     return () => clearInterval(timer);
-  }, []);
+  }, [bookedSlots]); // Убрали onSelectionChange из зависимостей
 
+  // Обновление позиции текущего времени
   useEffect(() => {
     const updatePosition = () => {
       const now = new Date();
@@ -53,8 +69,8 @@ const TimePicker: React.FC<TimePickerProps> = ({ onSelectionChange, resetSelecti
       const currentMinute = now.getMinutes();
 
       const slotHeight = 60; // Высота слота
-      const timeTextHeight = 20; // Высота timeText (с учётом fontSize и отступов)
-      const totalSlotHeight = slotHeight + timeTextHeight; // Общая высота одного блока (timeText + slot)
+      const timeTextHeight = 20; // Высота timeText
+      const totalSlotHeight = slotHeight + timeTextHeight; // Общая высота одного блока
       const startHour = 8;
 
       let position: number;
@@ -66,8 +82,7 @@ const TimePicker: React.FC<TimePickerProps> = ({ onSelectionChange, resetSelecti
         position = ((currentHour - startHour) + currentMinute / 60) * totalSlotHeight;
       }
 
-      console.log('Позиция линии:', position); // Логируем позицию линии
-
+      console.log('Позиция линии:', position);
       setCurrentTimePosition(position);
     };
 
@@ -76,18 +91,6 @@ const TimePicker: React.FC<TimePickerProps> = ({ onSelectionChange, resetSelecti
 
     return () => clearInterval(timer);
   }, []);
-
-  // Функция для сброса выбранных слотов
-  const resetSelectedSlots = () => {
-    setSelectedSlots([]);
-  };
-
-  // Вызываем resetSelection из пропсов, если он передан
-  useEffect(() => {
-    if (resetSelection) {
-      resetSelection();
-    }
-  }, [selectedSlots, resetSelection]);
 
   const handleSlotPress = (slot: TimeSlot) => {
     if (slot.isBooked) return;
@@ -98,10 +101,7 @@ const TimePicker: React.FC<TimePickerProps> = ({ onSelectionChange, resetSelecti
       : [...selectedSlots, slotKey];
 
     setSelectedSlots(updatedSlots);
-
-    if (onSelectionChange) {
-      onSelectionChange(updatedSlots);
-    }
+    if (onSelectionChange) onSelectionChange(updatedSlots); // Вызываем только при выборе пользователем
   };
 
   return (
@@ -116,10 +116,7 @@ const TimePicker: React.FC<TimePickerProps> = ({ onSelectionChange, resetSelecti
               <React.Fragment key={index}>
                 <Text style={styles.timeText}>{slot.start}</Text>
                 <View style={styles.slotWrapper}>
-                  <TouchableOpacity
-                    onPress={() => handleSlotPress(slot)}
-                    disabled={slot.isBooked}
-                  >
+                  <TouchableOpacity onPress={() => handleSlotPress(slot)} disabled={slot.isBooked}>
                     <View
                       style={[
                         styles.slot,
@@ -127,14 +124,12 @@ const TimePicker: React.FC<TimePickerProps> = ({ onSelectionChange, resetSelecti
                         isSelected && styles.slotSelected,
                       ]}
                     >
-                      <Text
-                        style={[
-                          styles.slotText,
-                          isSelected && styles.slotTextSelected,
-                        ]}
-                      >
+                      <Text style={[styles.slotText, isSelected && styles.slotTextSelected]}>
                         {slot.start} → {slot.end}
                       </Text>
+                      {slot.isBooked && slot.name && (
+                        <Text style={styles.bookedName}>{slot.name}</Text>
+                      )}
                     </View>
                   </TouchableOpacity>
                 </View>

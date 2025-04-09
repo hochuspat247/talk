@@ -5,7 +5,6 @@ import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { StackScreenProps } from '@react-navigation/stack';
 import Screen from '@components/Screen';
-import BottomNavigator from '@components/BottomNavigator';
 
 // Определяем типы для параметров навигации
 type RootStackParamList = {
@@ -262,7 +261,6 @@ const ProfileScreen: React.FC<ProfileScreenProps> = () => {
           </View>
         </ScrollView>
       </Screen>
-      <BottomNavigator activeTab="Profile" />
     </KeyboardAvoidingView>
   );
 };

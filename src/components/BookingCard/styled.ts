@@ -3,17 +3,17 @@ import { StyleSheet } from 'react-native';
 export const styles = StyleSheet.create({
   container: {
     borderRadius: 10,
-    overflow: 'hidden', // Для корректного применения borderRadius к дочерним блокам
-    marginBottom:10
+    overflow: 'hidden',
+    marginBottom: 10,
   },
   topBlock: {
     padding: 15,
-    borderRadius:14
+    borderRadius: 14,
   },
   bottomBlock: {
-    backgroundColor: '#fff', // Белый цвет для нижнего блока
+    backgroundColor: '#fff',
     padding: 15,
-    borderRadius:14
+    borderRadius: 14,
   },
   row: {
     flexDirection: 'row',
@@ -45,6 +45,15 @@ export const styles = StyleSheet.create({
   },
   courtValue: {
     fontSize: 25,
+    color: '#000',
+  },
+  buyerLabel: {
+    fontSize: 12, // Такой же размер, как у court
+    color: '#000',
+    opacity: 0.7, // Такая же прозрачность
+  },
+  buyerName: {
+    fontSize: 25, // Такой же размер, как у courtValue
     color: '#000',
   },
   racketsIcon: {

@@ -1,10 +1,14 @@
 // src/screens/WelcomeScreen.tsx
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, ImageBackground, StyleSheet } from 'react-native';
 import Button from '@components/Button';
 import { Colors } from '@constants/Colors';
 
 const WelcomeScreen = ({ navigation }: { navigation: any }) => {
+  useEffect(() => {
+    console.log('[WelcomeScreen] Mounted');
+  }, []);
+
   return (
     <ImageBackground
       source={require('../../assets/images/welcome-bg.png')}

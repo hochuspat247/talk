@@ -1,11 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { Text, ImageBackground, View, ScrollView, KeyboardAvoidingView, Platform, TouchableOpacity, Image } from 'react-native';
-import { useNavigation } from '@react-navigation/native'; // Импортируем хук для навигации
+import { useNavigation, useRoute } from '@react-navigation/native';
 import Input from '@components/Input';
 import Button from '@components/Button';
 import * as ImagePicker from 'expo-image-picker';
 import { RegisterFormData, FormErrors } from './types';
-import { styles } from './styled'; // Используем styles.ts
+import { styles } from './styled';
+
+// Определяем типы для параметров навигации
+type RootStackParamList = {
+  Home: undefined;
+  Bookings: { court: string; date: string; time: string; status: 'active' | 'canceled'; fromMyBookings?: boolean; selectedSlots?: string[] };
+  BookingSuccess: { court: string; date: string; selectedSlots: string[]; status: 'success' | 'error' };
+  MyBookings: undefined;
+  Profile: undefined;
+  ProfileOptions: undefined;
+  Register: { isAdmin?: boolean };
+  AccountCreated: undefined;
+  Login: undefined;
+  Verification: undefined;
+};
 
 const RegisterScreen = () => {
   const [step, setStep] = useState(1);
@@ -13,7 +27,9 @@ const RegisterScreen = () => {
   const [isFormValid, setIsFormValid] = useState(false);
   const [showErrors, setShowErrors] = useState(false);
 
-  const navigation = useNavigation(); // Получаем объект навигации
+  const navigation = useNavigation();
+  const route = useRoute();
+  const { isAdmin = false } = route.params || {}; // Извлекаем isAdmin из параметров
 
   const [formData, setFormData] = useState<RegisterFormData>({
     lastName: '',
@@ -59,16 +75,16 @@ const RegisterScreen = () => {
 
     const match = cleaned.match(/^(\d{0,3})(\d{0,3})(\d{0,2})(\d{0,2})$/);
     if (!match) {
-      setFormData({ ...formData, phone: '+7 ' });
-      return '+7 ';
+      setFormData({ ...formData, phone: '+7(' });
+      return '+7(';
     }
 
     let formatted = '+7';
-    if (match[1]) formatted += ' ' + match[1];
-    if (match[2]) formatted += ` (${match[2]}`;
-    if (match[2] && match[2].length === 3) formatted += ')';
-    if (match[3]) formatted += ` ${match[3]}`;
-    if (match[4]) formatted += `-${match[4]}`;
+    if (match[1]) formatted += '(' + match[1];
+    if (match[1] && match[1].length === 3) formatted += ')';
+    if (match[2]) formatted += match[2];
+    if (match[3]) formatted += '-' + match[3];
+    if (match[4]) formatted += '-' + match[4];
 
     setFormData({ ...formData, phone: formatted });
     return formatted;
@@ -82,16 +98,13 @@ const RegisterScreen = () => {
       if (!formData.birthDate) newErrors.birthDate = 'Введите дату рождения';
       else {
         const [day, month, year] = formData.birthDate.split('.');
-        if (!day || !month || !year || 
-            parseInt(day) > 31 || parseInt(month) > 12 || 
-            formData.birthDate.length !== 10) {
+        if (!day || !month || !year || parseInt(day) > 31 || parseInt(month) > 12 || formData.birthDate.length !== 10) {
           newErrors.birthDate = 'Неверный формат даты (ДД.ММ.ГГГГ)';
         }
       }
-      if (!formData.selectedImage) newErrors.selectedImage = 'Выберите фото';
     } else if (step === 2) {
       if (!formData.email.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)) newErrors.email = 'Неверный формат email';
-      if (!formData.phone.match(/^\+7 \d{3} \(\d{3}\) \d{2}-\d{2}$/)) newErrors.phone = 'Неверный формат телефона (+7 XXX (XXX) XX-XX)';
+      if (!formData.phone.match(/^\+7\(\d{3}\)\d{3}-\d{2}-\d{2}$/)) newErrors.phone = 'Неверный формат телефона (+7(XXX)XXX-XX-XX)';
       if (formData.password.length < 6) newErrors.password = 'Пароль должен быть минимум 6 символов';
       if (formData.password !== formData.confirmPassword) newErrors.confirmPassword = 'Пароли не совпадают';
       if (!isAgreed) newErrors.agreement = 'Необходимо согласиться с правилами';
@@ -113,7 +126,13 @@ const RegisterScreen = () => {
         setShowErrors(false);
       } else if (step === 2) {
         console.log('Register:', formData);
-        // Здесь можно добавить navigation.navigate('Login') или другой экран после успешной регистрации
+        // После успешной регистрации переходим на AccountCreatedScreen, если это админ
+        if (isAdmin) {
+          navigation.navigate('AccountCreated');
+        } else {
+          // Для обычного пользователя переходим на VerificationScreen или другой экран
+          navigation.navigate('Verification');
+        }
       }
     }
   };
@@ -124,7 +143,7 @@ const RegisterScreen = () => {
       setShowErrors(false);
       setErrors({});
     } else if (step === 1) {
-      navigation.goBack(); // Возвращаемся на предыдущий экран в стеке
+      navigation.goBack();
     }
   };
 
@@ -151,8 +170,7 @@ const RegisterScreen = () => {
                     />
                   )}
                 </TouchableOpacity>
-                {showErrors && errors.selectedImage && <Text style={styles.error}>{errors.selectedImage}</Text>}
-
+                
                 <Input
                   placeholder="Фамилия"
                   value={formData.lastName}
@@ -189,11 +207,11 @@ const RegisterScreen = () => {
                 {showErrors && errors.email && <Text style={styles.error}>{errors.email}</Text>}
 
                 <Input
-                  placeholder="+7 XXX (XXX) XX-XX"
+                  placeholder="+7(XXX)XXX-XX-XX"
                   value={formData.phone}
                   onChangeText={formatPhoneNumber}
                   keyboardType="phone-pad"
-                  maxLength={18}
+                  maxLength={13}
                 />
                 {showErrors && errors.phone && <Text style={styles.error}>{errors.phone}</Text>}
 

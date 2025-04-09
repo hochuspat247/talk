@@ -6,12 +6,11 @@ export const styles = StyleSheet.create({
     height: 61,
     justifyContent: 'center',
     alignItems: 'center',
-    flexDirection: 'row',
     borderRadius: 14,
   },
   buttonText: {
     fontSize: 21.56,
-    color: Colors.white, // По умолчанию белый текст
+    color: Colors.white,
     textAlign: 'center',
   },
   enabled: {
@@ -28,5 +27,8 @@ export const styles = StyleSheet.create({
   },
   error: {
     backgroundColor: Colors.error, // Красный фон для error
+  },
+  errorButtonText: {
+    color: Colors.white, // Белый текст для error
   },
 });

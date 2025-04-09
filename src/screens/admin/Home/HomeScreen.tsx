@@ -14,6 +14,13 @@ import { StackScreenProps } from '@react-navigation/stack';
 // Определяем типы для параметров навигации
 type RootStackParamList = {
   Home: undefined;
+  SelectUser: {
+    court: string;
+    date: string;
+    time: string;
+    price: string;
+    selectedSlots: string[];
+  };
   Bookings: {
     court: string;
     date: string;
@@ -30,20 +37,28 @@ type RootStackParamList = {
 
 type HomeScreenProps = StackScreenProps<RootStackParamList, 'Home'>;
 
+// Пример данных о бронированиях с увеличенным количеством слотов
+const bookedSlotsData = [
+  { start: '08:00', end: '09:00', isBooked: true, name: 'Иван Г.' },
+  { start: '09:00', end: '10:00', isBooked: true, name: 'Алексей П.' },
+  { start: '10:00', end: '11:00', isBooked: true, name: 'Сергей К.' },
+  { start: '11:00', end: '12:00', isBooked: true, name: 'Мария С.' },
+  { start: '12:00', end: '13:00', isBooked: true, name: 'Ольга В.' },
+  { start: '14:00', end: '15:00', isBooked: true, name: 'Павел Д.' },
+  { start: '16:00', end: '17:00', isBooked: true, name: 'Екатерина М.' },
+  { start: '18:00', end: '19:00', isBooked: true, name: 'Дмитрий И.' },
+  { start: '19:00', end: '20:00', isBooked: true, name: 'Анна Л.' },
+  { start: '21:00', end: '22:00', isBooked: true, name: 'Николай Р.' },
+];
+
 const HomeScreen = ({ navigation }: HomeScreenProps) => {
   const [selectedDate, setSelectedDate] = useState<number>(new Date().getDate());
   const [selectedCourt, setSelectedCourt] = useState<string>('Корт №3');
   const [selectedSlots, setSelectedSlots] = useState<string[]>([]);
   const courts = ['Корт №1', 'Корт №2', 'Корт №3', 'Корт №4'];
 
-  // Данные о бронированиях без имён для обычного пользователя
-  const bookedSlots = [
-    { start: '18:00', end: '19:00', isBooked: true },
-    { start: '19:00', end: '20:00', isBooked: true },
-  ];
-
-  // Текущий пользователь
-  const currentUser = { firstName: 'Дмитрий', lastName: 'Иванов' };
+  // Текущий пользователь (администратор)
+  const currentUser = { firstName: 'Админ', lastName: 'Админов' };
 
   // Функция для форматирования имени в формате "Иван Г."
   const formatUserName = (firstName: string, lastName: string): string => {
@@ -89,25 +104,24 @@ const HomeScreen = ({ navigation }: HomeScreenProps) => {
     const formattedTime = formatTimeRange(selectedSlots);
     const formattedDate = formatDate(selectedDate);
     const totalPrice = calculatePrice(selectedSlots);
-    const formattedName = formatUserName(currentUser.firstName, currentUser.lastName);
 
-    navigation.navigate('Bookings', {
+    // Переходим на экран выбора пользователя
+    navigation.navigate('SelectUser', {
       court: selectedCourt,
       date: formattedDate,
-      name: formattedName,
       time: formattedTime,
       price: totalPrice,
       selectedSlots: selectedSlots,
-      fromMyBookings: false,
     });
 
+    // Очищаем выбранные слоты
     setSelectedSlots([]);
   };
 
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <Screen>
-        <Header userName="Дмитрий" />
+        <Header userName="Админ" />
 
         <DatePicker
           selectedDate={selectedDate}
@@ -125,7 +139,7 @@ const HomeScreen = ({ navigation }: HomeScreenProps) => {
           <View style={styles.contentContainer}>
             <TimePicker
               onSelectionChange={(slots: string[]) => setSelectedSlots(slots)}
-              bookedSlots={bookedSlots} // Передаем слоты без имён
+              bookedSlots={bookedSlotsData}
             />
           </View>
         </ScrollView>

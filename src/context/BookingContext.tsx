@@ -11,7 +11,8 @@ interface Booking {
 interface BookingContextType {
   bookings: Booking[];
   addBooking: (booking: Booking) => void;
-  addBookings: (newBookings: Booking[]) => void; // Новая функция для добавления нескольких бронирований
+  addBookings: (newBookings: Booking[]) => void;
+  removeBooking: (booking: Booking) => void; // Добавляем метод removeBooking
 }
 
 const BookingContext = createContext<BookingContextType | undefined>(undefined);
@@ -56,8 +57,27 @@ export const BookingProvider: React.FC<{ children: ReactNode }> = ({ children })
     }
   };
 
+  // Функция для удаления бронирования
+  const removeBooking = async (booking: Booking) => {
+    try {
+      const updatedBookings = bookings.filter(
+        (b) =>
+          !(
+            b.court === booking.court &&
+            b.date === booking.date &&
+            b.time === booking.time &&
+            b.status === booking.status
+          )
+      );
+      setBookings(updatedBookings);
+      await AsyncStorage.setItem('bookings', JSON.stringify(updatedBookings));
+    } catch (error) {
+      console.error('Failed to remove booking from AsyncStorage:', error);
+    }
+  };
+
   return (
-    <BookingContext.Provider value={{ bookings, addBooking, addBookings }}>
+    <BookingContext.Provider value={{ bookings, addBooking, addBookings, removeBooking }}>
       {children}
     </BookingContext.Provider>
   );

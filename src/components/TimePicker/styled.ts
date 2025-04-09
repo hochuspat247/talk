@@ -24,6 +24,8 @@ export const styles = StyleSheet.create({
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
+    flexDirection: 'row', // Добавляем для размещения текста слева и имени справа
+    paddingHorizontal: 10, // Отступы по горизонтали для текста
   },
   slotAvailable: {
     backgroundColor: Colors.white, // Заменяем '#fff' на Colors.white
@@ -37,9 +39,16 @@ export const styles = StyleSheet.create({
   slotText: {
     fontSize: 16,
     color: Colors.text, // Уже использует Colors.text
+    flex: 1, // Чтобы текст занимал доступное пространство слева
+    textAlign: 'left', // Выравнивание текста слева
   },
   slotTextSelected: {
     color: Colors.white, // Заменяем '#fff' на Colors.white
+  },
+  bookedName: {
+    fontSize: 14,
+    color: '#5A5A5A', // Цвет имени, как указано
+    textAlign: 'right', // Выравнивание имени справа
   },
   currentTimeLine: {
     position: 'absolute',

@@ -1,28 +1,31 @@
-// src/screens/auth/Verification/VerificationScreen.tsx
 import React, { useState, useEffect } from 'react';
 import { Text, ImageBackground, View, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import Input from '@components/Input';
 import Button from '@components/Button';
 import { styles } from './styled';
 
 interface VerificationScreenProps {
-  onVerificationSuccess: () => void; // Проп для обработки успешной верификации
+  onVerificationSuccess?: (role?: string) => void; // Проп для обработки успешной верификации с опциональной ролью
 }
 
 const VerificationScreen = ({ onVerificationSuccess }: VerificationScreenProps) => {
   const navigation = useNavigation();
+  const route = useRoute();
   const [code, setCode] = useState<string>(''); // Состояние для кода
   const [isFormValid, setIsFormValid] = useState(false);
   const [hasError, setHasError] = useState(false); // Состояние для ошибки
   const [isSuccess, setIsSuccess] = useState(false); // Состояние для успешного ввода
+
+  // Получаем номер телефона из параметров навигации
+  const { phone } = route.params as { phone: string };
+  const isAdmin = phone === '+7(918)102-77-22'; // Проверяем, админ ли это
 
   // Проверка валидности формы и успешного ввода
   useEffect(() => {
     const isValid = code.length === 4; // Код должен быть из 4 цифр
     setIsFormValid(isValid);
 
-    // Проверяем, если код "4444", устанавливаем успех
     if (isValid && code === '4444') {
       setIsSuccess(true);
       setHasError(false); // Сбрасываем ошибку, если код правильный
@@ -45,15 +48,17 @@ const VerificationScreen = ({ onVerificationSuccess }: VerificationScreenProps) 
         setHasError(false);
         setIsSuccess(true);
         console.log('Verification code:', code);
-        // Вызываем onVerificationSuccess для перехода в PlayerNavigator
-        onVerificationSuccess();
+
+        // Вызываем onVerificationSuccess с ролью 'admin', если это администратор
+        if (onVerificationSuccess) {
+          onVerificationSuccess(isAdmin ? 'admin' : undefined);
+        }
       }
     }
   };
 
   const handleBackOrResend = () => {
     if (hasError) {
-      // Логика для повторной отправки кода
       console.log('Resend verification code');
       setCode(''); // Сбрасываем код
       setHasError(false); // Сбрасываем ошибку
