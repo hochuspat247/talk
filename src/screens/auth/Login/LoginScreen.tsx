@@ -1,14 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { Text, ImageBackground, View, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import { Text, ImageBackground, View, ScrollView, KeyboardAvoidingView, Platform, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '@navigation/AuthNavigator';
 import Input from '@components/Input';
 import Button from '@components/Button';
+import { login } from '@api/auth'; // Импортируем функцию login из API
 import { styles } from './styled';
+
+type LoginScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
 
 const LoginScreen = () => {
   const [phone, setPhone] = useState<string>('');
   const [isPhoneValid, setIsPhoneValid] = useState(false); // Состояние для валидности номера
-  const navigation = useNavigation();
+  const [isLoading, setIsLoading] = useState<boolean>(false); // Состояние для загрузки
+  const navigation = useNavigation<LoginScreenNavigationProp>();
 
   const formatPhoneNumber = (text: string) => {
     let cleaned = text.replace(/\D/g, ''); // Удаляем все нечисловые символы
@@ -39,11 +45,26 @@ const LoginScreen = () => {
     setIsPhoneValid(!!isValid);
   }, [phone]);
 
-  const handleLogin = () => {
-    if (isPhoneValid) {
-      console.log('Login with phone:', phone);
-      // Передаем номер телефона в VerificationScreen через параметры навигации
-      navigation.navigate('Verification', { phone });
+  const handleLogin = async () => {
+    if (!isPhoneValid) {
+      Alert.alert('Ошибка', 'Неверный формат номера телефона (+7(XXX)XXX-XX-XX)');
+      return;
+    }
+  
+    setIsLoading(true);
+    try {
+      const response = await login(phone);
+      navigation.navigate('Verification', { phone, userId: response.user_id });
+    } catch (error: any) {
+      const errorMessage =
+        error.code === 404
+          ? 'Пользователь с таким номером не найден'
+          : error.message === 'Network Error'
+          ? 'Не удалось подключиться к серверу. Проверьте подключение к сети.'
+          : error.message || 'Не удалось войти';
+      Alert.alert('Ошибка', errorMessage);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -76,12 +97,13 @@ const LoginScreen = () => {
               title="Войти"
               onPress={handleLogin}
               variant="primary"
-              disabled={!isPhoneValid} // Кнопка неактивна, пока номер не валиден
+              disabled={!isPhoneValid || isLoading} // Кнопка неактивна, пока номер не валиден или идёт загрузка
             />
             <Button
               title="Назад"
               onPress={handleBack}
               variant="text"
+              disabled={isLoading}
             />
           </View>
         </ScrollView>

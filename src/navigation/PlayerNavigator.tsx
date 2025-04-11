@@ -1,42 +1,64 @@
+import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
+import { TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import HomeScreen from '@screens/player/Home/HomeScreen';
 import BookingsScreen from '@screens/player/Bookings/BookingsScreen';
 import ProfileScreen from '@screens/player/Profile/ProfileScreen';
 import BookingSuccessScreen from '@screens/player/BookingSuccess/BookingSuccessScreen';
 import MyBookingsScreen from '@screens/player/MyBookings/MyBookingsScreen';
-import { TouchableOpacity } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 
-const Stack = createStackNavigator();
+// Определяем типы для параметров навигации
+export type PlayerStackParamList = {
+  Home: undefined;
+  Bookings: { court?: string }; // Параметр court для BookingsScreen
+  BookingSuccess: undefined;
+  MyBookings: undefined;
+  Profile: undefined;
+};
+
+const Stack = createStackNavigator<PlayerStackParamList>();
 
 interface PlayerNavigatorProps {
   onLogout: () => void; // Проп для функции выхода
 }
 
 export const PlayerNavigator: React.FC<PlayerNavigatorProps> = ({ onLogout }) => {
+  const handleLogout = async () => {
+    try {
+      // Очищаем AsyncStorage
+      await AsyncStorage.removeItem('token');
+      await AsyncStorage.removeItem('role');
+      onLogout(); // Вызываем onLogout для перенаправления на экран аутентификации
+    } catch (error) {
+      console.error('Error during logout:', error);
+    }
+  };
+
   return (
     <Stack.Navigator>
       <Stack.Screen
         name="Home"
         component={HomeScreen}
-        options={{ headerShown: false }} // Скрываем шапку для Home
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="Bookings"
         component={BookingsScreen}
         options={({ route }) => ({
-          headerTitle: route.params?.court || 'Бронирование корта', // Динамический заголовок
+          headerTitle: route.params?.court || 'Бронирование корта',
         })}
       />
       <Stack.Screen
         name="BookingSuccess"
         component={BookingSuccessScreen}
-        options={{ headerTitle: 'Бронирование корта' }} // Устанавливаем заголовок
+        options={{ headerTitle: 'Бронирование корта' }}
       />
       <Stack.Screen
         name="MyBookings"
         component={MyBookingsScreen}
-        options={{ headerTitle: 'Мои бронирования' }} // Устанавливаем заголовок
+        options={{ headerTitle: 'Мои бронирования' }}
       />
       <Stack.Screen
         name="Profile"
@@ -44,7 +66,7 @@ export const PlayerNavigator: React.FC<PlayerNavigatorProps> = ({ onLogout }) =>
         options={{
           headerTitle: 'Профиль',
           headerRight: () => (
-            <TouchableOpacity onPress={onLogout} style={{ marginRight: 15 }}>
+            <TouchableOpacity onPress={handleLogout} style={{ marginRight: 15 }}>
               <Ionicons name="log-out-outline" size={24} color="#000" />
             </TouchableOpacity>
           ),

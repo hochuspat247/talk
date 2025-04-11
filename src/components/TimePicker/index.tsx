@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { styles } from './styled';
+import moment from 'moment';
 
 interface TimeSlot {
   start: string;
@@ -11,13 +12,17 @@ interface TimeSlot {
 
 interface TimePickerProps {
   onSelectionChange?: (selectedSlots: string[]) => void;
-  bookedSlots?: TimeSlot[]; // Забронированные слоты с именами
+  bookedSlots?: TimeSlot[];
+  date?: string; // Дата в формате YYYY-MM-DD
 }
 
-const TimePicker: React.FC<TimePickerProps> = ({ onSelectionChange, bookedSlots = [] }) => {
+const TimePicker: React.FC<TimePickerProps> = ({ onSelectionChange, bookedSlots = [], date }) => {
   const [currentTimePosition, setCurrentTimePosition] = useState<number>(0);
   const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
   const [selectedSlots, setSelectedSlots] = useState<string[]>([]);
+
+  // Проверяем, является ли выбранная дата сегодняшней
+  const isToday = moment(date, 'YYYY-MM-DD').isSame(moment(), 'day');
 
   // Генерация слотов и синхронизация с bookedSlots
   useEffect(() => {
@@ -33,7 +38,7 @@ const TimePicker: React.FC<TimePickerProps> = ({ onSelectionChange, bookedSlots 
         const start = `${hour}:00`;
         const end = `${hour + 1}:00`;
         const slotKey = `${start}-${end}`;
-        const isPast = hour < currentHour;
+        const isPast = isToday && hour < currentHour;
         const bookedSlot = bookedSlots.find((bs) => bs.start === start && bs.end === end);
 
         slots.push({
@@ -45,24 +50,35 @@ const TimePicker: React.FC<TimePickerProps> = ({ onSelectionChange, bookedSlots 
       }
       setTimeSlots(slots);
 
-      // Фильтруем selectedSlots, но не вызываем onSelectionChange
+      // Фильтруем selectedSlots, чтобы удалить уже забронированные
       const updatedSelectedSlots = selectedSlots.filter((slot) => {
         const [start] = slot.split('-');
         const hour = parseInt(start.split(':')[0]);
-        const isStillAvailable = hour >= currentHour && !bookedSlots.some((bs) => `${bs.start}-${bs.end}` === slot);
+        const bookedSlot = bookedSlots.find((bs) => `${bs.start}-${bs.end}` === slot);
+        const isStillAvailable = (!isToday || hour >= currentHour) && (!bookedSlot || !bookedSlot.isBooked);
         return isStillAvailable;
       });
-      setSelectedSlots(updatedSelectedSlots);
+
+      // Обновляем selectedSlots только если они изменились
+      if (JSON.stringify(updatedSelectedSlots) !== JSON.stringify(selectedSlots)) {
+        setSelectedSlots(updatedSelectedSlots);
+        if (onSelectionChange) onSelectionChange(updatedSelectedSlots);
+      }
     };
 
     updateSlots();
     const timer = setInterval(updateSlots, 60000); // Обновляем каждую минуту
 
     return () => clearInterval(timer);
-  }, [bookedSlots]); // Убрали onSelectionChange из зависимостей
+  }, [bookedSlots, isToday, selectedSlots, onSelectionChange]); // Добавляем selectedSlots в зависимости
 
-  // Обновление позиции текущего времени
+  // Обновление позиции текущего времени (только для сегодняшней даты)
   useEffect(() => {
+    if (!isToday) {
+      setCurrentTimePosition(0); // Скрываем линию для будущих дат
+      return;
+    }
+
     const updatePosition = () => {
       const now = new Date();
       const currentHour = now.getHours();
@@ -90,18 +106,21 @@ const TimePicker: React.FC<TimePickerProps> = ({ onSelectionChange, bookedSlots 
     const timer = setInterval(updatePosition, 60000); // Обновляем позицию линии каждую минуту
 
     return () => clearInterval(timer);
-  }, []);
+  }, [isToday]);
 
   const handleSlotPress = (slot: TimeSlot) => {
-    if (slot.isBooked) return;
-
+    if (slot.isBooked) {
+      console.log(`Слот ${slot.start}-${slot.end} забронирован и некликабелен`);
+      return;
+    }
+  
     const slotKey = `${slot.start}-${slot.end}`;
     const updatedSlots = selectedSlots.includes(slotKey)
       ? selectedSlots.filter((key) => key !== slotKey)
       : [...selectedSlots, slotKey];
-
+  
     setSelectedSlots(updatedSlots);
-    if (onSelectionChange) onSelectionChange(updatedSlots); // Вызываем только при выборе пользователем
+    if (onSelectionChange) onSelectionChange(updatedSlots);
   };
 
   return (
@@ -138,10 +157,13 @@ const TimePicker: React.FC<TimePickerProps> = ({ onSelectionChange, bookedSlots 
           })}
           <Text style={styles.timeText}>24:00</Text>
 
-          <View style={[styles.currentTimeLine, { top: currentTimePosition }]}>
-            <View style={styles.currentTimeDot} />
-            <View style={styles.currentTimeLineBar} />
-          </View>
+          {/* Показываем линию только для сегодняшней даты */}
+          {isToday && (
+            <View style={[styles.currentTimeLine, { top: currentTimePosition }]}>
+              <View style={styles.currentTimeDot} />
+              <View style={styles.currentTimeLineBar} />
+            </View>
+          )}
         </View>
       </ScrollView>
     </View>

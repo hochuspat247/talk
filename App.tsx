@@ -1,32 +1,69 @@
 import 'react-native-gesture-handler';
 import 'react-native-screens';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AuthNavigator } from '@navigation/AuthNavigator';
 import { PlayerNavigator } from '@navigation/PlayerNavigator';
-import { AdminNavigator } from '@navigation/AdminNavigator'; // Добавляем импорт
+import { AdminNavigator } from '@navigation/AdminNavigator';
 import { BookingProvider } from './src/context/BookingContext';
 
-const Stack = createStackNavigator();
+// Определяем типы для корневого навигатора
+export type RootNavigatorParamList = {
+  Auth: undefined;
+  Player: undefined;
+  Admin: undefined;
+};
+
+const Stack = createStackNavigator<RootNavigatorParamList>();
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false); // Состояние для проверки, админ ли пользователь
+  const [isAdmin, setIsAdmin] = useState(false);
 
-  const handleVerificationSuccess = (role?: string) => {
-    setIsAuthenticated(true);
-    if (role === 'admin') {
-      setIsAdmin(true); // Устанавливаем роль администратора
-    } else {
-      setIsAdmin(false); // Обычный пользователь
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const token = await AsyncStorage.getItem('token');
+        const role = await AsyncStorage.getItem('role');
+        if (token) {
+          setIsAuthenticated(true);
+          setIsAdmin(role === 'admin');
+        }
+      } catch (error) {
+        console.error('Error checking auth:', error);
+      }
+    };
+
+    checkAuth();
+  }, []);
+
+  const handleVerificationSuccess = async (role?: string) => {
+    if (role) {
+      try {
+        await AsyncStorage.setItem('role', role);
+        console.log('Role saved to AsyncStorage:', role);
+        setIsAuthenticated(true);
+        setIsAdmin(role === 'admin');
+      } catch (error) {
+        console.error('Error saving role to AsyncStorage:', error);
+        setIsAuthenticated(true);
+        setIsAdmin(role === 'admin');
+      }
     }
   };
 
-  const handleLogout = () => {
-    setIsAuthenticated(false);
-    setIsAdmin(false); // Сбрасываем роль при выходе
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.removeItem('token');
+      await AsyncStorage.removeItem('role');
+      setIsAuthenticated(false);
+      setIsAdmin(false);
+    } catch (error) {
+      console.error('Error during logout:', error);
+    }
   };
 
   return (
@@ -36,22 +73,22 @@ const App = () => {
           <Stack.Navigator
             screenOptions={{
               headerShown: false,
-              animationEnabled: false, // Отключаем анимации
+              animationEnabled: false,
             }}
           >
             {isAuthenticated ? (
               isAdmin ? (
                 <Stack.Screen name="Admin">
-                  {() => <AdminNavigator onLogout={handleLogout} />}
+                  {(props) => <AdminNavigator {...props} onLogout={handleLogout} />}
                 </Stack.Screen>
               ) : (
                 <Stack.Screen name="Player">
-                  {() => <PlayerNavigator onLogout={handleLogout} />}
+                  {(props) => <PlayerNavigator {...props} onLogout={handleLogout} />}
                 </Stack.Screen>
               )
             ) : (
               <Stack.Screen name="Auth">
-                {() => <AuthNavigator onVerificationSuccess={handleVerificationSuccess} />}
+                {(props) => <AuthNavigator {...props} onVerificationSuccess={handleVerificationSuccess} />}
               </Stack.Screen>
             )}
           </Stack.Navigator>

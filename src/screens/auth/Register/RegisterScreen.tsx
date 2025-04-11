@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Text, ImageBackground, View, ScrollView, KeyboardAvoidingView, Platform, TouchableOpacity, Image } from 'react-native';
+import { Text, ImageBackground, View, ScrollView, KeyboardAvoidingView, Platform, TouchableOpacity, Image, Alert } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import Input from '@components/Input';
 import Button from '@components/Button';
 import * as ImagePicker from 'expo-image-picker';
 import { RegisterFormData, FormErrors } from './types';
 import { styles } from './styled';
+import { register, login } from '@api/auth'; // Импортируем функции register и login
 
 // Определяем типы для параметров навигации
 type RootStackParamList = {
@@ -18,18 +20,21 @@ type RootStackParamList = {
   Register: { isAdmin?: boolean };
   AccountCreated: undefined;
   Login: undefined;
-  Verification: undefined;
+  Verification: { phone: string; userId: number };
 };
+
+type RegisterScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Register'>;
 
 const RegisterScreen = () => {
   const [step, setStep] = useState(1);
   const [isAgreed, setIsAgreed] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
   const [showErrors, setShowErrors] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const navigation = useNavigation();
+  const navigation = useNavigation<RegisterScreenNavigationProp>();
   const route = useRoute();
-  const { isAdmin = false } = route.params || {}; // Извлекаем isAdmin из параметров
+  const { isAdmin = false } = route.params || {};
 
   const [formData, setFormData] = useState<RegisterFormData>({
     lastName: '',
@@ -46,7 +51,10 @@ const RegisterScreen = () => {
 
   const pickImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== 'granted') return;
+    if (status !== 'granted') {
+      Alert.alert('Ошибка', 'Необходимо предоставить доступ к галерее');
+      return;
+    }
 
     const result = await ImagePicker.launchImageLibraryAsync({ allowsEditing: true, aspect: [1, 1], quality: 1 });
     if (!result.canceled) {
@@ -118,20 +126,44 @@ const RegisterScreen = () => {
     setIsFormValid(validateForm());
   }, [formData, isAgreed, step]);
 
-  const handleNext = () => {
+  const handleNext = async () => {
     setShowErrors(true);
     if (isFormValid) {
       if (step === 1) {
         setStep(2);
         setShowErrors(false);
       } else if (step === 2) {
-        console.log('Register:', formData);
-        // После успешной регистрации переходим на AccountCreatedScreen, если это админ
-        if (isAdmin) {
-          navigation.navigate('AccountCreated');
-        } else {
-          // Для обычного пользователя переходим на VerificationScreen или другой экран
-          navigation.navigate('Verification');
+        setIsLoading(true);
+        try {
+          // Формируем данные для отправки на бэкенд
+          const registerData = {
+            last_name: formData.lastName,
+            first_name: formData.firstName,
+            birth_date: formData.birthDate,
+            photo: formData.selectedImage, // Здесь можно добавить логику для загрузки изображения, если требуется
+            email: formData.email,
+            phone: formData.phone,
+            password: formData.password,
+            is_admin: isAdmin,
+          };
+
+          // Регистрируем пользователя
+          const registerResponse = await register(registerData);
+          console.log('Registration successful:', registerResponse);
+
+          // После успешной регистрации отправляем запрос на получение кода верификации
+          if (!isAdmin) {
+            const loginResponse = await login(formData.phone);
+            console.log('Login after registration successful:', loginResponse);
+            navigation.navigate('Verification', { phone: formData.phone, userId: registerResponse.id });
+          } else {
+            navigation.navigate('AccountCreated');
+          }
+        } catch (error: any) {
+          const errorMessage = error.message || 'Не удалось зарегистрироваться';
+          Alert.alert('Ошибка', errorMessage);
+        } finally {
+          setIsLoading(false);
         }
       }
     }
@@ -170,7 +202,7 @@ const RegisterScreen = () => {
                     />
                   )}
                 </TouchableOpacity>
-                
+
                 <Input
                   placeholder="Фамилия"
                   value={formData.lastName}
@@ -249,9 +281,9 @@ const RegisterScreen = () => {
               title="Далее"
               onPress={handleNext}
               variant="primary"
-              disabled={!isFormValid}
+              disabled={!isFormValid || isLoading}
             />
-            <Button title="Назад" onPress={handleBack} variant="text" />
+            <Button title="Назад" onPress={handleBack} variant="text" disabled={isLoading} />
           </View>
         </ScrollView>
       </KeyboardAvoidingView>

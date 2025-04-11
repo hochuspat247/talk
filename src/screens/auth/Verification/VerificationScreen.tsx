@@ -1,70 +1,94 @@
 import React, { useState, useEffect } from 'react';
-import { Text, ImageBackground, View, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import { Text, ImageBackground, View, ScrollView, KeyboardAvoidingView, Platform, Alert } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '@navigation/AuthNavigator';
 import Input from '@components/Input';
 import Button from '@components/Button';
+import { verify, resendCode } from '@api/auth';
 import { styles } from './styled';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+type VerificationScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Verification'>;
+
+interface RouteParams {
+  phone: string;
+  userId: number;
+}
 
 interface VerificationScreenProps {
-  onVerificationSuccess?: (role?: string) => void; // Проп для обработки успешной верификации с опциональной ролью
+  onVerificationSuccess?: (role?: string) => void;
 }
 
 const VerificationScreen = ({ onVerificationSuccess }: VerificationScreenProps) => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<VerificationScreenNavigationProp>();
   const route = useRoute();
-  const [code, setCode] = useState<string>(''); // Состояние для кода
+  const { phone, userId } = route.params as RouteParams;
+  const [code, setCode] = useState<string>('');
   const [isFormValid, setIsFormValid] = useState(false);
-  const [hasError, setHasError] = useState(false); // Состояние для ошибки
-  const [isSuccess, setIsSuccess] = useState(false); // Состояние для успешного ввода
+  const [hasError, setHasError] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  // Получаем номер телефона из параметров навигации
-  const { phone } = route.params as { phone: string };
-  const isAdmin = phone === '+7(918)102-77-22'; // Проверяем, админ ли это
-
-  // Проверка валидности формы и успешного ввода
   useEffect(() => {
-    const isValid = code.length === 4; // Код должен быть из 4 цифр
+    const isValid = code.length === 4 && /^\d{4}$/.test(code);
     setIsFormValid(isValid);
-
-    if (isValid && code === '4444') {
-      setIsSuccess(true);
-      setHasError(false); // Сбрасываем ошибку, если код правильный
-    } else {
-      setIsSuccess(false);
-    }
   }, [code]);
 
   const handleCodeChange = (text: string) => {
     setCode(text);
-    setHasError(false); // Сбрасываем ошибку при изменении кода
+    setHasError(false);
+    setIsSuccess(false);
   };
 
-  const handleNext = () => {
-    if (isFormValid) {
-      if (code !== '4444') {
-        setHasError(true); // Устанавливаем ошибку, если код неверный
-        setIsSuccess(false);
-      } else {
-        setHasError(false);
-        setIsSuccess(true);
-        console.log('Verification code:', code);
-
-        // Вызываем onVerificationSuccess с ролью 'admin', если это администратор
-        if (onVerificationSuccess) {
-          onVerificationSuccess(isAdmin ? 'admin' : undefined);
-        }
+  const handleNext = async () => {
+    if (!isFormValid) {
+      Alert.alert('Ошибка', 'Код должен состоять из 4 цифр');
+      return;
+    }
+  
+    setIsLoading(true);
+    try {
+      const response = await verify(phone, code);
+      setHasError(false);
+      setIsSuccess(true);
+  
+      const role = response.role || 'user';
+      const token = response.access_token;
+      const userId = response.user_id;
+  
+      // СОХРАНЯЕМ ТОКЕН и userId В AsyncStorage
+      await AsyncStorage.setItem('token', token);
+      await AsyncStorage.setItem('userId', userId.toString());
+  
+      if (onVerificationSuccess) {
+        onVerificationSuccess(role);
       }
+    } catch (error: any) {
+      setHasError(true);
+      setIsSuccess(false);
+      const errorMessage = error.message === 'Invalid code' ? 'Неверный код' : error.message || 'Не удалось подтвердить код';
+      Alert.alert('Ошибка', errorMessage);
+    } finally {
+      setIsLoading(false);
     }
   };
-
-  const handleBackOrResend = () => {
+  const handleBackOrResend = async () => {
     if (hasError) {
-      console.log('Resend verification code');
-      setCode(''); // Сбрасываем код
-      setHasError(false); // Сбрасываем ошибку
-      setIsSuccess(false); // Сбрасываем успех
+      setIsLoading(true);
+      try {
+        await resendCode(phone);
+        setCode('');
+        setHasError(false);
+        setIsSuccess(false);
+        Alert.alert('Успех', 'Новый код отправлен');
+      } catch (error: any) {
+        const errorMessage = error.message || 'Не удалось отправить новый код';
+        Alert.alert('Ошибка', errorMessage);
+      } finally {
+        setIsLoading(false);
+      }
     } else {
-      navigation.goBack(); // Возвращаемся на предыдущий экран
+      navigation.goBack();
     }
   };
 
@@ -87,6 +111,7 @@ const VerificationScreen = ({ onVerificationSuccess }: VerificationScreenProps) 
                 keyboardType="numeric"
                 hasError={hasError}
                 isSuccess={isSuccess}
+                maxLength={4}
               />
               {hasError && <Text style={{ color: 'red', marginTop: 8, textAlign: 'center' }}>Неверный код</Text>}
             </View>
@@ -96,12 +121,13 @@ const VerificationScreen = ({ onVerificationSuccess }: VerificationScreenProps) 
                 title="Далее"
                 onPress={handleNext}
                 variant="primary"
-                disabled={!isFormValid}
+                disabled={!isFormValid || isLoading}
               />
               <Button
                 title={hasError ? 'Отправить повторно' : 'Назад'}
                 onPress={handleBackOrResend}
                 variant={hasError ? 'primary' : 'text'}
+                disabled={isLoading}
               />
             </View>
           </ScrollView>

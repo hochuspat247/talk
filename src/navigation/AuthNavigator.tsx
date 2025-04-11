@@ -5,16 +5,19 @@ import LoginScreen from '@screens/auth/Login/LoginScreen';
 import RegisterScreen from '@screens/auth/Register/RegisterScreen';
 import VerificationScreen from '@screens/auth/Verification/VerificationScreen';
 import AccountCreatedScreen from '@screens/admin/AccountCreated/AccountCreatedScreen';
+
 // Определяем типы для параметров навигации
-type RootStackParamList = {
+export type RootStackParamList = {
   Welcome: undefined;
   Login: undefined;
   Register: { isAdmin?: boolean }; // Добавляем параметр isAdmin
-  Verification: { onVerificationSuccess: (role?: string) => void };
+  Verification: { phone: string; userId: number }; // Параметры для VerificationScreen
   AccountCreated: undefined;
+  AdminNavigator: undefined; // Навигатор для администратора
+  PlayerNavigator: undefined; // Навигатор для игрока
 };
 
-const Stack = createStackNavigator();
+const Stack = createStackNavigator<RootStackParamList>();
 
 interface AuthNavigatorProps {
   onVerificationSuccess: (role?: string) => void; // Проп для обработки успешной верификации
@@ -39,7 +42,7 @@ export const AuthNavigator = ({ onVerificationSuccess }: AuthNavigatorProps) => 
         options={{ headerShown: false }}
       />
       <Stack.Screen name="Verification" options={{ headerShown: false }}>
-        {() => <VerificationScreen onVerificationSuccess={onVerificationSuccess} />}
+        {(props) => <VerificationScreen {...props} onVerificationSuccess={onVerificationSuccess} />}
       </Stack.Screen>
       <Stack.Screen
         name="AccountCreated"

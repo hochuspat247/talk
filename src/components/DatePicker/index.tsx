@@ -1,34 +1,72 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { styles } from './styled';
+import { getAvailability } from '@api/bookings';
 
 interface DatePickerProps {
-  selectedDate: number; // Выбранная дата (день месяца)
-  onDateSelect: (day: number) => void; // Обработчик выбора даты
-  daysToShow?: number; // Сколько дней показывать (по умолчанию 30)
+  selectedDate: Date;
+  onDateSelect: (date: Date) => void; // ← вот это поправь
+  daysToShow?: number;
+  courtId: number | null;
+  selectedCourt: string;
 }
 
-const DatePicker: React.FC<DatePickerProps> = ({ selectedDate, onDateSelect, daysToShow = 30 }) => {
-  const scrollViewRef = useRef<ScrollView>(null);
-  const [dates, setDates] = React.useState<{ day: number; hasSlots: boolean; fullDate: Date }[]>([]);
 
-  // Генерация дат
+const DatePicker: React.FC<DatePickerProps> = ({ selectedDate, onDateSelect, daysToShow = 30, courtId, selectedCourt }) => {
+  const [dates, setDates] = useState<{ day: number; hasSlots: boolean; fullDate: Date }[]>([]);
+
+  // Форматирование даты в "гггг-мм-дд"
+  const formatDate = (date: Date): string => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`; // Формат YYYY-MM-DD
+  };
+
+  // Генерация дат и проверка доступности слотов
   useEffect(() => {
-    const generatedDates = [];
-    const startDate = new Date(); // Текущая дата с телефона
+    const fetchAvailabilityForDates = async () => {
+      const generatedDates = [];
+      const startDate = new Date();
 
-    for (let i = 0; i < daysToShow; i++) {
-      const date = new Date(startDate);
-      date.setDate(startDate.getDate() + i);
-      generatedDates.push({
-        day: date.getDate(),
-        hasSlots: Math.random() > 0.5, // Случайное наличие мест
-        fullDate: date,
-      });
-    }
+      if (!courtId) {
+        // Если courtId отсутствует, создаём даты без проверки доступности
+        for (let i = 0; i < daysToShow; i++) {
+          const date = new Date(startDate);
+          date.setDate(startDate.getDate() + i);
+          generatedDates.push({
+            day: date.getDate(),
+            hasSlots: false,
+            fullDate: date,
+          });
+        }
+        setDates(generatedDates);
+        return;
+      }
 
-    setDates(generatedDates);
-  }, [daysToShow]);
+      const promises = [];
+      for (let i = 0; i < daysToShow; i++) {
+        const date = new Date(startDate);
+        date.setDate(startDate.getDate() + i);
+        const formattedDate = formatDate(date);
+        promises.push(getAvailability(courtId, formattedDate));
+        generatedDates.push({ day: date.getDate(), hasSlots: false, fullDate: date });
+      }
+
+      try {
+        const availabilityResults = await Promise.all(promises);
+        availabilityResults.forEach((availability, index) => {
+          generatedDates[index].hasSlots = availability.some((slot) => !slot.is_booked);
+        });
+      } catch (error) {
+        console.error('Error fetching availability for dates:', error);
+      }
+
+      setDates(generatedDates);
+    };
+
+    fetchAvailabilityForDates();
+  }, [courtId, daysToShow, selectedCourt]);
 
   // Функция для определения, является ли день выходным (суббота или воскресенье)
   const isWeekend = (date: Date) => {
@@ -38,20 +76,20 @@ const DatePicker: React.FC<DatePickerProps> = ({ selectedDate, onDateSelect, day
 
   return (
     <ScrollView
-      ref={scrollViewRef}
       horizontal
       showsHorizontalScrollIndicator={false}
       contentContainerStyle={styles.container}
     >
       {dates.map((date) => {
-        const isSelected = date.day === selectedDate;
+        const isSelected = date.fullDate.toDateString() === selectedDate.toDateString();
         const isWeekendDay = isWeekend(date.fullDate);
 
         return (
           <TouchableOpacity
             key={date.day}
             style={[styles.dateContainer, isSelected && styles.selectedDateContainer]}
-            onPress={() => onDateSelect(date.day)}
+            onPress={() => onDateSelect(date.fullDate)}
+
           >
             <Text
               style={[
@@ -64,7 +102,7 @@ const DatePicker: React.FC<DatePickerProps> = ({ selectedDate, onDateSelect, day
             <View
               style={[
                 styles.dot,
-                date.hasSlots ? styles.dotAvailable : styles.dotUnavailable, // Зеленый или серый цвет точки
+                date.hasSlots ? styles.dotAvailable : styles.dotUnavailable, // Зелёный или серый цвет точки
               ]}
             />
           </TouchableOpacity>
