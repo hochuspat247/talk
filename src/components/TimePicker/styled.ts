@@ -10,7 +10,7 @@ export const styles = StyleSheet.create({
   },
   timeText: {
     fontSize: 14,
-    color: Colors.disabled, // Заменяем '#888' на Colors.disabled (серый)
+    color: Colors.disabled, // Серый цвет для текста времени
     textAlign: 'left',
     height: 20, // Фиксированная высота для timeText
     lineHeight: 20, // Центрируем текст по вертикали
@@ -20,7 +20,6 @@ export const styles = StyleSheet.create({
   },
   slot: {
     height: 60, // Высота одного слота
-    backgroundColor: Colors.white, // Заменяем '#fff' на Colors.white
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
@@ -28,26 +27,33 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 10, // Отступы по горизонтали для текста
   },
   slotAvailable: {
-    backgroundColor: Colors.white, // Заменяем '#fff' на Colors.white
+    backgroundColor: Colors.white, // Белый цвет для доступных слотов
+    borderWidth: 1,
+    borderColor: Colors.border, // Светло-серый бордер
   },
   slotBooked: {
-    backgroundColor: Colors.border, // Заменяем '#E0E0E0' на Colors.border (светло-серый)
+    backgroundColor: Colors.border, // Светло-серый цвет для забронированных/прошедших слотов
+    borderWidth: 1,
+    borderColor: Colors.border, // Светло-серый бордер
+    opacity: 0.6, // Добавляем прозрачность для визуального отличия
   },
   slotSelected: {
-    backgroundColor: Colors.primary, // Заменяем '#007AFF' на Colors.primary (синий)
+    backgroundColor: Colors.primary, // Синий цвет для выбранных слотов
+    borderWidth: 1,
+    borderColor: Colors.primary, // Синий бордер
   },
   slotText: {
     fontSize: 16,
-    color: Colors.text, // Уже использует Colors.text
+    color: Colors.text, // Цвет текста
     flex: 1, // Чтобы текст занимал доступное пространство слева
     textAlign: 'left', // Выравнивание текста слева
   },
   slotTextSelected: {
-    color: Colors.white, // Заменяем '#fff' на Colors.white
+    color: Colors.white, // Белый цвет текста для выбранных слотов
   },
   bookedName: {
     fontSize: 14,
-    color: '#5A5A5A', // Цвет имени, как указано
+    color: '#5A5A5A', // Цвет имени
     textAlign: 'right', // Выравнивание имени справа
   },
   currentTimeLine: {
@@ -61,14 +67,14 @@ export const styles = StyleSheet.create({
     width: 10,
     height: 10,
     borderRadius: 5,
-    backgroundColor: Colors.primary, // Заменяем '#007AFF' на Colors.primary (синий)
+    backgroundColor: Colors.primary, // Синий цвет для точки
   },
   currentTimeLineBar: {
     flex: 1,
     height: 2,
-    backgroundColor: Colors.primary, // Заменяем '#007AFF' на Colors.primary (синий)
+    backgroundColor: Colors.primary, // Синий цвет для линии
     borderStyle: 'dashed',
     borderWidth: 1,
-    borderColor: Colors.primary, // Заменяем '#007AFF' на Colors.primary (синий)
+    borderColor: Colors.primary, // Синий бордер для линии
   },
 });

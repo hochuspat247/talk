@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { View, ScrollView, KeyboardAvoidingView, Platform, Alert, Text, RefreshControl } from 'react-native';
 import Header from '@components/Header';
 import DatePicker from '@components/DatePicker';
@@ -15,7 +15,7 @@ import { getAllCourts } from '@api/courts';
 import { getAvailability } from '@api/bookings';
 import { getProfile } from '@api/profile';
 import { BookingAvailability, User } from '@api/types';
-import moment from 'moment';
+import moment from 'moment-timezone'; // Используем moment-timezone!
 import debounce from 'lodash/debounce';
 
 type RootStackParamList = {
@@ -29,6 +29,7 @@ type RootStackParamList = {
     price: number;
     selectedSlots: string[];
     fromMyBookings?: boolean;
+    timesISO?: string[];
   };
   BookingSuccess: { court: string; court_id: number; date: string; selectedSlots: string[]; status: 'success' | 'error' };
   MyBookings: undefined;
@@ -48,7 +49,8 @@ const HomeScreen = ({ navigation }: HomeScreenProps) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [currentUser, setCurrentUser] = useState<{ firstName: string; lastName: string } | null>(null);
-  const [availabilityCache, setAvailabilityCache] = useState<Map<string, BookingAvailability[]>>(new Map());
+  // Храним кэш доступности через useRef, чтобы обновления не инициировали лишние рендеры
+  const availabilityCacheRef = useRef<Map<string, BookingAvailability[]>>(new Map());
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -106,6 +108,14 @@ const HomeScreen = ({ navigation }: HomeScreenProps) => {
     fetchCourts();
   }, []);
 
+  const formatDate = (date: Date): string => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  // Debounce увеличен до 2000 мс
   const fetchAvailability = useCallback(
     debounce(async (forceRefresh: boolean = false) => {
       if (typeof selectedCourtId !== 'number') {
@@ -116,58 +126,51 @@ const HomeScreen = ({ navigation }: HomeScreenProps) => {
         console.warn('⛔️ selectedDate некорректна:', selectedDate);
         return;
       }
-  
+
       const formattedDate = formatDate(selectedDate);
       const cacheKey = `${selectedCourtId}-${formattedDate}`;
-  
-      // Если не принудительное обновление и данные есть в кэше, используем кэш
-      if (!forceRefresh && availabilityCache.has(cacheKey)) {
-        setBookedSlots(availabilityCache.get(cacheKey)!);
+
+      if (!forceRefresh && availabilityCacheRef.current.has(cacheKey)) {
+        setBookedSlots(availabilityCacheRef.current.get(cacheKey)!);
         return;
       }
-  
+
       try {
         console.log('📤 Вызов getAvailability:', { courtId: selectedCourtId, date: formattedDate });
         const availability = await getAvailability(selectedCourtId, formattedDate);
         setBookedSlots(availability);
-        setAvailabilityCache((prev) => new Map(prev).set(cacheKey, availability));
+        availabilityCacheRef.current.set(cacheKey, availability);
       } catch (error) {
         console.error('❌ Ошибка fetchAvailability:', error);
       }
-    }, 500),
+    }, 2000),
     [selectedCourtId, selectedDate]
   );
-  
+
   useEffect(() => {
     if (selectedCourtId !== null) {
-      fetchAvailability();
+      const cacheKey = `${selectedCourtId}-${formatDate(selectedDate)}`;
+      availabilityCacheRef.current.delete(cacheKey);
+      fetchAvailability(true);
     }
-  }, [fetchAvailability, selectedCourtId]); // Добавляем selectedCourtId в зависимости
-  
+  }, [selectedCourtId, selectedDate, fetchAvailability]);
+
+  // Интервал автообновления увеличен до 120 секунд (2 минуты)
   useEffect(() => {
     const interval = setInterval(() => {
       if (selectedCourtId !== null) {
         console.log('Автообновление данных доступности...');
-        fetchAvailability(true); // Принудительное обновление каждые 60 секунд
+        fetchAvailability(true);
       }
-    }, 60 * 1000);
-  
-    return () => clearInterval(interval);
-  }, [fetchAvailability, selectedCourtId]); // Добавляем selectedCourtId в зависимости
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      console.log('Автообновление данных доступности...');
-      fetchAvailability();
-    }, 60 * 1000);
+    }, 120 * 1000);
 
     return () => clearInterval(interval);
-  }, [fetchAvailability]);
+  }, [selectedCourtId, fetchAvailability]);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     try {
-      await fetchAvailability();
+      await fetchAvailability(true);
     } catch (error: any) {
       console.error('Ошибка при обновлении доступности:', error);
       Alert.alert('Ошибка', 'Не удалось обновить данные');
@@ -176,19 +179,14 @@ const HomeScreen = ({ navigation }: HomeScreenProps) => {
     }
   }, [fetchAvailability]);
 
-  const formatDate = (date: Date): string => {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  };
-
   const formatDateForDisplay = (date: Date): string => {
-    return date.toLocaleDateString('ru-RU', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-    }).replace(/\//g, '.');
+    return date
+      .toLocaleDateString('ru-RU', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+      })
+      .replace(/\//g, '.');
   };
 
   const formatUserName = (firstName: string, lastName: string): string => {
@@ -197,16 +195,13 @@ const HomeScreen = ({ navigation }: HomeScreenProps) => {
 
   const formatTimeRange = (slots: string[]): string => {
     if (!slots || slots.length === 0) return '';
-
     const sortedSlots = [...slots].sort((a, b) => {
       const startA = a.split('-')[0];
       const startB = b.split('-')[0];
       return startA.localeCompare(startB);
     });
-
     const firstTime = sortedSlots[0].split('-')[0];
     const lastTime = sortedSlots[sortedSlots.length - 1].split('-')[1];
-
     return `${firstTime}-${lastTime}`;
   };
 
@@ -217,6 +212,17 @@ const HomeScreen = ({ navigation }: HomeScreenProps) => {
     return { totalPrice, slotsCount };
   };
 
+  // Обновлённая функция slotToISO с использованием moment-timezone и явно установленной таймзоны "Europe/Moscow"
+  const slotToISO = (baseDate: Date, slot: string): string => {
+    const [startTime] = slot.split('-'); // Например, "11:00" из "11:00-12:00"
+    const [hourStr, minuteStr] = startTime.split(':');
+    const hour = parseInt(hourStr, 10) || 0;
+    const minute = parseInt(minuteStr, 10) || 0;
+    return moment.tz(baseDate, "Europe/Moscow")
+      .set({ hour, minute, second: 0, millisecond: 0 })
+      .format(); // Например, "2025-04-14T11:00:00+03:00"
+  };
+
   const handleBooking = async () => {
     const formattedTime = formatTimeRange(selectedSlots);
     const formattedDateForDisplay = formatDateForDisplay(selectedDate);
@@ -225,9 +231,13 @@ const HomeScreen = ({ navigation }: HomeScreenProps) => {
     const formattedName = currentUser
       ? formatUserName(currentUser.firstName, currentUser.lastName)
       : 'Дмитрий И.';
-  
-    // Проверяем доступность слотов перед бронированием
+
+    const cacheKey = `${selectedCourtId}-${formattedDateForAPI}`;
+    availabilityCacheRef.current.delete(cacheKey);
+
     const availability = await getAvailability(selectedCourtId || 3, formattedDateForAPI);
+    console.log('Availability before booking:', availability);
+
     const isSlotAvailable = selectedSlots.every((slot) => {
       const [startTime, endTime] = slot.split('-');
       const slotStartHour = parseInt(startTime.split(':')[0], 10);
@@ -242,16 +252,21 @@ const HomeScreen = ({ navigation }: HomeScreenProps) => {
         );
       });
     });
-  
+
     if (!isSlotAvailable) {
-      Alert.alert('Ошибка', 'Один или несколько выбранных слотов уже заняты. Пожалуйста, выберите другие слоты.');
-      await fetchAvailability(); // Обновляем доступность
+      Alert.alert(
+        'Ошибка',
+        'Один или несколько выбранных слотов уже заняты. Пожалуйста, выберите другие слоты.'
+      );
+      await fetchAvailability();
       return;
     }
-  
-    // Логируем selectedSlots перед отправкой
+
     console.log('Selected slots before booking:', selectedSlots);
-  
+
+    const timesISO = selectedSlots.map((slot) => slotToISO(selectedDate, slot));
+    console.log('slots in ISO:', timesISO);
+
     Alert.alert(
       'Подтверждение бронирования',
       `Вы бронируете корт "${selectedCourt}" на ${formattedDateForDisplay} с ${formattedTime}.\nКоличество слотов: ${slotsCount}\nИтоговая цена: ${totalPrice} ₽\n\nПодтвердить?`,
@@ -269,14 +284,10 @@ const HomeScreen = ({ navigation }: HomeScreenProps) => {
               price: totalPrice,
               selectedSlots,
               fromMyBookings: false,
+              timesISO,
             });
             setSelectedSlots([]);
-            // Очищаем кэш и обновляем доступность
-            setAvailabilityCache((prev) => {
-              const newCache = new Map(prev);
-              newCache.delete(`${selectedCourtId}-${formattedDateForAPI}`);
-              return newCache;
-            });
+            availabilityCacheRef.current.delete(cacheKey);
             await fetchAvailability();
           },
         },
@@ -288,7 +299,6 @@ const HomeScreen = ({ navigation }: HomeScreenProps) => {
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <Screen>
         <Header userName={currentUser ? currentUser.firstName : 'Дмитрий'} />
-
         {isLoading && !refreshing ? (
           <View style={styles.loadingContainer}>
             <Text>Загрузка...</Text>
@@ -302,7 +312,6 @@ const HomeScreen = ({ navigation }: HomeScreenProps) => {
               courtId={selectedCourtId}
               selectedCourt={selectedCourt}
             />
-
             <CourtSelector
               selectedCourt={selectedCourt}
               onCourtSelect={(court) => {
@@ -311,7 +320,6 @@ const HomeScreen = ({ navigation }: HomeScreenProps) => {
               }}
               courts={courts}
             />
-
             <ScrollView
               contentContainerStyle={{ paddingBottom: 100 }}
               showsVerticalScrollIndicator={false}
@@ -325,7 +333,6 @@ const HomeScreen = ({ navigation }: HomeScreenProps) => {
                 />
               </View>
             </ScrollView>
-
             {selectedSlots.length > 0 && (
               <BlurView intensity={70} tint="light" style={styles.bookButtonWrapper}>
                 <View style={{ width: '100%' }}>
@@ -336,7 +343,6 @@ const HomeScreen = ({ navigation }: HomeScreenProps) => {
           </>
         )}
       </Screen>
-
       <BottomNavigator activeTab="Home" />
     </KeyboardAvoidingView>
   );
