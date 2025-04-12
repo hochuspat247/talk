@@ -1,13 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Alert, KeyboardAvoidingView } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+  Alert,
+  KeyboardAvoidingView,
+} from 'react-native';
 import Input from '@components/Input';
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { StackScreenProps } from '@react-navigation/stack';
 import Screen from '@components/Screen';
 import BottomNavigator from '@components/BottomNavigator';
+import { getProfile, updateProfile } from '@api/profile';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// Определяем типы для параметров навигации
 type RootStackParamList = {
   Home: undefined;
   Bookings: { court: string; date: string; time: string; status: 'active' | 'canceled'; fromMyBookings?: boolean; selectedSlots?: string[] };
@@ -20,17 +30,43 @@ type ProfileScreenProps = StackScreenProps<RootStackParamList, 'Profile'>;
 
 const ProfileScreen: React.FC<ProfileScreenProps> = () => {
   const [profileData, setProfileData] = useState({
-    firstName: 'Иван',
-    lastName: 'Иванов',
-    birthDate: '30.07.2003',
-    phone: '+7(891)999-99-22', // Начальное значение обновлено под новую маску
-    email: 'ivdje@gmail.com',
+    firstName: '',
+    lastName: '',
+    birthDate: '',
+    phone: '',
+    email: '',
     selectedImage: null as string | null,
   });
 
-  const [tempData, setTempData] = useState({ ...profileData }); // Временные данные для редактирования
-  const [editingField, setEditingField] = useState<string | null>(null); // Поле, которое редактируется
-  const [errors, setErrors] = useState<{ [key: string]: string }>({}); // Ошибки валидации
+  const [tempData, setTempData] = useState({ ...profileData });
+  const [editingField, setEditingField] = useState<string | null>(null);
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const userId = await AsyncStorage.getItem('userId');
+        if (!userId) throw new Error('User ID not found');
+
+        const profile = await getProfile(Number(userId));
+        const mappedProfile = {
+          firstName: profile.first_name,
+          lastName: profile.last_name,
+          birthDate: profile.birth_date || '',
+          phone: profile.phone,
+          email: profile.email,
+          selectedImage: profile.photo || null,
+        };
+        setProfileData(mappedProfile);
+        setTempData(mappedProfile);
+      } catch (err) {
+        console.error('Ошибка загрузки профиля:', err);
+        Alert.alert('Ошибка', 'Не удалось загрузить профиль');
+      }
+    };
+
+    fetchProfile();
+  }, []);
 
   const pickImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -46,8 +82,9 @@ const ProfileScreen: React.FC<ProfileScreenProps> = () => {
     });
 
     if (!result.canceled) {
-      setProfileData({ ...profileData, selectedImage: result.assets[0].uri });
-      setTempData({ ...tempData, selectedImage: result.assets[0].uri });
+      const uri = result.assets[0].uri;
+      setTempData({ ...tempData, selectedImage: uri });
+      handleSave('selectedImage', uri);
     }
   };
 
@@ -60,34 +97,26 @@ const ProfileScreen: React.FC<ProfileScreenProps> = () => {
 
     switch (field) {
       case 'firstName':
-        if (!value.trim()) {
-          newErrors.firstName = 'Введите имя';
-        } else if (!/^[a-zA-Zа-яА-Я]+$/.test(value)) {
-          newErrors.firstName = 'Имя должно содержать только буквы';
-        } else {
-          delete newErrors.firstName;
-        }
-        break;
       case 'lastName':
         if (!value.trim()) {
-          newErrors.lastName = 'Введите фамилию';
+          newErrors[field] = `Введите ${field === 'firstName' ? 'имя' : 'фамилию'}`;
         } else if (!/^[a-zA-Zа-яА-Я]+$/.test(value)) {
-          newErrors.lastName = 'Фамилия должна содержать только буквы';
+          newErrors[field] = 'Только буквы';
         } else {
-          delete newErrors.lastName;
+          delete newErrors[field];
         }
         break;
       case 'birthDate':
         const [day, month, year] = value.split('.');
         if (!day || !month || !year || parseInt(day) > 31 || parseInt(month) > 12 || value.length !== 10) {
-          newErrors.birthDate = 'Неверный формат даты (ДД.ММ.ГГГГ)';
+          newErrors.birthDate = 'Неверный формат (ДД.ММ.ГГГГ)';
         } else {
           delete newErrors.birthDate;
         }
         break;
       case 'phone':
         if (!value.match(/^\+7\(\d{3}\)\d{3}-\d{2}-\d{2}$/)) {
-          newErrors.phone = 'Неверный формат телефона (+7(XXX)XXX-XX-XX)';
+          newErrors.phone = 'Неверный формат телефона';
         } else {
           delete newErrors.phone;
         }
@@ -120,34 +149,60 @@ const ProfileScreen: React.FC<ProfileScreenProps> = () => {
   };
 
   const formatPhoneNumber = (text: string) => {
-    let cleaned = text.replace(/\D/g, ''); // Удаляем все нечисловые символы
-    if (cleaned.startsWith('7')) cleaned = cleaned.substring(1); // Убираем 7 в начале
-    if (cleaned.startsWith('8')) cleaned = cleaned.substring(1); // Убираем 8 в начале
-    if (cleaned.length > 10) cleaned = cleaned.substring(0, 10); // Ограничиваем 10 цифрами
+    let cleaned = text.replace(/\D/g, '');
+    if (cleaned.startsWith('7') || cleaned.startsWith('8')) cleaned = cleaned.slice(1);
+    if (cleaned.length > 10) cleaned = cleaned.slice(0, 10);
 
     const match = cleaned.match(/^(\d{0,3})(\d{0,3})(\d{0,2})(\d{0,2})$/);
-    if (!match) {
-      setTempData({ ...tempData, phone: '+7(' });
-      validateField('phone', '+7(');
-      return '+7(';
-    }
-
     let formatted = '+7';
-    if (match[1]) formatted += '(' + match[1]; // Первые три цифры в скобках
-    if (match[1] && match[1].length === 3) formatted += ')'; // Закрываем скобку после трёх цифр
-    if (match[2]) formatted += match[2]; // Следующие три цифры без пробела
-    if (match[3]) formatted += '-' + match[3]; // Две цифры после дефиса
-    if (match[4]) formatted += '-' + match[4]; // Последние две цифры после дефиса
-
+    if (match) {
+      if (match[1]) formatted += '(' + match[1];
+      if (match[1] && match[1].length === 3) formatted += ')';
+      if (match[2]) formatted += match[2];
+      if (match[3]) formatted += '-' + match[3];
+      if (match[4]) formatted += '-' + match[4];
+    }
     setTempData({ ...tempData, phone: formatted });
     validateField('phone', formatted);
     return formatted;
   };
 
-  const handleSave = (field: string) => {
-    if (validateField(field, tempData[field])) {
-      setProfileData({ ...tempData });
-      setEditingField(null);
+  const handleSave = async (field: string, directValue?: string) => {
+    const value = directValue ?? tempData[field];
+    if (validateField(field, value)) {
+      try {
+        const userId = await AsyncStorage.getItem('userId');
+        if (!userId) throw new Error('User ID not found');
+
+        const apiFieldMap: Record<string, string> = {
+          firstName: 'first_name',
+          lastName: 'last_name',
+          birthDate: 'birth_date',
+          phone: 'phone',
+          email: 'email',
+          selectedImage: 'photo',
+        };
+
+        const payload: any = { [apiFieldMap[field]]: value };
+
+        const updated = await updateProfile(Number(userId), payload);
+
+        const updatedMapped = {
+          firstName: updated.first_name,
+          lastName: updated.last_name,
+          birthDate: updated.birth_date || '',
+          phone: updated.phone,
+          email: updated.email,
+          selectedImage: updated.photo || null,
+        };
+
+        setProfileData(updatedMapped);
+        setTempData(updatedMapped);
+        setEditingField(null);
+      } catch (err) {
+        console.error('Ошибка сохранения:', err);
+        Alert.alert('Ошибка', 'Не удалось сохранить изменения');
+      }
     }
   };
 
@@ -164,101 +219,46 @@ const ProfileScreen: React.FC<ProfileScreenProps> = () => {
 
   return (
     <KeyboardAvoidingView style={{ flex: 1 }}>
-      <Screen noPaddingTop={true}>
+      <Screen noPaddingTop>
         <ScrollView contentContainerStyle={styles.container}>
           <View style={styles.contentContainer}>
             <TouchableOpacity onPress={pickImage} style={styles.iconContainer}>
               {profileData.selectedImage ? (
                 <Image source={{ uri: profileData.selectedImage }} style={styles.selectedImage} />
               ) : (
-                <Image
-                  source={require('../../../../assets/images/default-avatar.png')}
-                  style={styles.selectedImage}
-                />
+                <Image source={require('../../../../assets/images/default-avatar.png')} style={styles.selectedImage} />
               )}
               <View style={styles.editIcon}>
                 <Ionicons name="pencil" size={20} color="#000" />
               </View>
             </TouchableOpacity>
 
-            <Text style={styles.label}>ИМЯ</Text>
-            <TouchableOpacity onPress={() => handleFieldPress('firstName')}>
-              <Input
-                value={tempData.firstName}
-                onChangeText={(text) => handleChangeText('firstName', text)}
-                placeholder="Имя"
-                editable={editingField === 'firstName'}
-                isWhiteBackground={true}
-                isEditing={editingField === 'firstName'}
-                onSave={() => handleSave('firstName')}
-                hasError={!!errors.firstName}
-                errorText={errors.firstName}
-              />
-            </TouchableOpacity>
-
-            <Text style={styles.label}>ФАМИЛИЯ</Text>
-            <TouchableOpacity onPress={() => handleFieldPress('lastName')}>
-              <Input
-                value={tempData.lastName}
-                onChangeText={(text) => handleChangeText('lastName', text)}
-                placeholder="Фамилия"
-                editable={editingField === 'lastName'}
-                isWhiteBackground={true}
-                isEditing={editingField === 'lastName'}
-                onSave={() => handleSave('lastName')}
-                hasError={!!errors.lastName}
-                errorText={errors.lastName}
-              />
-            </TouchableOpacity>
-
-            <Text style={styles.label}>ДАТА РОЖДЕНИЯ</Text>
-            <TouchableOpacity onPress={() => handleFieldPress('birthDate')}>
-              <Input
-                value={tempData.birthDate}
-                onChangeText={(text) => handleChangeText('birthDate', text)}
-                placeholder="ДД.ММ.ГГГГ"
-                keyboardType="numeric"
-                editable={editingField === 'birthDate'}
-                isWhiteBackground={true}
-                isEditing={editingField === 'birthDate'}
-                onSave={() => handleSave('birthDate')}
-                hasError={!!errors.birthDate}
-                errorText={errors.birthDate}
-              />
-            </TouchableOpacity>
-
-            <Text style={styles.label}>НОМЕР ТЕЛЕФОНА</Text>
-            <TouchableOpacity onPress={() => handleFieldPress('phone')}>
-              <Input
-                value={tempData.phone}
-                onChangeText={(text) => handleChangeText('phone', text)}
-                placeholder="+7(XXX)XXX-XX-XX"
-                keyboardType="phone-pad"
-                maxLength={13} // Устанавливаем длину для маски +7(XXX)XXX-XX-XX
-                editable={editingField === 'phone'}
-                isWhiteBackground={true}
-                isEditing={editingField === 'phone'}
-                onSave={() => handleSave('phone')}
-                hasError={!!errors.phone}
-                errorText={errors.phone}
-              />
-            </TouchableOpacity>
-
-            <Text style={styles.label}>ПОЧТА</Text>
-            <TouchableOpacity onPress={() => handleFieldPress('email')}>
-              <Input
-                value={tempData.email}
-                onChangeText={(text) => handleChangeText('email', text)}
-                placeholder="Email"
-                keyboardType="email-address"
-                editable={editingField === 'email'}
-                isWhiteBackground={true}
-                isEditing={editingField === 'email'}
-                onSave={() => handleSave('email')}
-                hasError={!!errors.email}
-                errorText={errors.email}
-              />
-            </TouchableOpacity>
+            {[
+              { label: 'ИМЯ', field: 'firstName', placeholder: 'Имя' },
+              { label: 'ФАМИЛИЯ', field: 'lastName', placeholder: 'Фамилия' },
+              { label: 'ДАТА РОЖДЕНИЯ', field: 'birthDate', placeholder: 'ДД.ММ.ГГГГ', keyboardType: 'numeric' },
+              { label: 'НОМЕР ТЕЛЕФОНА', field: 'phone', placeholder: '+7(XXX)XXX-XX-XX', keyboardType: 'phone-pad', maxLength: 16 },
+              { label: 'ПОЧТА', field: 'email', placeholder: 'Email', keyboardType: 'email-address' },
+            ].map(({ label, field, placeholder, keyboardType, maxLength }) => (
+              <React.Fragment key={field}>
+                <Text style={styles.label}>{label}</Text>
+                <TouchableOpacity onPress={() => handleFieldPress(field)}>
+                  <Input
+                    value={tempData[field]}
+                    onChangeText={(text) => handleChangeText(field, text)}
+                    placeholder={placeholder}
+                    keyboardType={keyboardType}
+                    maxLength={maxLength}
+                    editable={editingField === field}
+                    isWhiteBackground
+                    isEditing={editingField === field}
+                    onSave={() => handleSave(field)}
+                    hasError={!!errors[field]}
+                    errorText={errors[field]}
+                  />
+                </TouchableOpacity>
+              </React.Fragment>
+            ))}
           </View>
         </ScrollView>
       </Screen>
@@ -268,12 +268,8 @@ const ProfileScreen: React.FC<ProfileScreenProps> = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
-  },
-  contentContainer: {
-    paddingVertical: 30,
-  },
+  container: { flexGrow: 1 },
+  contentContainer: { paddingVertical: 30 },
   iconContainer: {
     position: 'relative',
     marginBottom: 20,
@@ -303,7 +299,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     marginBottom: 5,
     marginTop: 10,
-    marginLeft: 20, // Учитываем отступы от краев
+    marginLeft: 20,
   },
 });
 

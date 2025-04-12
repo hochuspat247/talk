@@ -1,16 +1,37 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, KeyboardAvoidingView, } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  RefreshControl,
+} from 'react-native';
 import BookingCard from '@components/BookingCard';
 import Screen from '@components/Screen';
 import { StackScreenProps } from '@react-navigation/stack';
-import { useBookings } from '../../../context/BookingContext';
 import BottomNavigator from '@components/BottomNavigator';
+import { getMyBookings } from '@api/bookings';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Booking } from '@api/types';
 
-// Определяем типы для параметров навигации
 type RootStackParamList = {
   Home: undefined;
-  Bookings: { court: string; date: string; time: string; status: 'active' | 'canceled'; fromMyBookings?: boolean; selectedSlots?: string[] };
-  BookingSuccess: { court: string; date: string; selectedSlots: string[]; status: 'success' | 'error' };
+  Bookings: {
+    court: string;
+    date: string;
+    time: string;
+    status: 'active' | 'canceled';
+    fromMyBookings?: boolean;
+    selectedSlots?: string[];
+  };
+  BookingSuccess: {
+    court: string;
+    date: string;
+    selectedSlots: string[];
+    status: 'success' | 'error';
+  };
   MyBookings: undefined;
   Profile: undefined;
 };
@@ -18,43 +39,81 @@ type RootStackParamList = {
 type MyBookingsScreenProps = StackScreenProps<RootStackParamList, 'MyBookings'>;
 
 const MyBookingsScreen: React.FC<MyBookingsScreenProps> = ({ navigation }) => {
-  const { bookings } = useBookings();
+  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
 
-  const handleCardPress = (booking: { court: string; date: string; time: string; status: 'active' | 'canceled' }) => {
+  const fetchBookings = async () => {
+    try {
+      setLoading(true);
+      const userId = await AsyncStorage.getItem('userId');
+      if (!userId) throw new Error('User ID not found');
+
+      const data = await getMyBookings(Number(userId));
+
+      // Преобразуем данные для карточек
+      const transformed = data.map((b) => {
+        const start = new Date(b.start_time);
+        const end = new Date(b.end_time);
+        return {
+          ...b,
+          date: start.toISOString().slice(0, 10), // YYYY-MM-DD
+          time: `${start.toTimeString().slice(0, 5)}-${end.toTimeString().slice(0, 5)}`, // HH:MM-HH:MM
+          court: `Корт #${b.court_id}`, // Пример, если нет поля court.name
+        };
+      });
+
+      setBookings(transformed);
+    } catch (err) {
+      console.error('Ошибка загрузки бронирований:', err);
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchBookings();
+  }, []);
+
+  const handleCardPress = (booking: Booking) => {
     navigation.navigate('Bookings', {
-      court: booking.court,
-      date: booking.date,
-      time: booking.time,
+      court: booking.court ?? '',
+      date: booking.date ?? '',
+      time: booking.time ?? '',
       status: booking.status,
-      fromMyBookings: true, // Указываем, что переход выполнен с MyBookingsScreen
+      fromMyBookings: true,
     });
   };
 
   return (
-    <KeyboardAvoidingView
-    style={{ flex: 1 }}
->
-    <Screen noPaddingTop={true}>
-      <View style={styles.container}>
-        <ScrollView contentContainerStyle={styles.scrollContent}>
-          {bookings.length > 0 ? (
-            bookings.map((booking, index) => (
-              <TouchableOpacity key={index} onPress={() => handleCardPress(booking)}>
-                <BookingCard
-                  court={booking.court}
-                  date={booking.date}
-                  time={booking.time}
-                  status={booking.status}
-                />
-              </TouchableOpacity>
-            ))
-          ) : (
-            <Text style={styles.noBookingsText}>Нет бронирований для отображения</Text>
-          )}
-        </ScrollView>
-      </View>
-    </Screen>
-    <BottomNavigator activeTab="MyBookings" />
+    <KeyboardAvoidingView style={{ flex: 1 }}>
+      <Screen noPaddingTop={true}>
+        <View style={styles.container}>
+          <ScrollView
+            contentContainerStyle={styles.scrollContent}
+            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={fetchBookings} />}
+          >
+            {loading ? (
+              <Text style={styles.noBookingsText}>Загрузка...</Text>
+            ) : bookings.length > 0 ? (
+              bookings.map((booking, index) => (
+                <TouchableOpacity key={index} onPress={() => handleCardPress(booking)}>
+                  <BookingCard
+                    court={booking.court ?? ''}
+                    date={booking.date ?? ''}
+                    time={booking.time ?? ''}
+                    status={booking.status}
+                  />
+                </TouchableOpacity>
+              ))
+            ) : (
+              <Text style={styles.noBookingsText}>Нет бронирований для отображения</Text>
+            )}
+          </ScrollView>
+        </View>
+      </Screen>
+      <BottomNavigator activeTab="MyBookings" />
     </KeyboardAvoidingView>
   );
 };
@@ -62,10 +121,10 @@ const MyBookingsScreen: React.FC<MyBookingsScreenProps> = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop:30
+    marginTop: 30,
   },
   scrollContent: {
-    paddingBottom: 20, // Отступ снизу
+    paddingBottom: 20,
   },
   noBookingsText: {
     fontSize: 16,

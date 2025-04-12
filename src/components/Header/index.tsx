@@ -6,15 +6,24 @@ import { getProfile } from '@api/profile';
 import { User } from '@api/types';
 
 interface HeaderProps {
-  userName?: string; // Имя пользователя (опционально, если не подгрузится с бэкенда)
-  avatarUri?: string; // URL аватара (опционально)
+  userName?: string;
+  avatarUri?: string;
 }
 
 const Header: React.FC<HeaderProps> = ({ userName: defaultUserName, avatarUri: defaultAvatarUri }) => {
   const [userName, setUserName] = useState<string>(defaultUserName || 'Гость');
   const [avatarUri, setAvatarUri] = useState<string | undefined>(defaultAvatarUri);
+  const [greeting, setGreeting] = useState<string>('Доброе утро');
 
-  // Загружаем данные пользователя с бэкенда
+  // Генерация приветствия в зависимости от времени
+  const generateGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour >= 5 && hour < 12) return 'Доброе утро';
+    if (hour >= 12 && hour < 17) return 'Доброго дня';
+    if (hour >= 17 && hour < 23) return 'Добрый вечер';
+    return 'Доброй ночи';
+  };
+
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
@@ -34,17 +43,18 @@ const Header: React.FC<HeaderProps> = ({ userName: defaultUserName, avatarUri: d
       }
     };
 
+    setGreeting(generateGreeting());
     fetchUserProfile();
   }, [defaultUserName, defaultAvatarUri]);
 
   return (
     <View style={styles.container}>
       <View style={styles.textContainer}>
-        <Text style={styles.title}>Доброе утро, {userName}!</Text>
+        <Text style={styles.title}>{greeting}, {userName}!</Text>
         <Text style={styles.subtitle}>Готовы к игре? 🎾</Text>
       </View>
       <Image
-        source={avatarUri ? { uri: avatarUri } : require('../../../assets/images/default-avatar.png')} // Заглушка для аватара
+        source={avatarUri ? { uri: avatarUri } : require('../../../assets/images/default-avatar.png')}
         style={styles.avatar}
       />
     </View>

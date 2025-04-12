@@ -30,20 +30,14 @@ const TimePicker: React.FC<TimePickerProps> = ({ onSelectionChange, bookedSlots 
       const currentMinute = now.getMinutes();
 
       const slots: TimeSlot[] = [];
-      for (let hour = 8; hour < 24; hour++) {
+
+      for (let hour = 8; hour < 23; hour++) {
         const start = `${String(hour).padStart(2, '0')}:00`;
         const end = `${String(hour + 1).padStart(2, '0')}:00`;
         const isPast = isToday && hour < currentHour;
 
-        const bookedSlot = bookedSlots.find((bs) => {
-          const bsStart = bs.start.padStart(5, '0');
-          const bsEnd = bs.end.padStart(5, '0');
-          return bsStart === start && bsEnd === end;
-        });
-
-        const isBooked = isPast || (bookedSlot ? bookedSlot.isBooked || bookedSlot.is_booked : false);
-
-        console.log(`Слот ${start}-${end}: isPast=${isPast}, bookedSlot=${JSON.stringify(bookedSlot)}, isBooked=${isBooked}`);
+        const bookedSlot = bookedSlots.find((bs) => bs.start === start && bs.end === end);
+        const isBooked = isPast || (bookedSlot?.isBooked || bookedSlot?.is_booked);
 
         slots.push({
           start,
@@ -56,22 +50,20 @@ const TimePicker: React.FC<TimePickerProps> = ({ onSelectionChange, bookedSlots 
       setTimeSlots(slots);
 
       const updatedSelectedSlots = selectedSlots.filter((slot) => {
-        const [start] = slot.split('-');
+        const [start, end] = slot.split('-');
         const hour = parseInt(start.split(':')[0]);
-        const bookedSlot = bookedSlots.find((bs) => `${bs.start}-${bs.end}` === slot);
-        const isStillAvailable = (!isToday || hour >= currentHour) && (!bookedSlot || !bookedSlot.isBooked && !bookedSlot.is_booked);
-        return isStillAvailable;
+        const bookedSlot = bookedSlots.find((bs) => bs.start === start && bs.end === end);
+        return (!isToday || hour >= currentHour) && (!bookedSlot || !bookedSlot.isBooked && !bookedSlot.is_booked);
       });
 
       if (JSON.stringify(updatedSelectedSlots) !== JSON.stringify(selectedSlots)) {
         setSelectedSlots(updatedSelectedSlots);
-        if (onSelectionChange) onSelectionChange(updatedSelectedSlots);
+        onSelectionChange?.(updatedSelectedSlots);
       }
     };
 
     updateSlots();
     const timer = setInterval(updateSlots, 60000);
-
     return () => clearInterval(timer);
   }, [bookedSlots, isToday, selectedSlots, onSelectionChange]);
 
@@ -91,21 +83,18 @@ const TimePicker: React.FC<TimePickerProps> = ({ onSelectionChange, bookedSlots 
       const totalSlotHeight = slotHeight + timeTextHeight;
       const startHour = 8;
 
-      let position: number;
-      if (currentHour < startHour) {
-        position = 0;
-      } else if (currentHour >= 24) {
-        position = (24 - startHour) * totalSlotHeight;
-      } else {
-        position = ((currentHour - startHour) + currentMinute / 60) * totalSlotHeight;
-      }
+      const position =
+        currentHour < startHour
+          ? 0
+          : currentHour >= 24
+          ? (24 - startHour) * totalSlotHeight
+          : ((currentHour - startHour) + currentMinute / 60) * totalSlotHeight;
 
       setCurrentTimePosition(position);
     };
 
     updatePosition();
     const timer = setInterval(updatePosition, 60000);
-
     return () => clearInterval(timer);
   }, [isToday]);
 
@@ -118,7 +107,7 @@ const TimePicker: React.FC<TimePickerProps> = ({ onSelectionChange, bookedSlots 
       : [...selectedSlots, slotKey];
 
     setSelectedSlots(updatedSlots);
-    if (onSelectionChange) onSelectionChange(updatedSlots);
+    onSelectionChange?.(updatedSlots);
   };
 
   return (
@@ -153,7 +142,7 @@ const TimePicker: React.FC<TimePickerProps> = ({ onSelectionChange, bookedSlots 
               </React.Fragment>
             );
           })}
-          <Text style={styles.timeText}>24:00</Text>
+          <Text style={styles.timeText}>23:00</Text>
 
           {isToday && (
             <View style={[styles.currentTimeLine, { top: currentTimePosition }]}>
