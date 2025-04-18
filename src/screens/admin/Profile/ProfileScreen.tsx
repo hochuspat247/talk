@@ -1,14 +1,31 @@
-import React from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, KeyboardAvoidingView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  KeyboardAvoidingView,
+  Alert,
+} from 'react-native';
 import { StackScreenProps } from '@react-navigation/stack';
 import { Ionicons } from '@expo/vector-icons';
 import Screen from '@components/Screen';
 import BottomNavigator from '@components/BottomNavigator';
+import { getProfile } from '@api/profile';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Определяем типы для параметров навигации
 type RootStackParamList = {
   Home: undefined;
-  Bookings: { court: string; date: string; time: string; status: 'active' | 'canceled'; fromMyBookings?: boolean; selectedSlots?: string[] };
+  Bookings: {
+    court: string;
+    date: string;
+    time: string;
+    status: 'active' | 'canceled';
+    fromMyBookings?: boolean;
+    selectedSlots?: string[];
+  };
   BookingSuccess: { court: string; date: string; selectedSlots: string[]; status: 'success' | 'error' };
   MyBookings: undefined;
   Profile: undefined;
@@ -20,13 +37,37 @@ type RootStackParamList = {
 type ProfileOptionsScreenProps = StackScreenProps<RootStackParamList, 'ProfileOptions'>;
 
 const ProfileOptionsScreen: React.FC<ProfileOptionsScreenProps> = ({ navigation }) => {
-  const user = {
-    name: 'Иванов Иван',
-  };
+  // Состояние для данных профиля
+  const [profile, setProfile] = useState({
+    name: '',
+    photo: null as string | null,
+  });
+
+  // Загрузка данных профиля при монтировании
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const userId = await AsyncStorage.getItem('userId');
+        if (!userId) throw new Error('User ID not found');
+
+        const profileData = await getProfile(Number(userId));
+        const fullName = `${profileData.first_name || ''} ${profileData.last_name || ''}`.trim();
+        setProfile({
+          name: fullName || 'Администратор',
+          photo: profileData.photo || null,
+        });
+      } catch (err) {
+        console.error('Ошибка загрузки профиля:', err);
+        Alert.alert('Ошибка', 'Не удалось загрузить данные профиля');
+      }
+    };
+
+    fetchProfile();
+  }, []);
 
   const handleMyDataPress = () => {
     console.log('Переход на экран "Мои данные"');
-    navigation.navigate('ProfileOptions');
+    navigation.navigate('Profile'); // Предполагается, что это экран редактирования профиля
   };
 
   const handleAddFriendPress = () => {
@@ -38,14 +79,16 @@ const ProfileOptionsScreen: React.FC<ProfileOptionsScreenProps> = ({ navigation 
     <KeyboardAvoidingView style={{ flex: 1 }}>
       <Screen noPaddingTop={true}>
         <View style={styles.container}>
-
-
           <View style={styles.profileContainer}>
-            <Image
-              source={require('../../../../assets/images/default-avatar.png')}
-              style={styles.profilePhoto}
-            />
-            <Text style={styles.profileName}>{user.name}</Text>
+            {profile.photo ? (
+              <Image source={{ uri: profile.photo }} style={styles.profilePhoto} />
+            ) : (
+              <Image
+                source={require('../../../../assets/images/default-avatar.png')}
+                style={styles.profilePhoto}
+              />
+            )}
+            <Text style={styles.profileName}>{profile.name || 'Администратор'}</Text>
           </View>
 
           <TouchableOpacity style={styles.option} onPress={handleMyDataPress}>
@@ -68,7 +111,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-
   profileContainer: {
     alignItems: 'center',
     marginVertical: 30,

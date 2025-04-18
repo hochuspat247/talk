@@ -1,35 +1,112 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, ScrollView } from 'react-native';
 import BookingCard from '@components/BookingCard';
 import Button from '@components/Button';
 import Screen from '@components/Screen';
 import { BlurView } from 'expo-blur';
 import { StackScreenProps } from '@react-navigation/stack';
+import { getBooking, Booking } from '@api/bookings';
+import { getProfile } from '@api/profile';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import moment from 'moment-timezone';
 
-// Определяем типы для параметров навигации
+// Устанавливаем таймзону
+moment.tz.setDefault('Europe/Moscow');
+
 type RootStackParamList = {
   Home: undefined;
-  Bookings: { court: string; date: string; name: string; time: string; price: string; selectedSlots: string[] };
-  BookingSuccess: { court: string; date: string; selectedSlots: string[]; status: 'success' | 'error' };
+  Bookings: {
+    court: string;
+    court_id: number;
+    date: string;
+    name?: string;
+    time: string;
+    price?: string | number;
+    status?: 'active' | 'canceled';
+    fromMyBookings?: boolean;
+    selectedSlots?: string[];
+    bookingId?: number;
+    user_id?: number;
+  };
+  BookingSuccess: {
+    court: string;
+    court_id: number;
+    date: string;
+    selectedSlots: string[];
+    status: 'success' | 'error';
+    bookingIds: number[];
+    user_name?: string; // Сделали опциональным
+  };
+  MyBookings: { filters?: FilterData };
+  FilterScreen: { filters?: FilterData };
   Profile: undefined;
+  SelectUser: { court: string; court_id: number; date: string; time: string; price: string; selectedSlots: string[] };
+  ProfileOptions: undefined;
+  Register: undefined;
+  AccountCreated: undefined;
+};
+
+type FilterData = {
+  dateFrom?: string;
+  dateTo?: string;
+  court: string;
+  userIds: number[];
 };
 
 type BookingSuccessScreenProps = StackScreenProps<RootStackParamList, 'BookingSuccess'>;
 
 const BookingSuccessScreen: React.FC<BookingSuccessScreenProps> = ({ navigation, route }) => {
-  const { court, date, selectedSlots, status } = route.params || {
+  const { court, court_id, date, selectedSlots, status, bookingIds, user_name } = route.params || {
     court: 'Корт №3',
-    date: '20.01.2025',
+    court_id: 3,
+    date: moment().format('DD.MM.YYYY'),
     selectedSlots: [],
     status: 'success',
+    bookingIds: [],
+    user_name: undefined,
   };
+  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
 
-  // Заглушки для name и isAdmin
-  const userName = 'Иван Г.'; // Заглушка для имени покупателя
-  const isAdmin = true; // Заглушка для флага администратора
+  // Загрузка данных о бронированиях и роли админа
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        // Проверка роли админа
+        const userId = await AsyncStorage.getItem('userId');
+        if (userId) {
+          const user = await getProfile(Number(userId));
+          setIsAdmin(user.role === 'admin');
+        }
+
+        // Загрузка бронирований
+        if (bookingIds.length > 0) {
+          const bookingPromises = bookingIds.map((id) => getBooking(id));
+          const bookingData = await Promise.all(bookingPromises);
+          console.log('Загружены бронирования:', bookingData);
+          setBookings(bookingData);
+        }
+      } catch (error: any) {
+        console.error('Ошибка при загрузке данных:', error);
+        Alert.alert('Ошибка', error.message || 'Не удалось загрузить данные бронирований');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [bookingIds]);
 
   const handleGoHome = () => {
     navigation.navigate('Home');
+  };
+
+  // Функция для безопасной фильтрации имени
+  const getSafeUserName = (bookingUserName?: string, fallbackUserName?: string) => {
+    const name = bookingUserName || fallbackUserName || 'Неизвестный';
+    return name.replace(/[^a-zA-ZА-Яа-я\s.]/g, '');
   };
 
   return (
@@ -49,16 +126,30 @@ const BookingSuccessScreen: React.FC<BookingSuccessScreenProps> = ({ navigation,
               {status === 'success' ? 'Забронировано' : 'Ошибка бронирования'}
             </Text>
           </View>
-          {selectedSlots.length > 0 ? (
+          {loading ? (
+            <Text style={styles.noBookingsText}>Загрузка...</Text>
+          ) : bookings.length > 0 ? (
+            bookings.map((booking, index) => (
+              <BookingCard
+                key={index}
+                court={booking.court || court}
+                date={moment(booking.start_time).format('DD.MM.YYYY')}
+                time={`${moment(booking.start_time).format('HH:mm')}-${moment(booking.end_time).format('HH:mm')}`}
+                status={booking.status}
+                userName={getSafeUserName(booking.user_name, user_name)}
+                isAdmin={isAdmin}
+              />
+            ))
+          ) : selectedSlots.length > 0 ? (
             selectedSlots.map((slot, index) => (
               <BookingCard
                 key={index}
                 court={court}
-                date={date}
+                date={moment(date, ['YYYY-MM-DD', 'DD.MM.YYYY']).format('DD.MM.YYYY')}
                 time={slot}
                 status={status === 'success' ? 'active' : 'canceled'}
-                userName={userName} // Передаем заглушку для имени
-                isAdmin={isAdmin} // Передаем заглушку для флага администратора
+                userName={getSafeUserName(undefined, user_name)}
+                isAdmin={isAdmin}
               />
             ))
           ) : (

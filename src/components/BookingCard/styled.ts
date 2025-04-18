@@ -44,7 +44,7 @@ export const styles = StyleSheet.create({
     opacity: 0.7,
   },
   courtValue: {
-    fontSize: 25,
+    fontSize: 20,
     color: '#000',
   },
   buyerLabel: {
@@ -53,7 +53,7 @@ export const styles = StyleSheet.create({
     opacity: 0.7, // Такая же прозрачность
   },
   buyerName: {
-    fontSize: 25, // Такой же размер, как у courtValue
+    fontSize: 20, // Такой же размер, как у courtValue
     color: '#000',
   },
   racketsIcon: {

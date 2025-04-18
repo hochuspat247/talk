@@ -38,7 +38,7 @@ const BottomNavigator: React.FC<BottomNavigatorProps> = ({ activeTab }) => {
           size={24}
           color={activeTab === 'MyBookings' ? '#007AFF' : '#000'}
         />
-        <Text style={[styles.tabText, activeTab === 'MyBookings' && styles.activeTabText]}>Мои брони</Text>
+        <Text style={[styles.tabText, activeTab === 'MyBookings' && styles.activeTabText]}>Бронирования</Text>
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.tab} onPress={() => handleTabPress('Profile')}>

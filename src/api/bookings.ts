@@ -61,13 +61,41 @@ export const getAvailability = async (courtId: number, date: string): Promise<Bo
     return response.data;
   };
   
-  
-
-export const filterBookings = async (dateFrom: string, dateTo: string, court?: string, userIds?: number[]): Promise<Booking[]> => {
-  try {
-    const response = await client.get('/api/bookings/filter', { params: { date_from: dateFrom, date_to: dateTo, court, user_ids: userIds } });
-    return response.data;
-  } catch (error: any) {
-    throw error.response?.data || { status: 'error', message: 'Failed to filter bookings', code: 500 };
+  interface FilterParams {
+    date_from?: string;
+    date_to?: string;
+    court?: string;
+    user_ids?: number[];
   }
-};
+  
+  export const filterBookings = async (params: FilterParams): Promise<Booking[]> => {
+    try {
+      const response = await client.get('/api/bookings/filter', {
+        params: {
+          date_from: params.date_from || undefined,
+          date_to: params.date_to || undefined,
+          court: params.court || undefined,
+          user_ids: params.user_ids && Array.isArray(params.user_ids) && params.user_ids.length > 0 ? params.user_ids : undefined,
+        },
+        paramsSerializer: (params) => {
+          // Сериализация параметров для корректной отправки user_ids
+          const searchParams = new URLSearchParams();
+          for (const key in params) {
+            if (Array.isArray(params[key])) {
+              params[key].forEach((value: any) => {
+                searchParams.append(`${key}`, value.toString());
+              });
+            } else if (params[key] !== undefined) {
+              searchParams.append(key, params[key].toString());
+            }
+          }
+          return searchParams.toString();
+        },
+      });
+      console.log('Response from filterBookings:', response.data);
+      return response.data;
+    } catch (error: any) {
+      console.error('Ошибка при фильтрации бронирований:', error);
+      throw error.response?.data || { status: 'error', message: 'Failed to filter bookings', code: 500 };
+    }
+  };

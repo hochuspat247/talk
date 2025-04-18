@@ -1,12 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Alert, KeyboardAvoidingView } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+  Alert,
+  KeyboardAvoidingView,
+} from 'react-native';
 import Input from '@components/Input';
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { StackScreenProps } from '@react-navigation/stack';
 import Screen from '@components/Screen';
+import { getProfile, updateProfile } from '@api/profile';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// Определяем типы для параметров навигации
+// Типы для навигации
 type RootStackParamList = {
   Home: undefined;
   Bookings: { court: string; date: string; time: string; status: 'active' | 'canceled'; fromMyBookings?: boolean; selectedSlots?: string[] };
@@ -19,18 +30,46 @@ type ProfileScreenProps = StackScreenProps<RootStackParamList, 'Profile'>;
 
 const ProfileScreen: React.FC<ProfileScreenProps> = () => {
   const [profileData, setProfileData] = useState({
-    firstName: 'Иван',
-    lastName: 'Иванов',
-    birthDate: '30.07.2003',
-    phone: '+7(891)999-99-22', // Начальное значение обновлено под новую маску
-    email: 'ivdje@gmail.com',
+    firstName: '',
+    lastName: '',
+    birthDate: '',
+    phone: '',
+    email: '',
     selectedImage: null as string | null,
   });
 
-  const [tempData, setTempData] = useState({ ...profileData }); // Временные данные для редактирования
-  const [editingField, setEditingField] = useState<string | null>(null); // Поле, которое редактируется
-  const [errors, setErrors] = useState<{ [key: string]: string }>({}); // Ошибки валидации
+  const [tempData, setTempData] = useState({ ...profileData });
+  const [editingField, setEditingField] = useState<string | null>(null);
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
+  // Загрузка профиля при монтировании компонента
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const userId = await AsyncStorage.getItem('userId');
+        if (!userId) throw new Error('User ID not found');
+
+        const profile = await getProfile(Number(userId));
+        const mappedProfile = {
+          firstName: profile.first_name || '',
+          lastName: profile.last_name || '',
+          birthDate: profile.birth_date || '',
+          phone: profile.phone || '',
+          email: profile.email || '',
+          selectedImage: profile.photo || null,
+        };
+        setProfileData(mappedProfile);
+        setTempData(mappedProfile);
+      } catch (err) {
+        console.error('Ошибка загрузки профиля:', err);
+        Alert.alert('Ошибка', 'Не удалось загрузить профиль');
+      }
+    };
+
+    fetchProfile();
+  }, []);
+
+  // Выбор изображения
   const pickImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
@@ -45,15 +84,18 @@ const ProfileScreen: React.FC<ProfileScreenProps> = () => {
     });
 
     if (!result.canceled) {
-      setProfileData({ ...profileData, selectedImage: result.assets[0].uri });
-      setTempData({ ...tempData, selectedImage: result.assets[0].uri });
+      const uri = result.assets[0].uri;
+      setTempData({ ...tempData, selectedImage: uri });
+      handleSave('selectedImage', uri);
     }
   };
 
+  // Обработка нажатия на поле
   const handleFieldPress = (field: string) => {
     setEditingField(field);
   };
 
+  // Валидация полей
   const validateField = (field: string, value: string) => {
     const newErrors: { [key: string]: string } = { ...errors };
 
@@ -104,6 +146,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+  // Форматирование даты рождения
   const formatBirthDate = (text: string) => {
     let cleaned = text.replace(/[^0-9]/g, '');
     if (cleaned.length > 8) cleaned = cleaned.slice(0, 8);
@@ -118,38 +161,66 @@ const ProfileScreen: React.FC<ProfileScreenProps> = () => {
     return formatted;
   };
 
+  // Форматирование номера телефона
   const formatPhoneNumber = (text: string) => {
-    let cleaned = text.replace(/\D/g, ''); // Удаляем все нечисловые символы
-    if (cleaned.startsWith('7')) cleaned = cleaned.substring(1); // Убираем 7 в начале
-    if (cleaned.startsWith('8')) cleaned = cleaned.substring(1); // Убираем 8 в начале
-    if (cleaned.length > 10) cleaned = cleaned.substring(0, 10); // Ограничиваем 10 цифрами
+    let cleaned = text.replace(/\D/g, '');
+    if (cleaned.startsWith('7') || cleaned.startsWith('8')) cleaned = cleaned.slice(1);
+    if (cleaned.length > 10) cleaned = cleaned.slice(0, 10);
 
     const match = cleaned.match(/^(\d{0,3})(\d{0,3})(\d{0,2})(\d{0,2})$/);
-    if (!match) {
-      setTempData({ ...tempData, phone: '+7(' });
-      validateField('phone', '+7(');
-      return '+7(';
-    }
-
     let formatted = '+7';
-    if (match[1]) formatted += '(' + match[1]; // Первые три цифры в скобках
-    if (match[1] && match[1].length === 3) formatted += ')'; // Закрываем скобку после трёх цифр
-    if (match[2]) formatted += match[2]; // Следующие три цифры без пробела
-    if (match[3]) formatted += '-' + match[3]; // Две цифры после дефиса
-    if (match[4]) formatted += '-' + match[4]; // Последние две цифры после дефиса
-
+    if (match) {
+      if (match[1]) formatted += '(' + match[1];
+      if (match[1] && match[1].length === 3) formatted += ')';
+      if (match[2]) formatted += match[2];
+      if (match[3]) formatted += '-' + match[3];
+      if (match[4]) formatted += '-' + match[4];
+    }
     setTempData({ ...tempData, phone: formatted });
     validateField('phone', formatted);
     return formatted;
   };
 
-  const handleSave = (field: string) => {
-    if (validateField(field, tempData[field])) {
-      setProfileData({ ...tempData });
+  // Сохранение изменений
+  const handleSave = async (field: string, directValue?: string) => {
+    const value = directValue ?? tempData[field];
+    if (field !== 'selectedImage' && !validateField(field, value)) return;
+
+    try {
+      const userId = await AsyncStorage.getItem('userId');
+      if (!userId) throw new Error('User ID not found');
+
+      const apiFieldMap: Record<string, string> = {
+        firstName: 'first_name',
+        lastName: 'last_name',
+        birthDate: 'birth_date',
+        phone: 'phone',
+        email: 'email',
+        selectedImage: 'photo',
+      };
+
+      const payload: any = { [apiFieldMap[field]]: value };
+      const updated = await updateProfile(Number(userId), payload);
+
+      const updatedMapped = {
+        firstName: updated.first_name || '',
+        lastName: updated.last_name || '',
+        birthDate: updated.birth_date || '',
+        phone: updated.phone || '',
+        email: updated.email || '',
+        selectedImage: updated.photo || null,
+      };
+
+      setProfileData(updatedMapped);
+      setTempData(updatedMapped);
       setEditingField(null);
+    } catch (err) {
+      console.error('Ошибка сохранения:', err);
+      Alert.alert('Ошибка', 'Не удалось сохранить изменения');
     }
   };
 
+  // Обработка изменения текста
   const handleChangeText = (field: string, text: string) => {
     if (field === 'birthDate') {
       formatBirthDate(text);
@@ -233,7 +304,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = () => {
                 onChangeText={(text) => handleChangeText('phone', text)}
                 placeholder="+7(XXX)XXX-XX-XX"
                 keyboardType="phone-pad"
-                maxLength={13} // Устанавливаем длину для маски +7(XXX)XXX-XX-XX
+                maxLength={16}
                 editable={editingField === 'phone'}
                 isWhiteBackground={true}
                 isEditing={editingField === 'phone'}
@@ -301,7 +372,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     marginBottom: 5,
     marginTop: 10,
-    marginLeft: 20, // Учитываем отступы от краев
+    marginLeft: 20,
   },
 });
 

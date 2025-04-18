@@ -5,7 +5,7 @@ import ProfileScreen from '@screens/admin/Profile/ProfileScreen';
 import BookingSuccessScreen from '@screens/admin/BookingSuccess/BookingSuccessScreen';
 import MyBookingsScreen from '@screens/admin/MyBookings/MyBookingsScreen';
 import SelectUserScreen from '@screens/admin/SelectUser/SelectUserScreen';
-import FilterScreen from '@screens/admin/Filter/FilterScreen'; // Добавляем новый экран
+import FilterScreen from '@screens/admin/Filter/FilterScreen';
 import ProfileOptionsScreen from '@screens/admin/ProfileOptions/ProfileOptionsScreen';
 import RegisterScreen from '@screens/auth/Register/RegisterScreen';
 import AccountCreatedScreen from '@screens/admin/AccountCreated/AccountCreatedScreen';
@@ -46,19 +46,15 @@ export const AdminNavigator: React.FC<AdminNavigatorProps> = ({ onLogout }) => {
       <Stack.Screen
         name="MyBookings"
         component={MyBookingsScreen}
-        options={({ navigation }) => ({
+        options={({ navigation, route }) => ({
           headerTitle: 'Бронирования',
           headerRight: () => (
             <TouchableOpacity
               style={{ marginRight: 15 }}
-              onPress={() =>
-                navigation.navigate('FilterScreen', {
-                  onApplyFilters: (filters) => {
-                    // Здесь можно обработать применённые фильтры
-                    console.log('Применённые фильтры:', filters);
-                  },
-                })
-              }
+              onPress={() => {
+                const filters = (route.params as { filters?: FilterData })?.filters;
+                navigation.navigate('FilterScreen', { filters });
+              }}
             >
               <Ionicons name="funnel-outline" size={24} color="#000" />
             </TouchableOpacity>
@@ -82,17 +78,17 @@ export const AdminNavigator: React.FC<AdminNavigatorProps> = ({ onLogout }) => {
           ),
         }}
       />
-            <Stack.Screen
+      <Stack.Screen
         name="ProfileOptions"
         component={ProfileOptionsScreen}
         options={{ headerTitle: 'Профиль' }}
       />
-          <Stack.Screen
+      <Stack.Screen
         name="Register"
         component={RegisterScreen}
         options={{ headerShown: false }}
       />
-            <Stack.Screen
+      <Stack.Screen
         name="AccountCreated"
         component={AccountCreatedScreen}
         options={{ headerShown: false }}
