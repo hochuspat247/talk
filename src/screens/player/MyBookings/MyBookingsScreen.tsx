@@ -59,7 +59,7 @@ const MyBookingsScreen: React.FC<MyBookingsScreenProps> = ({ navigation }) => {
           ...b,
           date: start.toISOString().slice(0, 10), // YYYY-MM-DD
           time: `${start.toTimeString().slice(0, 5)}-${end.toTimeString().slice(0, 5)}`, // HH:MM-HH:MM
-          court: `Корт #${b.court_id}`, // Пример, если нет поля court.name
+          court: `Корт №${b.court_id}`, // Пример, если нет поля court.name
         };
       });
 

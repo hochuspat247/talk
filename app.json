@@ -22,7 +22,11 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.tennisproject.app",
-      "versionCode": 1
+      "versionCode": 1,
+      "permissions": ["INTERNET"],
+      "config": {
+        "usesCleartextTraffic": true
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"

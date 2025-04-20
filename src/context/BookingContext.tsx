@@ -1,7 +1,10 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { createBooking, getMyBookings, deleteBooking } from '@api/bookings'; // Импортируем функции API
-import moment from 'moment'; // Импортируем moment для работы с датами
+import { createBooking, getMyBookings, deleteBooking } from '@api/bookings';
+import moment from 'moment-timezone';
+
+// Устанавливаем таймзону
+moment.tz.setDefault('Europe/Moscow');
 
 // Интерфейс для объекта бронирования
 interface Booking {
@@ -12,6 +15,8 @@ interface Booking {
   time: string; // Время в формате HH:MM-HH:MM
   status: 'active' | 'canceled'; // Статус бронирования
   price: number; // Цена (число)
+  start_time?: string; // Добавляем для отправки на бэкенд
+  end_time?: string; // Добавляем для отправки на бэкенд
 }
 
 // Интерфейс для контекста бронирований
@@ -69,21 +74,32 @@ export const BookingProvider: React.FC<{ children: ReactNode }> = ({ children })
         throw new Error(`Неверный формат времени: ${booking.time}. Ожидается HH:MM-HH:MM`);
       }
 
-      // Создаем объекты даты и времени в формате UTC
-      const startDateTime = moment.utc(`${booking.date} ${startTime}`, 'YYYY-MM-DD HH:mm');
-      const endDateTime = moment.utc(`${booking.date} ${endTime}`, 'YYYY-MM-DD HH:mm');
+      // Создаем объекты даты и времени в формате Europe/Moscow
+      const startDateTime = moment(`${booking.date} ${startTime}`, 'YYYY-MM-DD HH:mm').tz('Europe/Moscow');
+      const endDateTime = moment(`${booking.date} ${endTime}`, 'YYYY-MM-DD HH:mm').tz('Europe/Moscow');
 
       // Проверяем валидность дат
       if (!startDateTime.isValid() || !endDateTime.isValid()) {
         throw new Error(`Неверная дата/время: ${booking.date} ${booking.time}`);
       }
 
-      // Проверяем, что время окончания позже времени начала
+      // Проверка, что время в будущем
+      const now = moment().tz('Europe/Moscow');
+      if (startDateTime.isSameOrBefore(now)) {
+        throw new Error('Время бронирования должно быть в будущем');
+      }
+
+      // Проверка, что endTime позже startTime
       if (endDateTime.isSameOrBefore(startDateTime)) {
         throw new Error('Время окончания должно быть позже времени начала');
       }
 
-      // Проверяем, что цена - это положительное число
+      // Проверка, что startTime и endTime в одном дне
+      if (startDateTime.date() !== endDateTime.date()) {
+        throw new Error('Бронирование не может пересекать полночь. Начало и конец должны быть в одном дне');
+      }
+
+      // Проверяем цену
       const price = Number(booking.price);
       if (isNaN(price) || price <= 0) {
         throw new Error(`Неверная цена: ${booking.price}. Должна быть положительным числом`);
@@ -92,18 +108,18 @@ export const BookingProvider: React.FC<{ children: ReactNode }> = ({ children })
       // Формируем данные для отправки на сервер
       const bookingData = {
         court_id: booking.court_id,
-        start_time: startDateTime.toISOString(), // Преобразуем в ISO формат (например, "2025-04-11T20:00:00.000Z")
-        end_time: endDateTime.toISOString(),
+        start_time: startDateTime.format('YYYY-MM-DD HH:mm:ss'), // Формат без tzinfo
+        end_time: endDateTime.format('YYYY-MM-DD HH:mm:ss'), // Формат без tzinfo
         price: price,
       };
 
-      console.log('Данные бронирования:', bookingData); // Логируем данные перед отправкой
+      console.log('Данные бронирования:', bookingData);
 
       // Отправляем запрос на создание бронирования
       const newBooking = await createBooking(bookingData);
       const updatedBookings = [...bookings, { ...newBooking, court: booking.court, date: booking.date, time: booking.time }];
-      setBookings(updatedBookings); // Обновляем состояние
-      await AsyncStorage.setItem('bookings', JSON.stringify(updatedBookings)); // Сохраняем в локальное хранилище
+      setBookings(updatedBookings);
+      await AsyncStorage.setItem('bookings', JSON.stringify(updatedBookings));
     } catch (error: any) {
       console.error('Не удалось создать бронирование:', error.message || error);
       throw error;
@@ -132,18 +148,29 @@ export const BookingProvider: React.FC<{ children: ReactNode }> = ({ children })
           throw new Error(`Неверный формат времени: ${booking.time}. Ожидается HH:MM-HH:MM`);
         }
 
-        // Создаем объекты даты и времени
-        const startDateTime = moment.utc(`${booking.date} ${startTime}`, 'YYYY-MM-DD HH:mm');
-        const endDateTime = moment.utc(`${booking.date} ${endTime}`, 'YYYY-MM-DD HH:mm');
+        // Создаем объекты даты и времени в формате Europe/Moscow
+        const startDateTime = moment(`${booking.date} ${startTime}`, 'YYYY-MM-DD HH:mm').tz('Europe/Moscow');
+        const endDateTime = moment(`${booking.date} ${endTime}`, 'YYYY-MM-DD HH:mm').tz('Europe/Moscow');
 
         // Проверяем валидность дат
         if (!startDateTime.isValid() || !endDateTime.isValid()) {
           throw new Error(`Неверная дата/время: ${booking.date} ${booking.time}`);
         }
 
-        // Проверяем, что время окончания позже времени начала
+        // Проверка, что время в будущем
+        const now = moment().tz('Europe/Moscow');
+        if (startDateTime.isSameOrBefore(now)) {
+          throw new Error('Время бронирования должно быть в будущем');
+        }
+
+        // Проверка, что endTime позже startTime
         if (endDateTime.isSameOrBefore(startDateTime)) {
           throw new Error('Время окончания должно быть позже времени начала');
+        }
+
+        // Проверка, что startTime и endTime в одном дне
+        if (startDateTime.date() !== endDateTime.date()) {
+          throw new Error('Бронирование не может пересекать полночь. Начало и конец должны быть в одном дне');
         }
 
         // Проверяем цену
@@ -155,8 +182,8 @@ export const BookingProvider: React.FC<{ children: ReactNode }> = ({ children })
         // Формируем данные для отправки
         const bookingData = {
           court_id: booking.court_id,
-          start_time: startDateTime.toISOString(),
-          end_time: endDateTime.toISOString(),
+          start_time: startDateTime.format('YYYY-MM-DD HH:mm:ss'), // Формат без tzinfo
+          end_time: endDateTime.format('YYYY-MM-DD HH:mm:ss'), // Формат без tzinfo
           price: price,
         };
 
@@ -204,3 +231,5 @@ export const useBookings = () => {
   if (!context) throw new Error('useBookings должен использоваться внутри BookingProvider');
   return context;
 };
+
+export default BookingProvider;
