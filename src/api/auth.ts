@@ -1,153 +1,166 @@
+// src/api/auth.ts
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import client from './client';
+import * as SecureStore from 'expo-secure-store';
+import client from './axiosInstance';
 import { Token, User, UserCreate, ApiError } from './types';
 
 export const login = async (phone: string): Promise<{ status: string; message: string; user_id: number }> => {
-  console.log('Attempting to login with phone:', phone);
   try {
     const response = await client.post('/api/auth/login', {}, { params: { phone } });
-    console.log('Login successful:', response.data);
     return response.data;
   } catch (error: any) {
-    console.error('Login error details:', {
-      message: error.message,
-      response: error.response?.data,
-      status: error.response?.status,
-      config: error.config,
-    });
     throw error.response?.data || { status: 'error', message: 'Failed to login', code: 500 };
   }
 };
 
 export const register = async (user: UserCreate): Promise<User> => {
-  console.log('Attempting to register user:', user);
   try {
     const response = await client.post('/api/auth/register', user);
-    console.log('Register successful:', response.data);
     return response.data;
   } catch (error: any) {
-    console.error('Register error details:', {
-      message: error.message,
-      response: error.response?.data,
-      status: error.response?.status,
-      config: error.config,
-    });
     throw error.response?.data || { status: 'error', message: 'Failed to register', code: 500 };
   }
 };
 
 export const verify = async (phone: string, code: string): Promise<Token> => {
-  console.log('Attempting to verify with phone:', phone, 'and code:', code);
   try {
     const response = await client.post('/api/auth/verify', {}, { params: { phone, code } });
-    console.log('Verify successful:', response.data);
-
+    console.log('Verify response:', JSON.stringify(response.data, null, 2));
     try {
-      // Сохраняем access_token
-      if (response.data.access_token) {
-        await AsyncStorage.setItem('token', response.data.access_token);
-        console.log('Token saved to AsyncStorage:', response.data.access_token);
-      } else {
-        console.warn('Access token not found in verify response');
-      }
+      await AsyncStorage.setItem('token', response.data.access_token);
+      await AsyncStorage.setItem('refreshToken', response.data.refresh_token);
+      await AsyncStorage.setItem('userId', response.data.user_id.toString());
+      await AsyncStorage.setItem('role', response.data.role);
+      const expirationTime = Date.now() + response.data.expires_in * 1000;
+      await AsyncStorage.setItem('tokenExpiration', expirationTime.toString());
 
-      // Сохраняем refresh_token, если он есть
-      if (response.data.refresh_token) {
-        await AsyncStorage.setItem('refreshToken', response.data.refresh_token);
-        console.log('Refresh token saved to AsyncStorage:', response.data.refresh_token);
-      } else {
-        console.warn('Refresh token not found in verify response');
-      }
+      // Сохраняем в SecureStore для персистентного хранения
+      await SecureStore.setItemAsync('refreshToken', response.data.refresh_token);
+      await SecureStore.setItemAsync('userId', response.data.user_id.toString());
+      await SecureStore.setItemAsync('phone', phone);
 
-      // Сохраняем userId
-      if (response.data.user_id) {
-        await AsyncStorage.setItem('userId', response.data.user_id.toString());
-        console.log('User ID saved to AsyncStorage:', response.data.user_id);
-      } else {
-        console.warn('User ID not found in verify response');
-      }
-
-      // Сохраняем role, если есть
-      if (response.data.role) {
-        await AsyncStorage.setItem('role', response.data.role);
-        console.log('Role saved to AsyncStorage:', response.data.role);
-      }
+      console.log('AsyncStorage after verify:', await AsyncStorage.multiGet(['token', 'refreshToken', 'tokenExpiration', 'userId', 'role']));
+      console.log('SecureStore after verify:', {
+        refreshToken: await SecureStore.getItemAsync('refreshToken'),
+        userId: await SecureStore.getItemAsync('userId'),
+        phone: await SecureStore.getItemAsync('phone'),
+      });
     } catch (storageError) {
-      console.error('Error saving to AsyncStorage:', storageError);
+      console.error('Error saving to AsyncStorage/SecureStore:', storageError);
       throw new Error('Failed to save authentication data');
     }
-
     return response.data;
   } catch (error: any) {
-    console.error('Verify error details:', {
-      message: error.message,
-      response: error.response?.data,
-      status: error.response?.status,
-      config: error.config,
-    });
+    console.error('Verify error:', error.response?.data || error.message);
     throw error.response?.data || { status: 'error', message: 'Failed to verify', code: 500 };
   }
 };
 
-export const refreshToken = async (): Promise<{ access_token: string }> => {
-  console.log('Attempting to refresh token');
+export const refreshToken = async (): Promise<{ access_token: string; expires_in: number; refresh_token?: string }> => {
   try {
-    const refreshToken = await AsyncStorage.getItem('refreshToken');
-    if (!refreshToken) {
-      throw new Error('Рефреш-токен не найден');
+    let refreshTokenStored = await SecureStore.getItemAsync('refreshToken');
+    if (!refreshTokenStored) {
+      refreshTokenStored = await AsyncStorage.getItem('refreshToken');
+    }
+    console.log('Attempting to refresh token with refreshToken:', refreshTokenStored);
+
+    if (!refreshTokenStored) {
+      throw new Error('No refresh token found');
     }
 
-    const response = await client.post('/api/auth/refresh', { refresh_token: refreshToken });
-    console.log('Refresh token successful:', response.data);
+    // Отправляем refresh_token как query-параметр
+    const response = await client.post('/api/auth/refresh', {}, {
+      params: {
+        refresh_token: refreshTokenStored,
+      },
+    });
+    console.log('Refresh token response:', response.data);
 
     await AsyncStorage.setItem('token', response.data.access_token);
-    console.log('New access token saved to AsyncStorage:', response.data.access_token);
+    const expiresIn = response.data.expires_in || 3600;
+    const expirationTime = Date.now() + expiresIn * 1000;
+    await AsyncStorage.setItem('tokenExpiration', expirationTime.toString());
+
+    // Если сервер вернул новый refresh_token, сохраняем его
+    if (response.data.refresh_token) {
+      await SecureStore.setItemAsync('refreshToken', response.data.refresh_token);
+      await AsyncStorage.setItem('refreshToken', response.data.refresh_token);
+      console.log('New refresh token saved:', response.data.refresh_token);
+    }
+
+    console.log('AsyncStorage after refresh:', await AsyncStorage.multiGet(['token', 'tokenExpiration']));
+    console.log('SecureStore after refresh:', {
+      refreshToken: await SecureStore.getItemAsync('refreshToken'),
+    });
 
     return response.data;
   } catch (error: any) {
-    console.error('Refresh token error details:', {
-      message: error.message,
-      response: error.response?.data,
-      status: error.response?.status,
-      config: error.config,
-    });
+    console.error('Refresh token error:', error.response?.data || error.message);
     throw error.response?.data || { status: 'error', message: 'Failed to refresh token', code: 401 };
   }
 };
 
 export const resendCode = async (phone: string): Promise<{ status: string; message: string }> => {
-  console.log('Attempting to resend code for phone:', phone);
   try {
     const response = await client.post('/api/auth/resend-code', {}, { params: { phone } });
-    console.log('Resend code successful:', response.data);
     return response.data;
   } catch (error: any) {
-    console.error('Resend code error details:', {
-      message: error.message,
-      response: error.response?.data,
-      status: error.response?.status,
-      config: error.config,
-    });
     throw error.response?.data || { status: 'error', message: 'Failed to resend code', code: 500 };
   }
 };
 
 export const logout = async (): Promise<{ status: string; message: string }> => {
-  console.log('Attempting to logout');
   try {
-    await AsyncStorage.removeItem('token');
-    await AsyncStorage.removeItem('refreshToken');
-    await AsyncStorage.removeItem('userId');
-    await AsyncStorage.removeItem('role');
-    console.log('AsyncStorage cleared');
+    // Очищаем только AsyncStorage, SecureStore сохраняется
+    await AsyncStorage.clear();
+    console.log('AsyncStorage after logout:', await AsyncStorage.multiGet(['token', 'refreshToken', 'tokenExpiration', 'userId', 'role']));
+    console.log('SecureStore after logout:', {
+      refreshToken: await SecureStore.getItemAsync('refreshToken'),
+      userId: await SecureStore.getItemAsync('userId'),
+      phone: await SecureStore.getItemAsync('phone'),
+    });
     return { status: 'success', message: 'Logged out' };
   } catch (error: any) {
-    console.error('Logout error details:', {
-      message: error.message,
-      response: error.response?.data,
-      status: error.response?.status,
-      config: error.config,
-    });
     throw error.response?.data || { status: 'error', message: 'Failed to logout', code: 500 };
+  }
+};
+
+export const initializeAuth = async (): Promise<string | null> => {
+  try {
+    const keys = await AsyncStorage.multiGet(['token', 'refreshToken', 'tokenExpiration', 'userId', 'role']);
+    console.log('initializeAuth - AsyncStorage keys:', keys);
+    const [token, refreshTokenStored, tokenExpiration, userId, role] = keys.map(([_, value]) => value);
+
+    // Проверяем SecureStore для персистентных данных
+    const secureRefreshToken = await SecureStore.getItemAsync('refreshToken');
+    const secureUserId = await SecureStore.getItemAsync('userId');
+    console.log('initializeAuth - SecureStore keys:', { refreshToken: secureRefreshToken, userId: secureUserId });
+
+    if (secureRefreshToken && secureUserId) {
+      if (!token || !tokenExpiration || parseInt(tokenExpiration) <= Date.now() - 5 * 60 * 1000) {
+        console.log('Token missing or expired, refreshing...');
+        const refreshedData = await refreshToken();
+        await AsyncStorage.setItem('userId', secureUserId);
+        await AsyncStorage.setItem('role', role || 'user');
+        return refreshedData.access_token;
+      } else {
+        console.log('Token is still valid');
+        return token;
+      }
+    } else {
+      console.log('Missing refreshToken or userId in SecureStore');
+      // Проверяем phone для автоматического входа
+      const phone = await SecureStore.getItemAsync('phone');
+      if (phone) {
+        console.log('Found phone in SecureStore, attempting auto-login:', phone);
+        const loginResponse = await login(phone);
+        // Здесь можно перенаправить на экран ввода кода, но для initializeAuth просто возвращаем null
+        return null;
+      }
+      return null;
+    }
+  } catch (error) {
+    console.error('Error initializing auth:', error);
+    return null;
   }
 };

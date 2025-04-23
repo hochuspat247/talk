@@ -67,7 +67,7 @@ const ProfileOptionsScreen: React.FC<ProfileOptionsScreenProps> = ({ navigation 
 
   const handleMyDataPress = () => {
     console.log('Переход на экран "Мои данные"');
-    navigation.navigate('Profile'); // Предполагается, что это экран редактирования профиля
+    navigation.navigate('ProfileOptions'); // Предполагается, что это экран редактирования профиля
   };
 
   const handleAddFriendPress = () => {

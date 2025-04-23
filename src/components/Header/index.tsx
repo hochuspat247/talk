@@ -24,27 +24,48 @@ const Header: React.FC<HeaderProps> = ({ userName: defaultUserName, avatarUri: d
     return 'Доброй ночи';
   };
 
-  useEffect(() => {
-    const fetchUserProfile = async () => {
-      try {
-        const userId = await AsyncStorage.getItem('userId');
-        if (userId) {
-          const user: User = await getProfile(parseInt(userId));
-          setUserName(user.first_name);
-          setAvatarUri(user.photo || undefined);
-        } else {
-          throw new Error('User ID not found in AsyncStorage');
-        }
-      } catch (error: any) {
-        console.error('Error fetching user profile in Header:', error);
-        Alert.alert('Ошибка', 'Не удалось загрузить данные пользователя');
-        setUserName(defaultUserName || 'Гость');
-        setAvatarUri(defaultAvatarUri);
+  // Функция загрузки профиля пользователя
+  const fetchUserProfile = async () => {
+    try {
+      const userId = await AsyncStorage.getItem('userId');
+      console.log('Retrieved userId from AsyncStorage:', userId);
+      if (userId) {
+        const user: User = await getProfile(parseInt(userId));
+        console.log('User profile fetched:', {
+          first_name: user.first_name,
+          photo: user.photo,
+        });
+        setUserName(user.first_name || defaultUserName || 'Гость');
+        setAvatarUri(user.photo || defaultAvatarUri);
+      } else {
+        throw new Error('User ID not found in AsyncStorage');
       }
-    };
+    } catch (error: any) {
+      console.error('Error fetching user profile in Header:', error);
+      // Не показываем Alert при периодическом обновлении, чтобы не беспокоить пользователя
+      setUserName(defaultUserName || 'Гость');
+      setAvatarUri(defaultAvatarUri);
+    }
+  };
 
+  useEffect(() => {
+    // Устанавливаем приветствие
     setGreeting(generateGreeting());
+
+    // Начальная загрузка профиля
     fetchUserProfile();
+
+    // Периодическое обновление профиля каждые 30 секунд
+    const intervalId = setInterval(() => {
+      console.log('Periodically refreshing user profile...');
+      fetchUserProfile();
+    }, 30000); // 30 секунд
+
+    // Очистка интервала при размонтировании
+    return () => {
+      console.log('Clearing profile refresh interval');
+      clearInterval(intervalId);
+    };
   }, [defaultUserName, defaultAvatarUri]);
 
   return (

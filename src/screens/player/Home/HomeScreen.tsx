@@ -49,7 +49,6 @@ const HomeScreen = ({ navigation }: HomeScreenProps) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [currentUser, setCurrentUser] = useState<{ firstName: string; lastName: string } | null>(null);
-  // Храним кэш доступности через useRef, чтобы обновления не инициировали лишние рендеры
   const availabilityCacheRef = useRef<Map<string, BookingAvailability[]>>(new Map());
 
   useEffect(() => {
@@ -61,17 +60,15 @@ const HomeScreen = ({ navigation }: HomeScreenProps) => {
           const user: User = await getProfile(parseInt(userId));
           setCurrentUser({ firstName: user.first_name, lastName: user.last_name });
         } else {
-          throw new Error('User ID not found in AsyncStorage');
+          throw new Error('User ID not found');
         }
-      } catch (error: any) {
-        console.error('Ошибка при загрузке профиля пользователя:', error);
+      } catch (error) {
         Alert.alert('Ошибка', 'Не удалось загрузить данные пользователя');
         setCurrentUser({ firstName: 'Дмитрий', lastName: 'Иванов' });
       } finally {
         setIsLoading(false);
       }
     };
-
     fetchUserProfile();
   }, []);
 
@@ -93,18 +90,14 @@ const HomeScreen = ({ navigation }: HomeScreenProps) => {
           setSelectedCourt(defaultCourt);
           if (typeof defaultCourtId === 'number') {
             setSelectedCourtId(defaultCourtId);
-          } else {
-            console.warn('❗ defaultCourtId не определен для:', defaultCourt);
           }
         }
-      } catch (error: any) {
-        console.error('Ошибка при загрузке кортов:', error);
+      } catch (error) {
         Alert.alert('Ошибка', 'Не удалось загрузить список кортов');
       } finally {
         setIsLoading(false);
       }
     };
-
     fetchCourts();
   }, []);
 
@@ -115,15 +108,9 @@ const HomeScreen = ({ navigation }: HomeScreenProps) => {
     return `${year}-${month}-${day}`;
   };
 
-  // Debounce увеличен до 2000 мс
   const fetchAvailability = useCallback(
     debounce(async (forceRefresh: boolean = false) => {
-      if (typeof selectedCourtId !== 'number') {
-        console.warn('⛔️ selectedCourtId не является числом:', selectedCourtId);
-        return;
-      }
-      if (!selectedDate || isNaN(new Date(selectedDate).getTime())) {
-        console.warn('⛔️ selectedDate некорректна:', selectedDate);
+      if (typeof selectedCourtId !== 'number' || !selectedDate || isNaN(new Date(selectedDate).getTime())) {
         return;
       }
 
@@ -136,12 +123,11 @@ const HomeScreen = ({ navigation }: HomeScreenProps) => {
       }
 
       try {
-        console.log('📤 Вызов getAvailability:', { courtId: selectedCourtId, date: formattedDate });
         const availability = await getAvailability(selectedCourtId, formattedDate);
         setBookedSlots(availability);
         availabilityCacheRef.current.set(cacheKey, availability);
       } catch (error) {
-        console.error('❌ Ошибка fetchAvailability:', error);
+        // Логирование только критических ошибок
       }
     }, 2000),
     [selectedCourtId, selectedDate]
@@ -155,15 +141,12 @@ const HomeScreen = ({ navigation }: HomeScreenProps) => {
     }
   }, [selectedCourtId, selectedDate, fetchAvailability]);
 
-  // Интервал автообновления увеличен до 120 секунд (2 минуты)
   useEffect(() => {
     const interval = setInterval(() => {
       if (selectedCourtId !== null) {
-        console.log('Автообновление данных доступности...');
         fetchAvailability(true);
       }
     }, 120 * 1000);
-
     return () => clearInterval(interval);
   }, [selectedCourtId, fetchAvailability]);
 
@@ -171,8 +154,7 @@ const HomeScreen = ({ navigation }: HomeScreenProps) => {
     setRefreshing(true);
     try {
       await fetchAvailability(true);
-    } catch (error: any) {
-      console.error('Ошибка при обновлении доступности:', error);
+    } catch (error) {
       Alert.alert('Ошибка', 'Не удалось обновить данные');
     } finally {
       setRefreshing(false);
@@ -195,11 +177,7 @@ const HomeScreen = ({ navigation }: HomeScreenProps) => {
 
   const formatTimeRange = (slots: string[]): string => {
     if (!slots || slots.length === 0) return '';
-    const sortedSlots = [...slots].sort((a, b) => {
-      const startA = a.split('-')[0];
-      const startB = b.split('-')[0];
-      return startA.localeCompare(startB);
-    });
+    const sortedSlots = [...slots].sort((a, b) => a.split('-')[0].localeCompare(b.split('-')[0]));
     const firstTime = sortedSlots[0].split('-')[0];
     const lastTime = sortedSlots[sortedSlots.length - 1].split('-')[1];
     return `${firstTime}-${lastTime}`;
@@ -212,15 +190,14 @@ const HomeScreen = ({ navigation }: HomeScreenProps) => {
     return { totalPrice, slotsCount };
   };
 
-  // Обновлённая функция slotToISO с использованием moment-timezone и явно установленной таймзоны "Europe/Moscow"
   const slotToISO = (baseDate: Date, slot: string): string => {
-    const [startTime] = slot.split('-'); // Например, "11:00" из "11:00-12:00"
+    const [startTime] = slot.split('-');
     const [hourStr, minuteStr] = startTime.split(':');
     const hour = parseInt(hourStr, 10) || 0;
     const minute = parseInt(minuteStr, 10) || 0;
     return moment.tz(baseDate, "Europe/Moscow")
       .set({ hour, minute, second: 0, millisecond: 0 })
-      .format(); // Например, "2025-04-14T11:00:00+03:00"
+      .format();
   };
 
   const handleBooking = async () => {
@@ -236,7 +213,6 @@ const HomeScreen = ({ navigation }: HomeScreenProps) => {
     availabilityCacheRef.current.delete(cacheKey);
 
     const availability = await getAvailability(selectedCourtId || 3, formattedDateForAPI);
-    console.log('Availability before booking:', availability);
 
     const isSlotAvailable = selectedSlots.every((slot) => {
       const [startTime, endTime] = slot.split('-');
@@ -262,10 +238,7 @@ const HomeScreen = ({ navigation }: HomeScreenProps) => {
       return;
     }
 
-    console.log('Selected slots before booking:', selectedSlots);
-
     const timesISO = selectedSlots.map((slot) => slotToISO(selectedDate, slot));
-    console.log('slots in ISO:', timesISO);
 
     Alert.alert(
       'Подтверждение бронирования',
