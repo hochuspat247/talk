@@ -3,7 +3,7 @@ import { View, Text, TextInput, ScrollView, TouchableOpacity, KeyboardAvoidingVi
 import { StackScreenProps } from '@react-navigation/stack';
 import { Ionicons } from '@expo/vector-icons';
 import ContactCard from '@components/ContactCard';
-import Button from '@components/Button';
+import Button from '@components/UI/Button';
 import { Calendar } from 'react-native-calendars';
 import { BlurView } from 'expo-blur';
 import Screen from '@components/Screen';

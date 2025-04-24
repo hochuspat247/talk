@@ -1,6 +1,6 @@
 // src/components/index.tsx
 export { default as Input } from './Input';
-export { default as Button } from './Button';
+export { default as Button } from './UI/Button';
 export { default as Screen } from './Screen';
 export { default as BottomNavigator } from './BottomNavigator';
 export { default as Header } from './Header';

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, ScrollView, TouchableOpacity, KeyboardAvoidingView, Platform, Alert } from 'react-native';
 import { StackScreenProps } from '@react-navigation/stack';
 import ContactCard from '@components/ContactCard';
-import Button from '@components/Button';
+import Button from '@components/UI/Button';
 import { Ionicons } from '@expo/vector-icons';
 import { StyleSheet } from 'react-native';
 import { getAllUsers } from '@api/users';

@@ -3,7 +3,7 @@ import { Text, ImageBackground, View, ScrollView, KeyboardAvoidingView, Platform
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import Input from '@components/Input';
-import Button from '@components/Button';
+import Button from '@components/UI/Button';
 import * as ImagePicker from 'expo-image-picker';
 import { RegisterFormData, FormErrors } from './types';
 import { styles } from './styled';

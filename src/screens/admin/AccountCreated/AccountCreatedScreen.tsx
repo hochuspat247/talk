@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
 import { StackScreenProps } from '@react-navigation/stack';
-import Button from '@components/Button';
+import Button from '@components/UI/Button';
 import Screen from '@components/Screen';
 
 // Определяем типы для параметров навигации

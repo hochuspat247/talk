@@ -4,7 +4,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '@navigation/AuthNavigator';
 import Input from '@components/Input';
-import Button from '@components/Button';
+import Button from '@components/UI/Button';
 import { verify, resendCode } from '@api/auth';
 import { styles } from './styled';
 import AsyncStorage from '@react-native-async-storage/async-storage';

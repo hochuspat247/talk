@@ -6,7 +6,7 @@ import TimePicker from '@components/TimePicker';
 import CourtSelector from '@components/CourtSelector';
 import Screen from '@components/Screen';
 import BottomNavigator from '@components/BottomNavigator';
-import Button from '@components/Button';
+import Button from '@components/UI/Button';
 import { styles } from './styled';
 import { BlurView } from 'expo-blur';
 import { StackScreenProps } from '@react-navigation/stack';

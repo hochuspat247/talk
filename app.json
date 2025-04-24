@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "tennis-project",
-    "slug": "tennis-project",
+    "name": "tallk",
+    "slug": "tallk",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -21,7 +21,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.tennisproject.app",
+      "package": "com.tallk.app",
       "versionCode": 1,
       "permissions": ["INTERNET"],
       "config": {
@@ -35,9 +35,7 @@
       "expo-secure-store"
     ],
     "extra": {
-      "eas": {
-        "projectId": "d7ca7974-ee01-42c4-a86e-5b65a4728cce"
-      }
+      "eas": {}
     }
   }
 }

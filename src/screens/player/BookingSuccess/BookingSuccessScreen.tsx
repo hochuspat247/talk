@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, ScrollView } from 'react-native';
 import BookingCard from '@components/BookingCard';
-import Button from '@components/Button';
+import Button from '@components/UI/Button';
 import Screen from '@components/Screen';
 import { BlurView } from 'expo-blur';
 import { StackScreenProps } from '@react-navigation/stack';

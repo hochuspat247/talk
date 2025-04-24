@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Alert } from 'react-native';
 import BookingConfirmation from '@components/BookingConfirmation';
-import Button from '@components/Button';
+import Button from '@components/UI/Button';
 import Screen from '@components/Screen';
 import { StackScreenProps } from '@react-navigation/stack';
 import * as Print from 'expo-print';
