@@ -1,139 +1,48 @@
-import React, { useEffect } from 'react';
-import { View, Text, ImageBackground, StyleSheet } from 'react-native';
-import Button from '@components/UI/Button';
+// screens/WelcomeScreen.tsx
+import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+import WavesBackground from '@components/UI/WaveBackground';
+import ToggleSwitch from '@components/UI/ToggleSwitch';
+import TransparentContainer from '@components/UI/TransparentContainer';
 
-const WelcomeScreen = ({ navigation }: { navigation: any }) => {
-  useEffect(() => {
-    console.log('[WelcomeScreen] Mounted');
-  }, []);
+const WelcomeScreen = () => {
+  const handleToggleChange = (value: 'master' | 'client') => {
+    console.log(`Selected role: ${value}`);
+  };
 
   return (
-    <ImageBackground
-      source={require('../../assets/images/welcome-bg.png')}
-      style={styles.background}
-      resizeMode="cover"
-    >
-      <View style={styles.container}>
-        <Text style={styles.title}>Добро пожаловать на платформу!</Text>
+    <View style={styles.container}>
+      {/* Волны как фон */}
+      {/* Можно использовать colorScheme="alternate" для новых цветов */}
+       <WavesBackground  /> 
 
-        <View style={styles.buttons}>
-          {/* Черная кнопка */}
-          <Button
-            title="Продолжить как Мастер"
-            onPress={() => navigation.navigate('Master')}
-            variant="primary"
-          />
-<Button
-  title="Продолжить"
-  onPress={() => {}}
-  variant="with-icon-right"
-  showIcon
-  iconName="arrow-forward"
-  block // 👈 всё, она станет неактивной и с нужными цветами
-/>
-          {/* Черная со стрелкой */}
-          <Button
-            title="Продолжить как Мастер"
-            onPress={() => navigation.navigate('Master')}
-            variant="secondary"
-            showIcon
-            iconName="arrow-forward"
-          />
-
-          {/* Белая кнопка */}
-          <Button
-            title="Сменить аккаунт"
-            onPress={() => navigation.navigate('AccountSwitch')}
-            variant="text"
-            showIcon
-            iconName="refresh"
-          />
-
-          {/* Светло-синяя */}
-          <Button
-            title="Да, все верно"
-            onPress={() => navigation.navigate('Confirm')}
-            variant="accent"
-            showIcon
-            iconName="checkmark"
-          />
-
-          {/* Маленькая розовая иконка */}
-          <Button
-            title=""
-            onPress={() => navigation.navigate('AddItem')}
-            variant="icon"
-            showIcon
-            iconName="add"
-          />
-
-          {/* Полноширинная розовая иконка */}
-          <Button
-  title=""
-  onPress={() => navigation.navigate('AddItem')}
-  variant="icon"
-  showIcon
-  iconName="add"
-/>
-
-<View style={styles.iconButtons}>
-  <Button
-    title=""
-    onPress={() => navigation.navigate('AddItem')}
-    variant="icon"
-    showIcon
-    iconName="add"
-    size="small"
-  />
-  <Button
-    title=""
-    onPress={() => navigation.navigate('EditItem')}
-    variant="icon"
-    showIcon
-    iconName="pencil"
-    size="small"
-  />
-  <Button
-    title=""
-    onPress={() => navigation.navigate('Settings')}
-    variant="icon"
-    showIcon
-    iconName="settings"
-    size="small"
-  />
-</View>
-        </View>
-      </View>
-    </ImageBackground>
+      {/* Контент по центру */}
+ 
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  background: { flex: 1 },
   container: {
     flex: 1,
-    paddingTop: 53,
-    paddingBottom: 53,
-    paddingHorizontal: 22,
+    backgroundColor: '#FFFFFF',
+    position: 'relative',
+  },
+  content: {
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    zIndex: 10, // поверх волн
   },
-  buttons: {
-    gap: 10,
-    width: '100%',
-    alignItems: 'center',
-  },
-  iconButtons: {
-    flexDirection: 'row',
-    gap: 10,
-    marginTop: 10,
-  },
-  title: {
-    fontSize: 28,
+  logo: {
+    fontSize: 40,
     fontWeight: 'bold',
-    color: '#fff',
-    textAlign: 'center',
-    marginBottom: 40,
+    color: '#2C2C2C',
+  },
+  subtitle: {
+    fontSize: 22,
+    color: '#2C2C2C',
+    marginTop: 10,
   },
 });
 
