@@ -1,4 +1,7 @@
+// src/components/Button/styled.ts
 import { StyleSheet } from 'react-native';
+import { Colors } from '@constants/Colors';
+import { FONTS } from '@constants/Fonts';
 
 export const styles = StyleSheet.create({
   button: {
@@ -15,13 +18,15 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   buttonText: {
+    fontFamily: FONTS.MANROPE_REGULAR,
     fontSize: 18,
-    color: '#fff',
+    color: Colors.white, // #FFFFFF
     textAlign: 'center',
   },
   textButtonText: {
-    color: '#000',
+    fontFamily: FONTS.MANROPE_REGULAR,
     fontSize: 18,
+    color: Colors.text, // #333333
   },
   iconNoFill: {
     backgroundColor: 'transparent',
@@ -33,37 +38,38 @@ export const styles = StyleSheet.create({
     display: 'none',
   },
   primary: {
-    backgroundColor: '#1C2526',
+    backgroundColor: Colors.primary, // #195CC5
   },
   secondary: {
-    backgroundColor: '#1C2526',
+    backgroundColor: Colors.secondary, // #FF7F7F
   },
   text: {
-    backgroundColor: '#fff',
+    backgroundColor: Colors.white, // #FFFFFF
   },
   accent: {
-    backgroundColor: '#A8BFFA',
+    backgroundColor: Colors.accent, // #5856D6
   },
   disabled: {
-    backgroundColor: '#ccc',
+    backgroundColor: Colors.disabled, // #ADADAD
   },
   blocked: {
-    backgroundColor: '#363636',
+    backgroundColor: Colors.border, // #E0E0E0 (замена для #363636)
   },
   blockedText: {
-    color: '#96989F',
+    fontFamily: FONTS.MANROPE_REGULAR,
     fontSize: 18,
+    color: Colors.disabled, // #ADADAD (замена для #96989F)
     textAlign: 'center',
   },
   iconVariantSmall: {
-    backgroundColor: '#F4A8D6',
+    backgroundColor: Colors.accent, // #5856D6 (замена для #F4A8D6)
     height: 48,
     borderRadius: 16,
     justifyContent: 'center',
     alignItems: 'center',
   },
   iconVariantFull: {
-    backgroundColor: '#F4A8D6',
+    backgroundColor: Colors.accent, // #5856D6 (замена для #F4A8D6)
     height: 61,
     borderRadius: 16,
     paddingVertical: 10,

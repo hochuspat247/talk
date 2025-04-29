@@ -1,26 +1,11 @@
+// src/components/Button/index.tsx
 import React from 'react';
-import {
-  TouchableOpacity,
-  Text,
-  View,
-  StyleSheet,
-  StyleProp,
-  ViewStyle,
-} from 'react-native';
+import { TouchableOpacity, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { styles } from './styled';
-
-interface ButtonProps {
-  title: string;
-  onPress: () => void;
-  disabled?: boolean;
-  block?: boolean; // 👈 добавлено
-  variant?: 'primary' | 'secondary' | 'text' | 'accent' | 'icon' | 'with-icon-right';
-  style?: StyleProp<ViewStyle>;
-  showIcon?: boolean;
-  iconName?: string;
-  size?: 'small' | 'large';
-}
+import { ButtonProps, ButtonVariant } from './types';
+import { VARIANT_CONFIG, DISABLED_CONFIG, BLOCKED_CONFIG } from './variants';
+import { getIconStyle } from './utils';
 
 const Button: React.FC<ButtonProps> = ({
   title,
@@ -34,43 +19,16 @@ const Button: React.FC<ButtonProps> = ({
   size = 'large',
 }) => {
   const isDisabled = disabled || block;
-
-  const getButtonStyle = () => {
-    if (block) return styles.blocked;
-    if (isDisabled) return styles.disabled;
-    switch (variant) {
-      case 'text':
-        return styles.text;
-      case 'accent':
-        return styles.accent;
-      case 'secondary':
-        return styles.secondary;
-      case 'with-icon-right':
-        return styles.primary;
-      default:
-        return styles.primary;
-    }
-  };
-
-  const getTextStyle = () => {
-    if (block) return styles.blockedText;
-    if (variant === 'text') return styles.textButtonText;
-    return styles.buttonText;
-  };
-
-  const getIconStyle = () => {
-    if (variant !== 'icon') return undefined;
-    return size === 'small' ? styles.iconVariantSmall : styles.iconVariantFull;
-  };
-
   const isBigButton = variant !== 'icon' || size === 'large';
+
+  const config = block ? BLOCKED_CONFIG : isDisabled ? DISABLED_CONFIG : VARIANT_CONFIG[variant] || VARIANT_CONFIG.primary;
 
   return (
     <TouchableOpacity
       style={[
         styles.button,
-        getButtonStyle(),
-        getIconStyle(),
+        config.buttonStyle,
+        getIconStyle(variant, size),
         isBigButton && { width: '100%' },
         style,
       ]}
@@ -80,30 +38,24 @@ const Button: React.FC<ButtonProps> = ({
       <View style={styles.content}>
         {variant === 'with-icon-right' ? (
           <>
-            <Text style={getTextStyle()}>{title}</Text>
+            <Text style={config.textStyle}>{title}</Text>
             {showIcon && iconName && (
               <Ionicons
                 name={iconName}
                 size={24}
-                color={block ? '#96989F' : '#fff'}
+                color={config.iconColor}
                 style={{ marginLeft: 8 }}
               />
             )}
           </>
         ) : (
           <>
-            {variant !== 'icon' && <Text style={getTextStyle()}>{title}</Text>}
+            {variant !== 'icon' && <Text style={config.textStyle}>{title}</Text>}
             {showIcon && iconName && (
               <Ionicons
                 name={iconName}
                 size={24}
-                color={
-                  block
-                    ? '#96989F'
-                    : variant === 'text'
-                    ? '#000'
-                    : '#fff'
-                }
+                color={config.iconColor}
                 style={variant !== 'icon' ? styles.icon : undefined}
               />
             )}
