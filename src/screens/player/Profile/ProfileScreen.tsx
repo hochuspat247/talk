@@ -9,7 +9,7 @@ import {
   Alert,
   KeyboardAvoidingView,
 } from 'react-native';
-import Input from '@components/Input';
+import Input from '@components/UI/Input';
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { StackScreenProps } from '@react-navigation/stack';

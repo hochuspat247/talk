@@ -6,8 +6,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import HomeScreen from '@screens/player/Home/HomeScreen';
 import BookingsScreen from '@screens/player/Bookings/BookingsScreen';
 import ProfileScreen from '@screens/player/Profile/ProfileScreen';
-import BookingSuccessScreen from '@screens/player/BookingSuccess/BookingSuccessScreen';
-import MyBookingsScreen from '@screens/player/MyBookings/MyBookingsScreen';
 
 // Определяем типы для параметров навигации
 export type PlayerStackParamList = {

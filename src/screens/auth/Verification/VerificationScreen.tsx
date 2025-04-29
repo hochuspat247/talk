@@ -3,7 +3,7 @@ import { Text, ImageBackground, View, ScrollView, KeyboardAvoidingView, Platform
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '@navigation/AuthNavigator';
-import Input from '@components/Input';
+import Input from '@components/UI/Input';
 import Button from '@components/UI/Button';
 import { verify, resendCode } from '@api/auth';
 import { styles } from './styled';

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Text, ImageBackground, View, ScrollView, KeyboardAvoidingView, Platform, TouchableOpacity, Image, Alert } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import Input from '@components/Input';
+import Input from '@components/UI/Input';
 import Button from '@components/UI/Button';
 import * as ImagePicker from 'expo-image-picker';
 import { RegisterFormData, FormErrors } from './types';

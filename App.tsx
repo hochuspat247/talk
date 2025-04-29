@@ -1,3 +1,4 @@
+// App.tsx
 import React, { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NavigationContainer } from '@react-navigation/native';
@@ -8,6 +9,7 @@ import { PlayerNavigator } from '@navigation/PlayerNavigator';
 import { AdminNavigator } from '@navigation/AdminNavigator';
 import { BookingProvider } from './src/context/BookingContext';
 import { setupAuth } from './src/api/client';
+import * as Font from 'expo-font';
 
 export type RootNavigatorParamList = {
   Auth: undefined;
@@ -21,9 +23,32 @@ const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [fontsLoaded, setFontsLoaded] = useState(false);
 
+  // Загрузка шрифтов и проверка аутентификации
   useEffect(() => {
-    const checkAuth = async () => {
+    const initializeApp = async () => {
+      try {
+        // Загрузка шрифтов
+        console.log('Загрузка шрифтов...');
+        const fonts = {
+          'Manrope-Regular': require('@assets/fonts/Manrope-Regular.ttf'),
+          'NEXTART_Bold': require('@assets/fonts/NEXTART_Bold.ttf'),
+          'Manrope-Bold': require('@assets/fonts/Manrope-Bold.ttf'),
+          'Manrope-ExtraBold': require('@assets/fonts/Manrope-ExtraBold.ttf'),
+          'Manrope-Medium': require('@assets/fonts/Manrope-Medium.ttf'),
+          'Manrope-SemiBold': require('@assets/fonts/Manrope-SemiBold.ttf'),
+        };
+
+        await Font.loadAsync(fonts);
+        console.log('Шрифты загружены успешно');
+        setFontsLoaded(true);
+      } catch (error) {
+        console.error('Ошибка загрузки шрифтов:', error);
+        setFontsLoaded(true); // Продолжаем, даже если шрифты не загрузились
+      }
+
+      // Проверка аутентификации
       try {
         console.log('Checking authentication...');
         const token = await setupAuth();
@@ -48,7 +73,7 @@ const App = () => {
       }
     };
 
-    checkAuth();
+    initializeApp();
   }, []);
 
   const handleVerificationSuccess = async (role?: string) => {
@@ -65,7 +90,7 @@ const App = () => {
     setIsAdmin(false);
   };
 
-  if (isLoading) {
+  if (isLoading || !fontsLoaded) {
     return null; // Или <LoadingScreen />
   }
 

@@ -95,10 +95,6 @@ Tallk
 │  │  ├─ Screen
 │  │  │  ├─ index.tsx
 │  │  │  └─ styled.ts
-│  │  ├─ Input
-│  │  │  ├─ index.tsx
-│  │  │  ├─ styled.ts
-│  │  │  └─ variants.ts
 │  │  ├─ BottomNavigator
 │  │  │  ├─ index.tsx
 │  │  │  └─ styled.ts
@@ -117,23 +113,39 @@ Tallk
 │  │  ├─ BookingConfirmation
 │  │  │  ├─ index.tsx
 │  │  │  └─ styled.ts
-│  │  ├─ BookingCard
-│  │  │  ├─ index.tsx
-│  │  │  └─ styled.ts
 │  │  ├─ ContactCard
 │  │  │  ├─ index.tsx
 │  │  │  └─ styled.ts
 │  │  └─ UI
 │  │     ├─ Button
 │  │     │  ├─ index.tsx
-│  │     │  └─ styled.ts
+│  │     │  ├─ styled.ts
+│  │     │  ├─ types.ts
+│  │     │  ├─ variants.ts
+│  │     │  └─ utils.ts
 │  │     ├─ ToggleSwitch
 │  │     │  ├─ index.tsx
-│  │     │  └─ styled.ts
+│  │     │  ├─ styled.ts
+│  │     │  ├─ types.ts
+│  │     │  └─ variants.ts
 │  │     ├─ TransparentContainer
-│  │     │  └─ index.tsx
-│  │     └─ WaveBackground
-│  │        └─ index.tsx
+│  │     │  ├─ index.tsx
+│  │     │  ├─ styled.ts
+│  │     │  └─ types.ts
+│  │     ├─ WaveBackground
+│  │     │  ├─ index.tsx
+│  │     │  ├─ styled.ts
+│  │     │  ├─ types.ts
+│  │     │  └─ config.ts
+│  │     └─ Input
+│  │        ├─ index.tsx
+│  │        ├─ styled.ts
+│  │        ├─ variants.ts
+│  │        ├─ types.ts
+│  │        ├─ utils.ts
+│  │        └─ components
+│  │           ├─ CodeInput.tsx
+│  │           └─ StrengthBars.tsx
 │  ├─ constants
 │  │  ├─ Colors.ts
 │  │  ├─ Fonts.ts
@@ -141,15 +153,18 @@ Tallk
 │  │  └─ FontSizes.ts
 │  ├─ context
 │  │  └─ BookingContext.tsx
-│  └─ api
-│     ├─ auth.ts
-│     ├─ bookings.ts
-│     ├─ users.ts
-│     ├─ courts.ts
-│     ├─ profile.ts
-│     ├─ types.ts
-│     ├─ client.ts
-│     └─ axiosInstance.ts
+│  ├─ api
+│  │  ├─ auth.ts
+│  │  ├─ bookings.ts
+│  │  ├─ users.ts
+│  │  ├─ courts.ts
+│  │  ├─ profile.ts
+│  │  ├─ types.ts
+│  │  ├─ client.ts
+│  │  └─ axiosInstance.ts
+│  └─ utils
+│     ├─ formatters.ts
+│     └─ index.ts
 ├─ package-lock.json
 ├─ README.md
 ├─ react-native.config.js
@@ -169,49 +184,57 @@ Tallk
 │  │        │        └─ app
 │  │        │           ├─ MainApplication.kt
 │  │        │           └─ MainActivity.kt
-│  │        └─ res
-│  │           ├─ drawable
-│  │           │  ├─ ic_launcher_background.xml
-│  │           │  └─ rn_edit_text_material.xml
-│  │           ├─ drawable-hdpi
-│  │           │  └─ splashscreen_logo.png
-│  │           ├─ drawable-mdpi
-│  │           │  └─ splashscreen_logo.png
-│  │           ├─ drawable-xhdpi
-│  │           │  └─ splashscreen_logo.png
-│  │           ├─ drawable-xxhdpi
-│  │           │  └─ splashscreen_logo.png
-│  │           ├─ drawable-xxxhdpi
-│  │           │  └─ splashscreen_logo.png
-│  │           ├─ mipmap-hdpi
-│  │           │  ├─ ic_launcher.webp
-│  │           │  ├─ ic_launcher_round.webp
-│  │           │  └─ ic_launcher_foreground.webp
-│  │           ├─ mipmap-mdpi
-│  │           │  ├─ ic_launcher.webp
-│  │           │  ├─ ic_launcher_round.webp
-│  │           │  └─ ic_launcher_foreground.webp
-│  │           ├─ mipmap-xhdpi
-│  │           │  ├─ ic_launcher.webp
-│  │           │  ├─ ic_launcher_round.webp
-│  │           │  └─ ic_launcher_foreground.webp
-│  │           ├─ mipmap-xxhdpi
-│  │           │  ├─ ic_launcher.webp
-│  │           │  ├─ ic_launcher_round.webp
-│  │           │  └─ ic_launcher_foreground.webp
-│  │           ├─ mipmap-xxxhdpi
-│  │           │  ├─ ic_launcher.webp
-│  │           │  ├─ ic_launcher_round.webp
-│  │           │  └─ ic_launcher_foreground.webp
-│  │           ├─ values
-│  │           │  ├─ colors.xml
-│  │           │  ├─ strings.xml
-│  │           │  └─ styles.xml
-│  │           ├─ mipmap-anydpi-v26
-│  │           │  ├─ ic_launcher.xml
-│  │           │  └─ ic_launcher_round.xml
-│  │           └─ values-night
-│  │              └─ colors.xml
+│  │        ├─ res
+│  │        │  ├─ drawable
+│  │        │  │  ├─ ic_launcher_background.xml
+│  │        │  │  └─ rn_edit_text_material.xml
+│  │        │  ├─ drawable-hdpi
+│  │        │  │  └─ splashscreen_logo.png
+│  │        │  ├─ drawable-mdpi
+│  │        │  │  └─ splashscreen_logo.png
+│  │        │  ├─ drawable-xhdpi
+│  │        │  │  └─ splashscreen_logo.png
+│  │        │  ├─ drawable-xxhdpi
+│  │        │  │  └─ splashscreen_logo.png
+│  │        │  ├─ drawable-xxxhdpi
+│  │        │  │  └─ splashscreen_logo.png
+│  │        │  ├─ mipmap-hdpi
+│  │        │  │  ├─ ic_launcher.webp
+│  │        │  │  ├─ ic_launcher_round.webp
+│  │        │  │  └─ ic_launcher_foreground.webp
+│  │        │  ├─ mipmap-mdpi
+│  │        │  │  ├─ ic_launcher.webp
+│  │        │  │  ├─ ic_launcher_round.webp
+│  │        │  │  └─ ic_launcher_foreground.webp
+│  │        │  ├─ mipmap-xhdpi
+│  │        │  │  ├─ ic_launcher.webp
+│  │        │  │  ├─ ic_launcher_round.webp
+│  │        │  │  └─ ic_launcher_foreground.webp
+│  │        │  ├─ mipmap-xxhdpi
+│  │        │  │  ├─ ic_launcher.webp
+│  │        │  │  ├─ ic_launcher_round.webp
+│  │        │  │  └─ ic_launcher_foreground.webp
+│  │        │  ├─ mipmap-xxxhdpi
+│  │        │  │  ├─ ic_launcher.webp
+│  │        │  │  ├─ ic_launcher_round.webp
+│  │        │  │  └─ ic_launcher_foreground.webp
+│  │        │  ├─ values
+│  │        │  │  ├─ colors.xml
+│  │        │  │  ├─ strings.xml
+│  │        │  │  └─ styles.xml
+│  │        │  ├─ mipmap-anydpi-v26
+│  │        │  │  ├─ ic_launcher.xml
+│  │        │  │  └─ ic_launcher_round.xml
+│  │        │  └─ values-night
+│  │        │     └─ colors.xml
+│  │        └─ assets
+│  │           └─ fonts
+│  │              ├─ NEXTART_Bold.otf
+│  │              ├─ Manrope-Regular.ttf
+│  │              ├─ Manrope-ExtraBold.ttf
+│  │              ├─ Manrope-Bold.ttf
+│  │              ├─ Manrope-Medium.ttf
+│  │              └─ Manrope-SemiBold.ttf
 │  ├─ build
 │  │  └─ generated
 │  │     └─ autolinking
@@ -226,7 +249,8 @@ Tallk
 │  ├─ gradle.properties
 │  ├─ gradlew
 │  ├─ gradlew.bat
-│  └─ settings.gradle
+│  ├─ settings.gradle
+│  └─ link-assets-manifest.json
 └─ package.json
 
 ```

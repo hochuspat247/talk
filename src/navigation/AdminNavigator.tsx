@@ -2,8 +2,6 @@ import { createStackNavigator } from '@react-navigation/stack';
 import HomeScreen from '@screens/admin/Home/HomeScreen';
 import BookingsScreen from '@screens/admin/Bookings/BookingsScreen';
 import ProfileScreen from '@screens/admin/Profile/ProfileScreen';
-import BookingSuccessScreen from '@screens/admin/BookingSuccess/BookingSuccessScreen';
-import MyBookingsScreen from '@screens/admin/MyBookings/MyBookingsScreen';
 import SelectUserScreen from '@screens/admin/SelectUser/SelectUserScreen';
 import FilterScreen from '@screens/admin/Filter/FilterScreen';
 import ProfileOptionsScreen from '@screens/admin/ProfileOptions/ProfileOptionsScreen';
