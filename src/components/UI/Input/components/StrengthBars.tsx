@@ -1,4 +1,3 @@
-// src/components/Input/components/StrengthBars.tsx
 import React from 'react';
 import { View } from 'react-native';
 import { styles } from '../styled';

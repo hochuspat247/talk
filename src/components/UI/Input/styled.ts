@@ -1,4 +1,3 @@
-// src/components/Input/styled.ts
 import { StyleSheet } from 'react-native';
 import { FONTS } from '@constants/Fonts';
 import { Colors } from '@constants/Colors';
@@ -9,6 +8,7 @@ export const styles = StyleSheet.create({
   },
   iconContainer: {
     width: '100%',
+    height: 56, // Добавляем фиксированную высоту
     flexDirection: 'row',
     alignItems: 'center',
     position: 'relative',
@@ -16,8 +16,8 @@ export const styles = StyleSheet.create({
   input: {
     flex: 1,
     height: 56,
-    backgroundColor: Colors.transparentWhite5, // rgba(255,255,255,0.05)
-    borderColor: Colors.gray50Transparent, // rgba(153,153,153,0.5)
+    backgroundColor: Colors.transparentWhite5,
+    borderColor: Colors.gray50Transparent,
     borderWidth: 1,
     borderRadius: 16,
     paddingHorizontal: 20,
@@ -25,7 +25,9 @@ export const styles = StyleSheet.create({
     paddingRight: 50,
     fontFamily: FONTS.MANROPE_REGULAR,
     fontSize: 18,
-    color: Colors.black, // #000000
+    lineHeight: 24,
+    textAlignVertical: 'center',
+    color: Colors.black,
   },
   timeInput: {
     width: 100,
@@ -33,7 +35,7 @@ export const styles = StyleSheet.create({
     paddingVertical: 0,
     borderWidth: 1,
     borderRadius: 16,
-    borderColor: Colors.grayLight, // #ccc
+    borderColor: Colors.grayLight,
     textAlign: 'center',
     textAlignVertical: 'center',
     fontSize: 18,
@@ -53,25 +55,25 @@ export const styles = StyleSheet.create({
   codeInput: {
     width: 56,
     height: 56,
-    backgroundColor: Colors.transparentWhite5, // rgba(255,255,255,0.05)
-    borderColor: Colors.gray50Transparent, // rgba(153,153,153,0.5)
+    backgroundColor: Colors.transparentWhite5,
+    borderColor: Colors.gray50Transparent,
     borderWidth: 1,
     borderRadius: 16,
     fontSize: 16,
     textAlign: 'center',
-    color: Colors.black, // #000000
+    color: Colors.black,
   },
   codeInputError: {
-    borderColor: Colors.error, // #B91C1C
+    borderColor: Colors.error,
   },
   codeInputSuccess: {
-    borderColor: Colors.successBright, // #00FF00
+    borderColor: Colors.successBright,
   },
   errorBorder: {
-    borderColor: Colors.error, // #B91C1C
+    borderColor: Colors.error,
   },
   successBorder: {
-    borderColor: Colors.successBright, // #00FF00
+    borderColor: Colors.successBright,
   },
   iconButton: {
     position: 'absolute',
@@ -81,17 +83,17 @@ export const styles = StyleSheet.create({
   subText: {
     fontFamily: FONTS.MANROPE_REGULAR,
     fontSize: 12,
-    color: Colors.grayMedium, // #999999
+    color: Colors.grayMedium,
     marginTop: 5,
     textAlign: 'left',
   },
   subTextHighlighted: {
-    color: Colors.orangeHighlight, // #FF8C00
+    color: Colors.orangeHighlight,
   },
   errorText: {
     fontFamily: FONTS.MANROPE_REGULAR,
     fontSize: 12,
-    color: Colors.error, // #B91C1C
+    color: Colors.error,
     marginTop: 5,
     textAlign: 'left',
     alignSelf: 'flex-start',
@@ -107,23 +109,23 @@ export const styles = StyleSheet.create({
     borderRadius: 3,
     marginHorizontal: 3,
   },
-  codeInputFocused: { // Добавляем стиль для активного поля
+  codeInputFocused: {
     borderColor: Colors.accent,
     borderWidth: 2,
   },
   strengthBarInactive: {
-    backgroundColor: Colors.border, // #E0E0E0
+    backgroundColor: Colors.border,
   },
   strengthBarActive: {
-    backgroundColor: Colors.black, // #000000
+    backgroundColor: Colors.black,
   },
   weak: {
-    backgroundColor: Colors.errorLight, // #ff4d4f
+    backgroundColor: Colors.errorLight,
   },
   medium: {
-    backgroundColor: Colors.warning, // #faad14
+    backgroundColor: Colors.warning,
   },
   strong: {
-    backgroundColor: Colors.successMedium, // #52c41a
+    backgroundColor: Colors.successMedium,
   },
 });

@@ -53,7 +53,7 @@ const RegisterScreen: React.FC<RegisterScreenProps> = ({ route, navigation, onVe
           title={TEXTS.REGISTER_BUTTON}
           onPress={handleRegister}
           variant="primary"
-          disabled={isRegisterDisabled}
+          block={isRegisterDisabled} // Меняем disabled на block
         />
       </View>
     </View>

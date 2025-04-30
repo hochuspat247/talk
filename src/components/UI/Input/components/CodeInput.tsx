@@ -1,20 +1,8 @@
-import React, { useRef, useState, useCallback, useEffect } from 'react';
+import React, { useRef, useState, useCallback } from 'react';
 import { View, TextInput, StyleProp, ViewStyle } from 'react-native';
 import { styles } from '../styled';
 import { InputProps } from '../types';
 
-/**
- * Компонент для ввода кода верификации (4 цифры).
- * Каждый символ вводится в отдельное поле, с автоматическим переходом фокуса.
- * @param props - Пропсы компонента.
- * @param props.value - Текущий код (строка из 4 цифр).
- * @param props.onChangeText - Функция для обновления кода.
- * @param props.hasError - Показывать состояние ошибки.
- * @param props.isSuccess - Показывать состояние успеха.
- * @param props.style - Стили контейнера.
- * @param props.testID - Идентификатор для тестов.
- * @returns JSX.Element
- */
 const CodeInput: React.FC<InputProps> = ({
   value,
   onChangeText,
@@ -26,11 +14,6 @@ const CodeInput: React.FC<InputProps> = ({
   const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
   const inputRefs = useRef<TextInput[]>([]);
   const codeValues = value.padEnd(4, '').split('').slice(0, 4);
-
-  // Логируем изменение value
-  useEffect(() => {
-    console.log('CodeInput value:', value);
-  }, [value]);
 
   const handleCodeChange = useCallback((text: string, index: number) => {
     if (text.length > 1) return;
@@ -71,7 +54,7 @@ const CodeInput: React.FC<InputProps> = ({
           />
         ))}
       </View>
-    </View>
+      </View>
   );
 };
 

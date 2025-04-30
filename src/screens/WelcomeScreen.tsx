@@ -19,15 +19,14 @@ const WelcomeScreen: React.FC<Props> = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      
+      {/* Фоновые волны */}
+      <WaveBackground colorScheme="default" />
       {/* Заголовок */}
       <View style={styles.header}>
         <Text style={styles.title}>{TEXTS.WELCOME_TITLE}</Text>
         <Text style={styles.subtitle}>{TEXTS.WELCOME_MESSAGE}</Text>
       </View>
-
-      {/* Фоновые волны */}
-      <WaveBackground colorScheme="default" />
-
       {/* Прозрачный контейнер с переключателем, кнопкой и текстом версии */}
       <TransparentContainer>
         <ToggleSwitch
@@ -56,7 +55,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontFamily: FONTS.NEXT_ART_BOLD,
-    fontSize: 48,
+    fontSize: 67,
     color: Colors.text, // #333333
   },
   subtitle: {
