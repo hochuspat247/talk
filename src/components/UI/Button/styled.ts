@@ -38,7 +38,7 @@ export const styles = StyleSheet.create({
     display: 'none',
   },
   primary: {
-    backgroundColor: Colors.primary, // #195CC5
+    backgroundColor: Colors.primary, // #363636
   },
   secondary: {
     backgroundColor: Colors.secondary, // #FF7F7F
@@ -53,12 +53,12 @@ export const styles = StyleSheet.create({
     backgroundColor: Colors.disabled, // #ADADAD
   },
   blocked: {
-    backgroundColor: Colors.border, // #E0E0E0 (замена для #363636)
+    backgroundColor: Colors.primary, // #363636
   },
   blockedText: {
     fontFamily: FONTS.MANROPE_REGULAR,
     fontSize: 18,
-    color: Colors.disabled, // #ADADAD (замена для #96989F)
+    color: Colors.blockedText, // #96989F
     textAlign: 'center',
   },
   iconVariantSmall: {

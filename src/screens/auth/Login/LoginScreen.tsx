@@ -1,61 +1,47 @@
-// src/screens/auth/Login/LoginScreen.tsx
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import WaveBackground from '@components/UI/WaveBackground';
-import TransparentContainer from '@components/UI/TransparentContainer';
 import Input from '@components/UI/Input';
 import Button from '@components/UI/Button';
 import { Colors } from '@constants/Colors';
 import { FONTS } from '@constants/Fonts';
 import { TEXTS } from '@constants/Texts';
+import TransparentContainer from '@components/UI/TransparentContainer';
 
 const LoginScreen: React.FC = () => {
-  const [phone, setPhone] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
 
-  const handleLogin = () => {
-    console.log('Login with phone:', phone);
-    // Здесь будет логика авторизации
-  };
-
-  const handlePolicyPress = () => {
-    console.log('Открыть политику конфиденциальности');
-    // Здесь будет логика открытия политики конфиденциальности
-  };
+  // Проверяем, является ли номер полным (11 цифр, включая +7)
+  const isPhoneNumberComplete = phoneNumber.length === 11;
 
   return (
     <View style={styles.container}>
-      {/* Заголовок */}
       <View style={styles.header}>
         <Text style={styles.title}>{TEXTS.WELCOME_TITLE}</Text>
-        <Text style={styles.subtitle}>{TEXTS.LOGIN_TITLE}</Text>
+        <Text style={styles.subtitle}>{TEXTS.LOGIN_MESSAGE}</Text>
       </View>
 
-      {/* Фоновые волны */}
       <WaveBackground colorScheme="alternate" />
 
-      {/* Прозрачный контейнер с полем ввода и кнопкой */}
       <TransparentContainer>
         <Input
-          value={phone}
-          onChangeText={setPhone}
-          placeholder={TEXTS.LOGIN_PHONE_PLACEHOLDER}
-          keyboardType="phone-pad"
-        >
-          <Text style={styles.subText}>
-            {TEXTS.LOGIN_SUBTEXT.replace(TEXTS.LOGIN_SUBTEXT_HIGHLIGHTED, '')}
-            <Pressable onPress={handlePolicyPress}>
-              <Text style={styles.subTextHighlighted}>{TEXTS.LOGIN_SUBTEXT_HIGHLIGHTED}</Text>
-            </Pressable>
-          </Text>
-        </Input>
+          value={phoneNumber}
+          onChangeText={setPhoneNumber}
+          variant="phone"
+          style={styles.input}
+        />
         <Button
           title={TEXTS.LOGIN_BUTTON}
-          onPress={handleLogin}
+          onPress={() => console.log(`Продолжить с номером: ${phoneNumber}`)}
           variant="with-icon-right"
           showIcon
           iconName="arrow-forward"
+          block={!isPhoneNumberComplete} // Блокируем кнопку, если номер не полный
         />
-        <Text style={styles.version}>version 0.0.1 beta</Text>
+        <View style={styles.linksContainer}>
+          <Text style={styles.link}>{TEXTS.FORGOT_PASSWORD}</Text>
+          <Text style={styles.link}>{TEXTS.SUPPORT}</Text>
+        </View>
       </TransparentContainer>
     </View>
   );
@@ -64,7 +50,7 @@ const LoginScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.white, // #FFFFFF
+    backgroundColor: Colors.white,
   },
   header: {
     marginTop: 50,
@@ -72,30 +58,28 @@ const styles = StyleSheet.create({
   },
   title: {
     fontFamily: FONTS.NEXT_ART_BOLD,
-    fontSize: 48,
-    color: Colors.text, // #333333
+    fontSize: 67,
+    color: Colors.text,
   },
   subtitle: {
-    fontFamily: FONTS.MANROPE_REGULAR,
-    fontSize: 24,
-    color: Colors.text, // #333333
+    fontFamily: FONTS.MANROPE_SEMI_BOLD,
+    fontSize: 23,
+    color: Colors.text,
     marginTop: 8,
   },
-  subText: {
-    fontFamily: FONTS.MANROPE_REGULAR,
-    fontSize: 12,
-    color: Colors.grayMedium, // #999999
-    marginTop: 5,
-    textAlign: 'left',
+  input: {
+    marginBottom: 20,
   },
-  subTextHighlighted: {
-    color: Colors.orangeHighlight, // #FF8C00
+  linksContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+    marginTop: 20,
   },
-  version: {
-    fontFamily: FONTS.MANROPE_REGULAR,
+  link: {
+    fontFamily: FONTS.MANROPE_SEMI_BOLD,
     fontSize: 14,
-    color: Colors.white, // #FFFFFF
-    textAlign: 'center',
+    color: Colors.white,
   },
 });
 

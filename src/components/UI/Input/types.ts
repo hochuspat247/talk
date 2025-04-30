@@ -1,4 +1,3 @@
-// src/components/Input/types.ts
 export type InputVariant =
   | 'password'
   | 'map'
@@ -8,7 +7,8 @@ export type InputVariant =
   | 'time'
   | 'clearable'
   | 'copyable'
-  | 'code';
+  | 'code'
+  | 'phone'; // Новый вариант для номера телефона
 
 export interface InputProps {
   value: string;

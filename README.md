@@ -57,12 +57,6 @@ Tallk
 │  │  │  ├─ Bookings
 │  │  │  │  ├─ BookingsScreen.tsx
 │  │  │  │  └─ styled.ts
-│  │  │  ├─ BookingSuccess
-│  │  │  │  ├─ BookingSuccessScreen.tsx
-│  │  │  │  └─ styled.ts
-│  │  │  ├─ MyBookings
-│  │  │  │  ├─ MyBookingsScreen.tsx
-│  │  │  │  └─ styled.ts
 │  │  │  └─ Profile
 │  │  │     ├─ ProfileScreen.tsx
 │  │  │     └─ styled.ts
@@ -75,12 +69,6 @@ Tallk
 │  │     │  └─ styled.ts
 │  │     ├─ Profile
 │  │     │  └─ ProfileScreen.tsx
-│  │     ├─ BookingSuccess
-│  │     │  ├─ BookingSuccessScreen.tsx
-│  │     │  └─ styled.ts
-│  │     ├─ MyBookings
-│  │     │  ├─ MyBookingsScreen.tsx
-│  │     │  └─ styled.ts
 │  │     ├─ SelectUser
 │  │     │  └─ SelectUserScreen.tsx
 │  │     ├─ Filter
@@ -167,7 +155,6 @@ Tallk
 │     └─ index.ts
 ├─ package-lock.json
 ├─ README.md
-├─ react-native.config.js
 ├─ app.json
 ├─ android
 │  ├─ app

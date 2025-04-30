@@ -8,8 +8,13 @@ import Button from '@components/UI/Button';
 import { Colors } from '@constants/Colors';
 import { FONTS } from '@constants/Fonts';
 import { TEXTS } from '@constants/Texts';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '@navigation/AuthNavigator'; // Импортируем типы из AuthNavigator
 
-const WelcomeScreen: React.FC = () => {
+// Типизация пропсов для WelcomeScreen
+type Props = NativeStackScreenProps<RootStackParamList, 'Welcome'>;
+
+const WelcomeScreen: React.FC<Props> = ({ navigation }) => {
   const [role, setRole] = useState<'master' | 'client'>('master');
 
   return (
@@ -31,7 +36,7 @@ const WelcomeScreen: React.FC = () => {
         />
         <Button
           title={`${TEXTS.CONTINUE_AS} ${role === 'master' ? TEXTS.MASTER : TEXTS.CLIENT}`}
-          onPress={() => console.log(`Продолжить как ${role}`)}
+          onPress={() => navigation.navigate('Login')} // Переход на LoginScreen
           variant="primary"
         />
         <Text style={styles.version}>version 0.0.1 beta</Text>

@@ -1,15 +1,16 @@
 // src/components/Input/index.tsx
 import React, { useState } from 'react';
 import { View, TextInput, TouchableOpacity, Text } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { Colors } from '@constants/Colors';
 import { TEXTS } from '@constants/Texts';
-import styles from './styled';
+import { styles } from './styled';
 import { InputProps } from './types';
 import { VARIANT_CONFIG } from './variants';
 import CodeInput from './components/CodeInput';
 import StrengthBars from './components/StrengthBars';
-import { formatTime } from '@utils/formatters'; // Обновлённый импорт
+import { formatTime } from '@utils/formatters';
+import { formatPhoneNumber, unformatPhoneNumber } from './utils';
 
 const Input: React.FC<InputProps> = ({
   value,
@@ -42,6 +43,14 @@ const Input: React.FC<InputProps> = ({
     );
   };
 
+  // Обработчик ввода для номера телефона
+  const handlePhoneNumberChange = (text: string) => {
+    const digits = unformatPhoneNumber(text);
+    const formatted = formatPhoneNumber(digits);
+    onChangeText(digits); // Передаём только цифры в onChangeText
+    return formatted; // Возвращаем отформатированную строку для отображения
+  };
+
   if (variant === 'code') {
     return <CodeInput {...{ value, onChangeText, hasError, isSuccess, style }} />;
   }
@@ -52,7 +61,7 @@ const Input: React.FC<InputProps> = ({
         <TextInput
           style={[styles.input, styles.descriptionInput]}
           placeholder={config.placeholder}
-          placeholderTextColor={Colors.disabled}
+          placeholderTextColor={Colors.grayLight} // Используем #ccc
           value={value}
           onChangeText={onChangeText}
           multiline
@@ -68,11 +77,34 @@ const Input: React.FC<InputProps> = ({
         <TextInput
           style={styles.timeInput}
           placeholder={config.placeholder}
-          placeholderTextColor={Colors.disabled}
+          placeholderTextColor={Colors.grayLight} // Используем #ccc
           value={value}
           onChangeText={(text) => onChangeText(formatTime(text))}
           keyboardType="numeric"
         />
+      </View>
+    );
+  }
+
+  if (variant === 'phone') {
+    const displayValue = formatPhoneNumber(value); // Отображаем отформатированный номер
+
+    return (
+      <View style={[styles.container, style]}>
+        <View style={styles.iconContainer}>
+          <TextInput
+            style={[styles.input, isSuccess && styles.successBorder, (hasError || hasValidationError) && styles.errorBorder]}
+            placeholder={config.placeholder}
+            placeholderTextColor={Colors.grayLight} // Используем #ccc
+            value={displayValue}
+            onChangeText={(text) => {
+              const formatted = handlePhoneNumberChange(text);
+            }}
+            keyboardType="phone-pad"
+            maxLength={18}
+          />
+        </View>
+        {subText && renderSubText(subText)}
       </View>
     );
   }
@@ -83,7 +115,7 @@ const Input: React.FC<InputProps> = ({
         <TextInput
           style={[styles.input, isSuccess && styles.successBorder, (hasError || hasValidationError) && styles.errorBorder]}
           placeholder={config.placeholder}
-          placeholderTextColor={Colors.disabled}
+          placeholderTextColor={Colors.grayLight} // Используем #ccc
           value={value}
           onChangeText={onChangeText}
           secureTextEntry={isSecure}
