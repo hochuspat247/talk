@@ -4,7 +4,6 @@ import { TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import HomeScreen from '@screens/player/Home/HomeScreen';
-import BookingsScreen from '@screens/player/Bookings/BookingsScreen';
 import ProfileScreen from '@screens/player/Profile/ProfileScreen';
 
 // Определяем типы для параметров навигации
@@ -41,23 +40,7 @@ export const PlayerNavigator: React.FC<PlayerNavigatorProps> = ({ onLogout }) =>
         component={HomeScreen}
         options={{ headerShown: false }}
       />
-      <Stack.Screen
-        name="Bookings"
-        component={BookingsScreen}
-        options={({ route }) => ({
-          headerTitle: route.params?.court || 'Бронирование корта',
-        })}
-      />
-      <Stack.Screen
-        name="BookingSuccess"
-        component={BookingSuccessScreen}
-        options={{ headerTitle: 'Бронирование корта' }}
-      />
-      <Stack.Screen
-        name="MyBookings"
-        component={MyBookingsScreen}
-        options={{ headerTitle: 'Мои бронирования' }}
-      />
+      
       <Stack.Screen
         name="Profile"
         component={ProfileScreen}

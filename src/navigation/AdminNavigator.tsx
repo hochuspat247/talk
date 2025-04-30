@@ -24,58 +24,8 @@ export const AdminNavigator: React.FC<AdminNavigatorProps> = ({ onLogout }) => {
         component={HomeScreen}
         options={{ headerShown: false }}
       />
-      <Stack.Screen
-        name="SelectUser"
-        component={SelectUserScreen}
-        options={{ headerTitle: 'Выбор пользователя' }}
-      />
-      <Stack.Screen
-        name="Bookings"
-        component={BookingsScreen}
-        options={({ route }) => ({
-          headerTitle: route.params?.court || 'Бронирование корта',
-        })}
-      />
-      <Stack.Screen
-        name="BookingSuccess"
-        component={BookingSuccessScreen}
-        options={{ headerTitle: 'Бронирование корта' }}
-      />
-      <Stack.Screen
-        name="MyBookings"
-        component={MyBookingsScreen}
-        options={({ navigation, route }) => ({
-          headerTitle: 'Бронирования',
-          headerRight: () => (
-            <TouchableOpacity
-              style={{ marginRight: 15 }}
-              onPress={() => {
-                const filters = (route.params as { filters?: FilterData })?.filters;
-                navigation.navigate('FilterScreen', { filters });
-              }}
-            >
-              <Ionicons name="funnel-outline" size={24} color="#000" />
-            </TouchableOpacity>
-          ),
-        })}
-      />
-      <Stack.Screen
-        name="FilterScreen"
-        component={FilterScreen}
-        options={{ headerTitle: 'Фильтр' }}
-      />
-      <Stack.Screen
-        name="Profile"
-        component={ProfileScreen}
-        options={{
-          headerTitle: 'Профиль',
-          headerRight: () => (
-            <TouchableOpacity onPress={onLogout} style={{ marginRight: 15 }}>
-              <Ionicons name="log-out-outline" size={24} color="#000" />
-            </TouchableOpacity>
-          ),
-        }}
-      />
+
+   
       <Stack.Screen
         name="ProfileOptions"
         component={ProfileOptionsScreen}

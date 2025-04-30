@@ -1,4 +1,3 @@
-// src/constants/Texts.ts
 export const TEXTS = {
   // Welcome Screen
   WELCOME_TITLE: "TALLK",
@@ -21,12 +20,31 @@ export const TEXTS = {
 
   // Login Screen
   LOGIN_TITLE: "Авторизация",
-  LOGIN_MESSAGE: "Авторизация", // Added for the subtitle (same as LOGIN_TITLE in this case, but can be customized)
+  LOGIN_MESSAGE: "Авторизация",
   LOGIN_PHONE_PLACEHOLDER: "Введите номер телефона",
   LOGIN_SUBTEXT: "Зачем пароль?",
   LOGIN_SUBTEXT_HIGHLIGHTED: "Политика",
   LOGIN_BUTTON: "Продолжить",
-  CONTINUE: "Продолжить", // Added for the button (same as LOGIN_BUTTON, but keeping it separate for clarity)
+  CONTINUE: "Продолжить",
   FORGOT_PASSWORD: "Забыли пароль?",
   SUPPORT: "Поддержка",
+
+  // Verification Screen
+  VERIFICATION_TITLE: "Подтвердите номер",
+  VERIFICATION_MESSAGE: "Код подтверждения отправлен на номер",
+  RESEND_TEXT: "Запросить снова через",
+  RESEND_SECONDS: "сек.",
+  RESEND_LINK: "Запросить снова",
+  INVALID_CODE: "Неверный код",
+
+  // Password Screen
+  PASSWORD_TITLE: "Введите пароль",
+
+  // Register Screen
+  REGISTER_TITLE: "Создайте пароль",
+  REGISTER_BUTTON: "Зарегистрироваться",
+  CONFIRM_PASSWORD_PLACEHOLDER: "Подтвердите пароль",
+  PASSWORDS_DO_NOT_MATCH: "Пароли не совпадают",
+  REGISTRATION_TERMS: "Нажимая “Войти” Вы соглашаетесь с политикой и условиями использования сервиса.",
+  REGISTRATION_TERMS_HIGHLIGHTED: "политикой и условиями",
 };

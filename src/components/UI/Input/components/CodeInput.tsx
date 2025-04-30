@@ -1,25 +1,52 @@
-// src/components/Input/components/CodeInput.tsx
-import React, { useRef, useState } from 'react';
-import { View, TextInput } from 'react-native';
+import React, { useRef, useState, useCallback, useEffect } from 'react';
+import { View, TextInput, StyleProp, ViewStyle } from 'react-native';
 import { styles } from '../styled';
 import { InputProps } from '../types';
 
-const CodeInput: React.FC<InputProps> = ({ value, onChangeText, hasError, isSuccess, style }) => {
-  const [, setFocusedIndex] = useState<number | null>(null);
+/**
+ * Компонент для ввода кода верификации (4 цифры).
+ * Каждый символ вводится в отдельное поле, с автоматическим переходом фокуса.
+ * @param props - Пропсы компонента.
+ * @param props.value - Текущий код (строка из 4 цифр).
+ * @param props.onChangeText - Функция для обновления кода.
+ * @param props.hasError - Показывать состояние ошибки.
+ * @param props.isSuccess - Показывать состояние успеха.
+ * @param props.style - Стили контейнера.
+ * @param props.testID - Идентификатор для тестов.
+ * @returns JSX.Element
+ */
+const CodeInput: React.FC<InputProps> = ({
+  value,
+  onChangeText,
+  hasError,
+  isSuccess,
+  style,
+  testID,
+}) => {
+  const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
   const inputRefs = useRef<TextInput[]>([]);
   const codeValues = value.padEnd(4, '').split('').slice(0, 4);
 
-  const handleCodeChange = (text: string, index: number) => {
+  // Логируем изменение value
+  useEffect(() => {
+    console.log('CodeInput value:', value);
+  }, [value]);
+
+  const handleCodeChange = useCallback((text: string, index: number) => {
     if (text.length > 1) return;
     const newCode = [...codeValues];
     newCode[index] = text;
-    onChangeText(newCode.join(''));
-    if (text && index < 3) inputRefs.current[index + 1]?.focus();
-    else if (!text && index > 0) inputRefs.current[index - 1]?.focus();
-  };
+    const updatedCode = newCode.join('');
+    onChangeText(updatedCode);
+    if (text && index < 3) {
+      inputRefs.current[index + 1]?.focus();
+    } else if (!text && index > 0) {
+      inputRefs.current[index - 1]?.focus();
+    }
+  }, [codeValues, onChangeText]);
 
   return (
-    <View style={[styles.container, style]}>
+    <View style={[styles.container, style]} testID={testID}>
       <View style={styles.codeContainer}>
         {[0, 1, 2, 3].map((i) => (
           <TextInput
@@ -29,6 +56,7 @@ const CodeInput: React.FC<InputProps> = ({ value, onChangeText, hasError, isSucc
               styles.codeInput,
               hasError && styles.codeInputError,
               isSuccess && styles.codeInputSuccess,
+              focusedIndex === i && styles.codeInputFocused,
             ]}
             value={codeValues[i]}
             onChangeText={(text) => handleCodeChange(text, i)}
@@ -38,6 +66,8 @@ const CodeInput: React.FC<InputProps> = ({ value, onChangeText, hasError, isSucc
             maxLength={1}
             textAlign="center"
             autoFocus={i === 0}
+            testID={testID ? `${testID}-${i}` : undefined}
+            accessibilityLabel={`Code digit ${i + 1}`}
           />
         ))}
       </View>

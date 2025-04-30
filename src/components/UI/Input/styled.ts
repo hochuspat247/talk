@@ -107,6 +107,10 @@ export const styles = StyleSheet.create({
     borderRadius: 3,
     marginHorizontal: 3,
   },
+  codeInputFocused: { // Добавляем стиль для активного поля
+    borderColor: Colors.accent,
+    borderWidth: 2,
+  },
   strengthBarInactive: {
     backgroundColor: Colors.border, // #E0E0E0
   },

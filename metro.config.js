@@ -1,4 +1,3 @@
-// metro.config.js
 const { getDefaultConfig } = require('expo/metro-config');
 
 const config = getDefaultConfig(__dirname);
@@ -14,6 +13,9 @@ config.resolver.extraNodeModules = {
   '@assets': `${__dirname}/assets`,
   '@utils': `${__dirname}/src/utils`,
   '@types': `${__dirname}/src/types`,
+  '@hooks': `${__dirname}/src/hooks`, // Добавлен алиас для hooks
 };
+// Исключаем $RECYCLE.BIN из сканирования
+config.resolver.blockList = [/\$RECYCLE\.BIN/];
 
 module.exports = config;

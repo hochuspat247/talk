@@ -4,51 +4,65 @@ import WelcomeScreen from '@screens/WelcomeScreen';
 import LoginScreen from '@screens/auth/Login/LoginScreen';
 import RegisterScreen from '@screens/auth/Register/RegisterScreen';
 import VerificationScreen from '@screens/auth/Verification/VerificationScreen';
-import AccountCreatedScreen from '@screens/admin/AccountCreated/AccountCreatedScreen';
+import PasswordScreen from '@screens/auth/Password/PasswordScreen';
+import { Colors } from '@constants/Colors';
+import { FONTS } from '@constants/Fonts';
+import { TEXTS } from '@constants/Texts';
 
-// Определяем типы для параметров навигации
 export type RootStackParamList = {
   Welcome: undefined;
   Login: undefined;
-  Register: { isAdmin?: boolean }; // Добавляем параметр isAdmin
-  Verification: { phone: string; userId: number }; // Параметры для VerificationScreen
+  Register: { phone: string };
+  Verification: { phone: string; userId: number; isRegistered: boolean };
+  Password: { phone: string };
   AccountCreated: undefined;
-  AdminNavigator: undefined; // Навигатор для администратора
-  PlayerNavigator: undefined; // Навигатор для игрока
+  AdminNavigator: undefined;
+  PlayerNavigator: undefined;
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
 
 interface AuthNavigatorProps {
-  onVerificationSuccess: (role?: string) => void; // Проп для обработки успешной верификации
+  onVerificationSuccess: (role?: string) => void;
 }
 
 export const AuthNavigator = ({ onVerificationSuccess }: AuthNavigatorProps) => {
   return (
     <Stack.Navigator initialRouteName="Welcome">
-      <Stack.Screen
-        name="Welcome"
-        component={WelcomeScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="Login"
-        component={LoginScreen}
-        options={{ headerShown: false }}
-      />
+      <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
       <Stack.Screen
         name="Register"
         component={RegisterScreen}
-        options={{ headerShown: false }}
+        options={{
+          title: TEXTS.REGISTER_TITLE,
+          headerStyle: { backgroundColor: Colors.white },
+          headerTintColor: Colors.text,
+          headerTitleStyle: { fontFamily: FONTS.MANROPE_SEMI_BOLD, fontSize: 18 },
+        }}
       />
-      <Stack.Screen name="Verification" options={{ headerShown: false }}>
+      <Stack.Screen
+        name="Verification"
+        options={{
+          title: TEXTS.VERIFICATION_TITLE,
+          headerStyle: { backgroundColor: Colors.white },
+          headerTintColor: Colors.text,
+          headerTitleStyle: { fontFamily: FONTS.MANROPE_SEMI_BOLD, fontSize: 18 },
+        }}
+      >
         {(props) => <VerificationScreen {...props} onVerificationSuccess={onVerificationSuccess} />}
       </Stack.Screen>
       <Stack.Screen
-        name="AccountCreated"
-        component={AccountCreatedScreen}
-        options={{ headerShown: false }}
-      />
+        name="Password"
+        options={{
+          title: TEXTS.PASSWORD_TITLE,
+          headerStyle: { backgroundColor: Colors.white },
+          headerTintColor: Colors.text,
+          headerTitleStyle: { fontFamily: FONTS.MANROPE_SEMI_BOLD, fontSize: 18 },
+        }}
+      >
+        {(props) => <PasswordScreen {...props} onVerificationSuccess={onVerificationSuccess} />}
+      </Stack.Screen>
     </Stack.Navigator>
   );
 };

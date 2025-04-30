@@ -1,38 +1,53 @@
-// src/screens/auth/Verification/styles.ts
 import { StyleSheet } from 'react-native';
 
+import { Colors } from '@constants/Colors';
+import { FONTS } from '@constants/Fonts';
+
 export const styles = StyleSheet.create({
-  background: { flex: 1 },
-  mainContainer: {
-    flexGrow: 1,
-    paddingHorizontal: 20,
-    paddingBottom: 22,
-    paddingTop: 270,
-    justifyContent: 'space-between',
-  },
-  contentContainer: {
+  container: {
     flex: 1,
-    gap: 8,
+    backgroundColor: Colors.white,
+    paddingHorizontal: 20,
   },
-  title: {
-    fontSize: 44,
-    marginBottom: 30,
-    textAlign: 'left',
-  },
-  codeContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: 200, // Ширина контейнера для 4 полей
-  },
-  codeInput: {
-    width: 40,
-    height: 40,
-    borderRadius: 8,
-    textAlign: 'center',
-    fontSize: 20,
-  },
-  buttonContainer: {
-    gap: 8,
+  header: {
     marginTop: 20,
+    alignItems: 'center',
+  },
+  subtitle: {
+    fontFamily: FONTS.MANROPE_SEMI_BOLD,
+    fontSize: 18,
+    color: Colors.text,
+    marginTop: 8,
+    textAlign: 'center',
+  },
+  inputContainer: {
+    marginTop: 20,
+    width: '100%',
+    alignItems: 'center',
+  },
+  input: {
+    marginBottom: 20,
+  },
+  errorText: {
+    fontFamily: FONTS.MANROPE_SEMI_BOLD,
+    fontSize: 14,
+    color: Colors.error,
+    textAlign: 'center',
+    marginBottom: 10,
+  },
+  resendText: {
+    fontFamily: FONTS.MANROPE_SEMI_BOLD,
+    fontSize: 14,
+    color: Colors.grayMedium,
+    textAlign: 'center',
+    marginTop: 20,
+    marginBottom: 20,
+  },
+  resendLink: {
+    fontFamily: FONTS.MANROPE_SEMI_BOLD,
+    fontSize: 14,
+    color: Colors.accent,
+    textAlign: 'center',
+    marginBottom: 20,
   },
 });

@@ -1,86 +1,99 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+// src/screens/LoginScreen/LoginScreen.tsx
+import React from 'react';
+import {
+  View,
+  Text,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  TouchableWithoutFeedback,
+  Keyboard,
+} from 'react-native';
+
+// Components
 import WaveBackground from '@components/UI/WaveBackground';
 import Input from '@components/UI/Input';
 import Button from '@components/UI/Button';
-import { Colors } from '@constants/Colors';
-import { FONTS } from '@constants/Fonts';
-import { TEXTS } from '@constants/Texts';
 import TransparentContainer from '@components/UI/TransparentContainer';
 
-const LoginScreen: React.FC = () => {
-  const [phoneNumber, setPhoneNumber] = useState('');
+// Hooks
+import { useLoginLogic } from '@hooks';
 
-  // Проверяем, является ли номер полным (11 цифр, включая +7)
-  const isPhoneNumberComplete = phoneNumber.length === 11;
+// Types
+import { Props } from './types';
+
+// Styles
+import { styles } from './styled';
+
+// Constants
+import { TEXTS } from '@constants/Texts';
+
+// Constants for keyboard
+const KEYBOARD_OFFSET_IOS = 0;
+const KEYBOARD_OFFSET_ANDROID = 20;
+
+/**
+ * Экран логина, который позволяет пользователю ввести номер телефона и перейти к верификации.
+ * @param navigation - Навигация для перехода на другие экраны.
+ */
+const LoginScreen: React.FC<Props> = ({ navigation }) => {
+  const {
+    phoneNumber,
+    setPhoneNumber,
+    isPhoneNumberComplete,
+    isKeyboardVisible,
+    handleContinue,
+  } = useLoginLogic({ navigation });
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>{TEXTS.WELCOME_TITLE}</Text>
-        <Text style={styles.subtitle}>{TEXTS.LOGIN_MESSAGE}</Text>
-      </View>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={
+        Platform.OS === 'ios' ? KEYBOARD_OFFSET_IOS : KEYBOARD_OFFSET_ANDROID
+      }
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <ScrollView
+          contentContainerStyle={styles.scrollContainer}
+          keyboardShouldPersistTaps="handled"
+        >
+          {/* Background wave animation */}
+          <WaveBackground colorScheme="alternate" />
 
-      <WaveBackground colorScheme="alternate" />
+          {/* Header with title and subtitle, hidden when keyboard is visible */}
+          {!isKeyboardVisible && (
+            <View style={styles.header}>
+              <Text style={styles.title}>{TEXTS.WELCOME_TITLE}</Text>
+              <Text style={styles.subtitle}>{TEXTS.LOGIN_MESSAGE}</Text>
+            </View>
+          )}
 
-      <TransparentContainer>
-        <Input
-          value={phoneNumber}
-          onChangeText={setPhoneNumber}
-          variant="phone"
-          style={styles.input}
-        />
-        <Button
-          title={TEXTS.LOGIN_BUTTON}
-          onPress={() => console.log(`Продолжить с номером: ${phoneNumber}`)}
-          variant="with-icon-right"
-          showIcon
-          iconName="arrow-forward"
-          block={!isPhoneNumberComplete} // Блокируем кнопку, если номер не полный
-        />
-        <View style={styles.linksContainer}>
-          <Text style={styles.link}>{TEXTS.FORGOT_PASSWORD}</Text>
-          <Text style={styles.link}>{TEXTS.SUPPORT}</Text>
-        </View>
-      </TransparentContainer>
-    </View>
+          {/* Input and button container */}
+          <TransparentContainer>
+            <Input
+              value={phoneNumber}
+              onChangeText={setPhoneNumber}
+              variant="phone"
+              style={styles.input}
+            />
+            <Button
+              title={TEXTS.LOGIN_BUTTON}
+              onPress={handleContinue}
+              variant="with-icon-right"
+              showIcon
+              iconName="arrow-forward"
+              block={!isPhoneNumberComplete}
+            />
+            <View style={styles.linksContainer}>
+              <Text style={styles.link}>{TEXTS.FORGOT_PASSWORD}</Text>
+              <Text style={styles.link}>{TEXTS.SUPPORT}</Text>
+            </View>
+          </TransparentContainer>
+        </ScrollView>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.white,
-  },
-  header: {
-    marginTop: 50,
-    alignItems: 'center',
-  },
-  title: {
-    fontFamily: FONTS.NEXT_ART_BOLD,
-    fontSize: 67,
-    color: Colors.text,
-  },
-  subtitle: {
-    fontFamily: FONTS.MANROPE_SEMI_BOLD,
-    fontSize: 23,
-    color: Colors.text,
-    marginTop: 8,
-  },
-  input: {
-    marginBottom: 20,
-  },
-  linksContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
-    marginTop: 20,
-  },
-  link: {
-    fontFamily: FONTS.MANROPE_SEMI_BOLD,
-    fontSize: 14,
-    color: Colors.white,
-  },
-});
 
 export default LoginScreen;

@@ -1,4 +1,4 @@
-// src/screens/LoginScreen/styles.ts
+// src/screens/PasswordScreen/styles.ts
 import { StyleSheet } from 'react-native';
 
 // Constants
@@ -6,14 +6,15 @@ import { Colors } from '@constants/Colors';
 import { FONTS } from '@constants/Fonts';
 
 // Constants for margins
-const HEADER_TOP_MARGIN = 50;
+const HEADER_TOP_MARGIN = 20;
+const CONTENT_TOP_MARGIN = 20;
 const INPUT_BOTTOM_MARGIN = 20;
-const LINKS_TOP_MARGIN = 20;
 
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.white,
+    paddingHorizontal: 20,
   },
   scrollContainer: {
     flexGrow: 1,
@@ -24,29 +25,19 @@ export const styles = StyleSheet.create({
     marginTop: HEADER_TOP_MARGIN,
     alignItems: 'center',
   },
-  title: {
-    fontFamily: FONTS.NEXT_ART_BOLD,
-    fontSize: 67,
-    color: Colors.text,
-  },
   subtitle: {
     fontFamily: FONTS.MANROPE_SEMI_BOLD,
-    fontSize: 23,
+    fontSize: 24,
     color: Colors.text,
     marginTop: 8,
+    textAlign: 'center',
+  },
+  content: {
+    marginTop: CONTENT_TOP_MARGIN,
+    width: '100%',
+    alignItems: 'center',
   },
   input: {
     marginBottom: INPUT_BOTTOM_MARGIN,
-  },
-  linksContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
-    marginTop: LINKS_TOP_MARGIN,
-  },
-  link: {
-    fontFamily: FONTS.MANROPE_SEMI_BOLD,
-    fontSize: 14,
-    color: Colors.white,
   },
 });
