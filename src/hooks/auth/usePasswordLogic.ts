@@ -50,7 +50,7 @@ export const usePasswordLogic = ({
   const handlePasswordSubmit = useCallback(() => {
     if (password === CORRECT_PASSWORD) { // Убираем проверку passwordStrength
       setHasError(false);
-      navigation?.navigate('AccountCreated');
+      navigation?.navigate('Home');
       setTimeout(() => {
         onVerificationSuccess?.('user');
       }, 1000);

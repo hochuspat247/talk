@@ -23,22 +23,13 @@
       },
       "package": "com.tallk.app",
       "versionCode": 1,
-      "permissions": [
-        "INTERNET"
-      ],
-      "config": {
-        "usesCleartextTraffic": true
-      }
+      "permissions": ["INTERNET"]
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "plugins": [
-      "expo-secure-store",
-      "expo-font"
-    ],
-    "extra": {
-      "eas": {}
-    }
+    "plugins": ["expo-secure-store", "expo-font"],
+    "scheme": "tallk",
+    "sdkVersion": "53.0.0"
   }
 }

@@ -7,7 +7,6 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AuthNavigator } from '@navigation/AuthNavigator';
 import { PlayerNavigator } from '@navigation/PlayerNavigator';
 import { AdminNavigator } from '@navigation/AdminNavigator';
-import { BookingProvider } from './src/context/BookingContext';
 import { setupAuth } from './src/api/client';
 import * as Font from 'expo-font';
 
@@ -96,7 +95,6 @@ const App = () => {
 
   return (
     <SafeAreaProvider>
-      <BookingProvider>
         <NavigationContainer>
           <Stack.Navigator screenOptions={{ headerShown: false, animationEnabled: false }}>
             {isAuthenticated ? (
@@ -116,7 +114,7 @@ const App = () => {
             )}
           </Stack.Navigator>
         </NavigationContainer>
-      </BookingProvider>
+     
     </SafeAreaProvider>
   );
 };

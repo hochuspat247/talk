@@ -14,7 +14,7 @@ import {
 import WaveBackground from '@components/UI/WaveBackground';
 import Input from '@components/UI/Input';
 import Button from '@components/UI/Button';
-import TransparentContainer from '@components/UI/TransparentContainer';
+import TransparentContainer from '@components/Layout/TransparentContainer';
 
 // Hooks
 import { useLoginLogic } from '@hooks';

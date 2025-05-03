@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { View, ScrollView, KeyboardAvoidingView, Platform, Alert, Text, RefreshControl } from 'react-native';
-import Header from '@components/Header';
+import Header from '@components/Layout/Header';
 import DatePicker from '@components/DatePicker';
-import TimePicker from '@components/TimePicker';
+import TimePicker from '@components/Layout/TimePicker';
 import CourtSelector from '@components/CourtSelector';
-import Screen from '@components/Screen';
-import BottomNavigator from '@components/BottomNavigator';
+import Screen from '@components/Layout/Screen';
+import BottomNavigator from '@components/UI/BottomNavigator';
 import Button from '@components/UI/Button';
 import { styles } from './styled';
 import { BlurView } from 'expo-blur';
@@ -15,7 +15,6 @@ import { getAllCourts } from '@api/courts';
 import { getAvailability } from '@api/bookings';
 import { getProfile } from '@api/profile';
 import { BookingAvailability, User, Court } from '@api/types';
-import moment from 'moment-timezone';
 import debounce from 'lodash/debounce';
 
 type RootStackParamList = {
@@ -121,15 +120,7 @@ const HomeScreen = ({ navigation }: HomeScreenProps) => {
     fetchCourts();
   }, []);
 
-  // Форматирование даты для API (YYYY-MM-DD)
-  const formatDate = (date: Date): string => {
-    return moment(date).format('YYYY-MM-DD');
-  };
 
-  // Форматирование даты для отображения (DD.MM.YYYY)
-  const formatDateForDisplay = (date: Date): string => {
-    return moment(date).format('DD.MM.YYYY');
-  };
 
   // Форматирование временного диапазона
   const formatTimeRange = (slots: string[]): string => {
@@ -257,56 +248,7 @@ const HomeScreen = ({ navigation }: HomeScreenProps) => {
 
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-      <Screen>
-        <Header userName={currentUser ? currentUser.firstName : 'Админ'} />
-        {isLoading && !refreshing ? (
-          <View style={styles.loadingContainer}>
-            <Text>Загрузка...</Text>
-          </View>
-        ) : (
-          <>
-            <DatePicker
-              selectedDate={selectedDate}
-              onDateSelect={(date) => setSelectedDate(date)}
-              daysToShow={30}
-            />
-            <CourtSelector
-              selectedCourt={selectedCourt}
-              onCourtSelect={(court) => {
-                setSelectedCourt(court);
-                setSelectedCourtId(courtIds.get(court) || null);
-              }}
-              courts={courts}
-            />
-            <ScrollView
-              contentContainerStyle={{ paddingBottom: 100 }}
-              showsVerticalScrollIndicator={false}
-              refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-            >
-              <View style={styles.contentContainer}>
-                <TimePicker
-                  onSelectionChange={(slots) => setSelectedSlots(slots)}
-                  bookedSlots={bookedSlots.map((slot) => ({
-                    start: slot.start,
-                    end: slot.end,
-                    isBooked: slot.is_booked,
-                    name: slot.name, // Уже в формате "Имя Ф."
-                  }))}
-                  date={formatDate(selectedDate)}
-                />
-              </View>
-            </ScrollView>
-            {selectedSlots.length > 0 && (
-              <BlurView intensity={70} tint="light" style={styles.bookButtonWrapper}>
-                <View style={{ width: '100%' }}>
-                  <Button title="Забронировать" onPress={handleBooking} variant="primary" />
-                </View>
-              </BlurView>
-            )}
-          </>
-        )}
-      </Screen>
-      <BottomNavigator activeTab="Home" />
+ 
     </KeyboardAvoidingView>
   );
 };

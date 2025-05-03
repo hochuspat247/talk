@@ -13,7 +13,7 @@ import Input from '@components/UI/Input';
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { StackScreenProps } from '@react-navigation/stack';
-import Screen from '@components/Screen';
+import Screen from "@components/Layout/Screen"
 import { getProfile, updateProfile } from '@api/profile';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 

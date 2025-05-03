@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { formatPhoneForDisplay, registerUser } from '@utils';
-import { usePasswordStrength } from '@hooks/general/usePasswordStrength'; // Импортируем хук
+import { usePasswordStrength } from '@hooks/general/usePasswordStrength';
 import { RootStackParamList } from '@navigation/AuthNavigator';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'Register'>;
@@ -21,12 +21,6 @@ interface UseRegisterLogicReturn {
   isRegisterDisabled: boolean;
 }
 
-/**
- * Хук для управления логикой экрана регистрации.
- * Обрабатывает ввод пароля, его подтверждение и регистрацию пользователя.
- * @param params - Параметры, включая номер телефона и коллбэк успеха.
- * @returns Объект с состоянием и обработчиками.
- */
 export const useRegisterLogic = ({
   route,
   navigation,
@@ -45,7 +39,7 @@ export const useRegisterLogic = ({
 
   const handlePasswordChange = useCallback((text: string) => {
     setPassword(text);
-    const strength = usePasswordStrength(text); // Используем хук
+    const strength = usePasswordStrength(text);
     setPasswordStrength(strength);
   }, []);
 
@@ -56,7 +50,8 @@ export const useRegisterLogic = ({
   const handleRegister = useCallback(() => {
     if (phone && password === confirmPassword) {
       registerUser(phone, password);
-      navigation.navigate('AccountCreated');
+      // Перенаправляем в PlayerNavigator вместо Home
+      navigation.navigate('PlayerNavigator');
       setTimeout(() => {
         onVerificationSuccess?.('user');
       }, 1000);

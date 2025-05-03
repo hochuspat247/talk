@@ -45,10 +45,16 @@ Tallk
 │  │  │  │  └─ RegisterScreen.tsx
 │  │  │  ├─ Login
 │  │  │  │  ├─ LoginScreen.tsx
-│  │  │  │  └─ styled.ts
-│  │  │  └─ Verification
-│  │  │     ├─ VerificationScreen.tsx
-│  │  │     └─ styled.ts
+│  │  │  │  ├─ styled.ts
+│  │  │  │  └─ types.ts
+│  │  │  ├─ Verification
+│  │  │  │  ├─ VerificationScreen.tsx
+│  │  │  │  ├─ styled.ts
+│  │  │  │  └─ types.ts
+│  │  │  └─ Password
+│  │  │     ├─ styled.ts
+│  │  │     ├─ PasswordScreen.tsx
+│  │  │     └─ types.ts
 │  │  ├─ player
 │  │  │  ├─ index.tsx
 │  │  │  ├─ Home
@@ -76,17 +82,11 @@ Tallk
 │  │     ├─ ProfileOptions
 │  │     │  ├─ ProfileOptionsScreen.tsx
 │  │     │  └─ styled.ts
-│  │     └─ AccountCreated
-│  │        └─ AccountCreatedScreen.tsx
+│  │     └─ Home
+│  │        └─ HomeScreen.tsx
 │  ├─ components
 │  │  ├─ index.tsx
-│  │  ├─ Screen
-│  │  │  ├─ index.tsx
-│  │  │  └─ styled.ts
 │  │  ├─ BottomNavigator
-│  │  │  ├─ index.tsx
-│  │  │  └─ styled.ts
-│  │  ├─ Header
 │  │  │  ├─ index.tsx
 │  │  │  └─ styled.ts
 │  │  ├─ DatePicker
@@ -104,41 +104,62 @@ Tallk
 │  │  ├─ ContactCard
 │  │  │  ├─ index.tsx
 │  │  │  └─ styled.ts
-│  │  └─ UI
-│  │     ├─ Button
-│  │     │  ├─ index.tsx
-│  │     │  ├─ styled.ts
-│  │     │  ├─ types.ts
-│  │     │  ├─ variants.ts
-│  │     │  └─ utils.ts
-│  │     ├─ ToggleSwitch
-│  │     │  ├─ index.tsx
-│  │     │  ├─ styled.ts
-│  │     │  ├─ types.ts
-│  │     │  └─ variants.ts
+│  │  ├─ UI
+│  │  │  ├─ Button
+│  │  │  │  ├─ index.tsx
+│  │  │  │  ├─ styled.ts
+│  │  │  │  ├─ types.ts
+│  │  │  │  ├─ variants.ts
+│  │  │  │  └─ utils.ts
+│  │  │  ├─ ToggleSwitch
+│  │  │  │  ├─ index.tsx
+│  │  │  │  ├─ styled.ts
+│  │  │  │  ├─ types.ts
+│  │  │  │  └─ variants.ts
+│  │  │  ├─ WaveBackground
+│  │  │  │  ├─ index.tsx
+│  │  │  │  ├─ styled.ts
+│  │  │  │  ├─ types.ts
+│  │  │  │  └─ config.ts
+│  │  │  ├─ Input
+│  │  │  │  ├─ index.tsx
+│  │  │  │  ├─ styled.ts
+│  │  │  │  ├─ variants.ts
+│  │  │  │  ├─ types.ts
+│  │  │  │  ├─ utils.ts
+│  │  │  │  ├─ components
+│  │  │  │  │  ├─ CodeInput.tsx
+│  │  │  │  │  └─ StrengthBars.tsx
+│  │  │  │  ├─ variants
+│  │  │  │  │  ├─ BaseInput.tsx
+│  │  │  │  │  ├─ PasswordInput.tsx
+│  │  │  │  │  ├─ PhoneInput.tsx
+│  │  │  │  │  ├─ ConfirmInput.tsx
+│  │  │  │  │  ├─ DescriptionInput.tsx
+│  │  │  │  │  └─ TimeInput.tsx
+│  │  │  │  └─ hooks
+│  │  │  │     ├─ useSecureEntry.ts
+│  │  │  │     └─ usePasswordStrength.ts
+│  │  │  └─ PeriodSwitch
+│  │  │     ├─ index.tsx
+│  │  │     └─ styled.ts
+│  │  └─ Layout
+│  │     ├─ Screen
+│  │     │  ├─ Screen.tsx
+│  │     │  └─ styled.ts
 │  │     ├─ TransparentContainer
 │  │     │  ├─ index.tsx
 │  │     │  ├─ styled.ts
 │  │     │  └─ types.ts
-│  │     ├─ WaveBackground
-│  │     │  ├─ index.tsx
-│  │     │  ├─ styled.ts
-│  │     │  ├─ types.ts
-│  │     │  └─ config.ts
-│  │     └─ Input
+│  │     └─ Header
 │  │        ├─ index.tsx
-│  │        ├─ styled.ts
-│  │        ├─ variants.ts
-│  │        ├─ types.ts
-│  │        ├─ utils.ts
-│  │        └─ components
-│  │           ├─ CodeInput.tsx
-│  │           └─ StrengthBars.tsx
+│  │        └─ styled.ts
 │  ├─ constants
 │  │  ├─ Colors.ts
 │  │  ├─ Fonts.ts
 │  │  ├─ Texts.ts
-│  │  └─ FontSizes.ts
+│  │  ├─ FontSizes.ts
+│  │  └─ phone.ts
 │  ├─ context
 │  │  └─ BookingContext.tsx
 │  ├─ api
@@ -150,9 +171,29 @@ Tallk
 │  │  ├─ types.ts
 │  │  ├─ client.ts
 │  │  └─ axiosInstance.ts
-│  └─ utils
-│     ├─ formatters.ts
-│     └─ index.ts
+│  ├─ utils
+│  │  ├─ index.ts
+│  │  ├─ auth
+│  │  │  ├─ passwordValidator.ts
+│  │  │  └─ registeredUsers.ts
+│  │  └─ formatters
+│  │     ├─ phoneFormatter.ts
+│  │     └─ formatters.ts
+│  └─ hooks
+│     ├─ index.ts
+│     ├─ general
+│     │  ├─ useKeyboardVisibility.ts
+│     │  ├─ useNavigationHandler.ts
+│     │  ├─ usePasswordStrength.ts
+│     │  ├─ usePhoneFormatter.ts
+│     │  ├─ useTextInput.ts
+│     │  └─ useTimer.ts
+│     └─ auth
+│        ├─ index.ts
+│        ├─ useLoginLogic.ts
+│        ├─ usePasswordLogic.ts
+│        ├─ useRegisterLogic.ts
+│        └─ useVerificationLogic.ts
 ├─ package-lock.json
 ├─ README.md
 ├─ app.json

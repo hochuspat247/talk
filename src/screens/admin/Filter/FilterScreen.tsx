@@ -6,7 +6,7 @@ import ContactCard from '@components/ContactCard';
 import Button from '@components/UI/Button';
 import { Calendar } from 'react-native-calendars';
 import { BlurView } from 'expo-blur';
-import Screen from '@components/Screen';
+import Screen from '@components/Layout/Screen';
 import { getAllCourts } from '@api/courts';
 import { getProfile } from '@api/profile';
 import { getAllUsers } from '@api/users';
@@ -27,7 +27,7 @@ type RootStackParamList = {
   SelectUser: { court: string; court_id: number; date: string; time: string; price: string; selectedSlots: string[] };
   ProfileOptions: undefined;
   Register: undefined;
-  AccountCreated: undefined;
+  Home: undefined;
 };
 
 type FilterData = {

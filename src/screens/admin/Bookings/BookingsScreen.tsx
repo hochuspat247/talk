@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Alert, Text } from 'react-native';
 import BookingConfirmation from '@components/BookingConfirmation';
 import Button from '@components/UI/Button';
-import Screen from '@components/Screen';
+import Screen from '@components/Layout/Screen';
 import { StackScreenProps } from '@react-navigation/stack';
 import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
@@ -43,7 +43,7 @@ type RootStackParamList = {
   SelectUser: { court: string; court_id: number; date: string; time: string; price: string; selectedSlots: string[] };
   ProfileOptions: undefined;
   Register: undefined;
-  AccountCreated: undefined;
+  Home: undefined;
 };
 
 type FilterData = {

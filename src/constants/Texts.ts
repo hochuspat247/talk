@@ -1,6 +1,6 @@
 export const TEXTS = {
   // Welcome Screen
-  WELCOME_TITLE: "TALLK",
+  WELCOME_TITLE: "TALLC",
   WELCOME_MESSAGE: "Приветствуем 👋",
   CONTINUE_AS: "Продолжить как",
   MASTER: "Мастер",

@@ -10,8 +10,8 @@ import {
 } from 'react-native';
 import { StackScreenProps } from '@react-navigation/stack';
 import { Ionicons } from '@expo/vector-icons';
-import Screen from '@components/Screen';
-import BottomNavigator from '@components/BottomNavigator';
+import Screen from '@components/Layout/Screen';
+import BottomNavigator from '@components/UI/BottomNavigator';
 import { getProfile } from '@api/profile';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -31,7 +31,7 @@ type RootStackParamList = {
   Profile: undefined;
   ProfileOptions: undefined;
   Register: { isAdmin?: boolean };
-  AccountCreated: undefined;
+  Home: undefined;
 };
 
 type ProfileOptionsScreenProps = StackScreenProps<RootStackParamList, 'ProfileOptions'>;

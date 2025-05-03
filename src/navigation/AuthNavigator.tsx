@@ -8,6 +8,7 @@ import PasswordScreen from '@screens/auth/Password/PasswordScreen';
 import { Colors } from '@constants/Colors';
 import { FONTS } from '@constants/Fonts';
 import { TEXTS } from '@constants/Texts';
+import { PlayerNavigator } from '@navigation/PlayerNavigator'; // Импортируем PlayerNavigator
 
 export type RootStackParamList = {
   Welcome: undefined;
@@ -15,9 +16,9 @@ export type RootStackParamList = {
   Register: { phone: string };
   Verification: { phone: string; userId: number; isRegistered: boolean };
   Password: { phone: string };
-  AccountCreated: undefined;
+  Home: undefined;
   AdminNavigator: undefined;
-  PlayerNavigator: undefined;
+  PlayerNavigator: undefined; // Добавляем PlayerNavigator в типы
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -63,6 +64,17 @@ export const AuthNavigator = ({ onVerificationSuccess }: AuthNavigatorProps) => 
       >
         {(props) => <PasswordScreen {...props} onVerificationSuccess={onVerificationSuccess} />}
       </Stack.Screen>
+      <Stack.Screen
+        name="PlayerNavigator"
+        component={PlayerNavigator}
+        options={{ headerShown: false }}
+        listeners={{
+          // Сбрасываем стек навигации, чтобы пользователь не мог вернуться назад
+          beforeRemove: (e) => {
+            e.preventDefault(); // Предотвращаем возврат назад
+          },
+        }}
+      />
     </Stack.Navigator>
   );
 };
