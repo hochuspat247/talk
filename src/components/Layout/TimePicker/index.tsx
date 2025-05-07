@@ -1,75 +1,39 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { View, Text, ScrollView, Modal, TouchableOpacity, Animated } from 'react-native';
-import { styles } from './styled';
 import moment from 'moment';
+import 'moment/locale/ru';
 import CalendarEventCard from '@components/UI/CalendarEventCard';
 import CalendarEventList from '@components/UI/CalendarEventList';
-import 'moment/locale/ru';
-import { FONTS } from '@constants/Fonts';
+import { styles } from './styled';
+import { TimePickerProps, TimeSlot } from './types';
+import { calculatePosition, initializeTimeSlots } from './utils';
+import { START_HOUR, TIME_TEXT_HEIGHT, STANDARD_SLOT_HEIGHT, LARGE_CARD_HEIGHT, SMALL_CARD_HEIGHT } from './constants';
 
-// Принудительно устанавливаем локализацию на русский язык
 moment.locale('ru');
 
-interface TimeSlot {
-  start: string;
-  end: string;
-  isBooked: boolean;
-  events?: Array<{
-    salonName: string;
-    service: string;
-    masterName: string;
-    rating: number;
-    time: string;
-    duration: string;
-    avatarUri?: string;
-    status: 'confirmed' | 'active';
-  }>;
-}
-
-interface TimePickerProps {
-  onSelectionChange?: (selectedSlots: string[]) => void;
-  bookedSlots?: TimeSlot[];
-  date?: string; // формат YYYY-MM-DD
-}
-
+/**
+ * Компонент для отображения временных слотов с возможностью прокрутки и отображения событий.
+ * Поддерживает анимацию текущего времени и модальное окно для детального просмотра событий.
+ *
+ * @param {TimePickerProps} props - Пропсы компонента.
+ * @returns {JSX.Element} Компонент TimePicker.
+ */
 const TimePicker: React.FC<TimePickerProps> = ({ onSelectionChange, bookedSlots = [], date }) => {
   const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalEvents, setModalEvents] = useState<TimeSlot['events']>([]);
   const [modalSlot, setModalSlot] = useState<TimeSlot | null>(null);
-  const [scrollOffset, setScrollOffset] = useState<number>(0); // Для отслеживания прокрутки
-  const positionAnim = useRef(new Animated.Value(0)).current; // Анимация позиции линии
-  const scrollViewRef = useRef<ScrollView>(null); // Ссылка на ScrollView
+  const [scrollOffset, setScrollOffset] = useState<number>(0);
+  const positionAnim = useRef(new Animated.Value(0)).current;
+  const scrollViewRef = useRef<ScrollView>(null);
 
   const currentDate = date ? moment(date, 'YYYY-MM-DD') : moment();
   const isToday = date ? moment(date, 'YYYY-MM-DD').isSame(moment(), 'day') : true;
-  const startHour = 8;
 
-  // Фиксированные значения высот
-  const timeTextHeight = 20; // Высота текста времени
-  const standardSlotHeight = 60; // Стандартная высота слота (без карточек)
-  const largeCardHeight = 138; // Высота для единичной карточки (isMini={false})
-  const smallCardHeight = 70; // Высота для маленьких карточек (isMini={true})
-
+  // Инициализация временных слотов
   useEffect(() => {
     const updateSlots = () => {
-      const slots: TimeSlot[] = [];
-
-      for (let hour = startHour; hour < 23; hour++) {
-        const start = `${String(hour).padStart(2, '0')}:00`;
-        const end = `${String(hour + 1).padStart(2, '0')}:00`;
-
-        const bookedSlot = bookedSlots.find((bs) => bs.start === start && bs.end === end);
-        const isBooked = bookedSlot?.isBooked || bookedSlot?.is_booked;
-
-        slots.push({
-          start,
-          end,
-          isBooked: isBooked || false,
-          events: bookedSlot?.events,
-        });
-      }
-
+      const slots = initializeTimeSlots(bookedSlots, START_HOUR);
       setTimeSlots(slots);
     };
 
@@ -78,19 +42,22 @@ const TimePicker: React.FC<TimePickerProps> = ({ onSelectionChange, bookedSlots 
     return () => clearInterval(timer);
   }, [bookedSlots]);
 
+  // Анимация текущего времени
   useEffect(() => {
     const updatePosition = () => {
-      const now = new Date();
-      const localMoment = moment(now);
-      const currentHour = localMoment.hour();
-      const currentMinute = localMoment.minute();
+      const positionData = calculatePosition({
+        timeSlots,
+        currentDate,
+        isToday,
+        startHour: START_HOUR,
+        scrollOffset,
+        timeTextHeight: TIME_TEXT_HEIGHT,
+        standardSlotHeight: STANDARD_SLOT_HEIGHT,
+        largeCardHeight: LARGE_CARD_HEIGHT,
+        smallCardHeight: SMALL_CARD_HEIGHT,
+      });
 
-      console.log('Current Time in updatePosition:', localMoment.format('YYYY-MM-DD HH:mm:ss'), 'Hour:', currentHour, 'Minute:', currentMinute);
-
-      // Определяем, должен ли отображаться индикатор текущего времени
-      const isWithinRange = isToday && (currentHour >= startHour || (currentHour < startHour && localMoment.isSame(currentDate, 'day')));
-
-      if (!isWithinRange) {
+      if (!positionData.isWithinRange) {
         Animated.spring(positionAnim, {
           toValue: 0,
           useNativeDriver: true,
@@ -98,68 +65,25 @@ const TimePicker: React.FC<TimePickerProps> = ({ onSelectionChange, bookedSlots 
         return;
       }
 
-      // Индекс слота (от 8:00 до 23:00)
-      // Если время меньше startHour, позиционируем на первом слоте
-      const effectiveHour = currentHour < startHour ? startHour : currentHour;
-      const slotIndex = Math.min(Math.max(effectiveHour - startHour, 0), timeSlots.length - 1);
-
-      // Делим слот на 5 секций (по 12 минут)
-      const minutesPerSection = 12;
-      const sectionIndex = Math.floor(currentMinute / minutesPerSection); // 0–4
-
-      // Рассчитываем позицию на основе высот слотов
-      let position = 0;
-      for (let i = 0; i < slotIndex; i++) {
-        const slot = timeSlots[i];
-        let slotHeight = standardSlotHeight; // Стандартная высота по умолчанию
-        if (slot.events && slot.events.length > 0) {
-          slotHeight = slot.events.length === 1 ? largeCardHeight : smallCardHeight;
-        }
-        position += timeTextHeight + slotHeight;
-      }
-      // Добавляем высоту текста времени текущего слота
-      position += timeTextHeight;
-
-      // Смещение внутри текущего слота
-      const currentSlot = timeSlots[slotIndex];
-      let currentSlotHeight = standardSlotHeight;
-      if (currentSlot.events && currentSlot.events.length > 0) {
-        currentSlotHeight = currentSlot.events.length === 1 ? largeCardHeight : smallCardHeight;
-      }
-      const sectionOffset = (sectionIndex * currentSlotHeight) / 5;
-
-      position += sectionOffset;
-
-      // Корректируем позицию с учётом прокрутки
-      const adjustedPosition = position - scrollOffset;
-
-      console.log(
-        'Slot Index:', slotIndex,
-        'Section Index:', sectionIndex,
-        'Scroll Offset:', scrollOffset,
-        'Current Slot Height:', currentSlotHeight,
-        'Calculated position:', position,
-        'Adjusted position:', adjustedPosition
-      );
-
-      // Анимируем позицию линии
       Animated.spring(positionAnim, {
-        toValue: adjustedPosition,
+        toValue: positionData.adjustedPosition,
         useNativeDriver: true,
       }).start();
 
-      // Прокручиваем ScrollView к текущему времени (только при первом рендеринге)
       if (scrollOffset === 0 && scrollViewRef.current) {
-        scrollViewRef.current.scrollTo({ y: position - 100, animated: true }); // Прокручиваем с небольшим отступом сверху
+        scrollViewRef.current.scrollTo({ y: positionData.position - 100, animated: true });
       }
     };
 
     updatePosition();
-    const timer = setInterval(updatePosition, 1000); // Обновляем каждую секунду
+    const timer = setInterval(updatePosition, 1000);
     return () => clearInterval(timer);
   }, [isToday, timeSlots, scrollOffset]);
 
   const handleMorePress = (slotEvents: TimeSlot['events'], slot: TimeSlot) => {
+    if (!slot || !slotEvents) {
+      return;
+    }
     setModalEvents(slotEvents);
     setModalSlot(slot);
     setModalVisible(true);
@@ -198,38 +122,41 @@ const TimePicker: React.FC<TimePickerProps> = ({ onSelectionChange, bookedSlots 
           scrollEventThrottle={16}
         >
           <View style={styles.slotsContainer}>
-            {timeSlots.map((slot, index) => (
-              <React.Fragment key={index}>
-                <Text style={styles.timeText}>{slot.start}</Text>
-                <View style={styles.slotWrapper}>
-                  {slot.isBooked && slot.events && slot.events.length > 0 ? (
-                    slot.events.length === 1 ? (
-                      <CalendarEventList
-                        events={slot.events}
-                        onMorePress={() => handleMorePress(slot.events, slot)}
-                        isMini={false}
-                      />
+            {timeSlots.map((slot, index) => {
+              if (!slot) return null;
+              return (
+                <React.Fragment key={index}>
+                  <Text style={styles.timeText}>{slot.start}</Text>
+                  <View style={styles.slotWrapper}>
+                    {slot.isBooked && slot.events && slot.events.length > 0 ? (
+                      slot.events.length === 1 ? (
+                        <CalendarEventList
+                          events={slot.events}
+                          onMorePress={() => handleMorePress(slot.events, slot)}
+                          isMini={false}
+                        />
+                      ) : (
+                        <ScrollView
+                          horizontal
+                          showsHorizontalScrollIndicator={false}
+                          contentContainerStyle={styles.eventListContent}
+                        >
+                          <View style={styles.eventListWrapper}>
+                            <CalendarEventList
+                              events={slot.events}
+                              onMorePress={() => handleMorePress(slot.events, slot)}
+                              isMini={true}
+                            />
+                          </View>
+                        </ScrollView>
+                      )
                     ) : (
-                      <ScrollView
-                        horizontal
-                        showsHorizontalScrollIndicator={false}
-                        contentContainerStyle={styles.eventListContent}
-                      >
-                        <View style={styles.eventListWrapper}>
-                          <CalendarEventList
-                            events={slot.events}
-                            onMorePress={() => handleMorePress(slot.events, slot)}
-                            isMini={true}
-                          />
-                        </View>
-                      </ScrollView>
-                    )
-                  ) : (
-                    <View style={styles.emptySlot} />
-                  )}
-                </View>
-              </React.Fragment>
-            ))}
+                      <View style={styles.emptySlot} />
+                    )}
+                  </View>
+                </React.Fragment>
+              );
+            })}
             <Text style={styles.timeText}>23:00</Text>
           </View>
         </ScrollView>
@@ -254,21 +181,24 @@ const TimePicker: React.FC<TimePickerProps> = ({ onSelectionChange, bookedSlots 
           <View style={styles.modalContent}>
             {renderModalTitle}
             <ScrollView style={styles.modalScroll}>
-              {modalEvents.map((event, index) => (
-                <View key={index} style={styles.modalEvent}>
-                  <CalendarEventCard
-                    salonName={event.salonName}
-                    service={event.service}
-                    masterName={event.masterName}
-                    rating={event.rating}
-                    time={event.time}
-                    duration={event.duration}
-                    avatarUri={event.avatarUri}
-                    status={event.status}
-                    isMini={false}
-                  />
-                </View>
-              ))}
+              {(modalEvents || []).map((event, index) => {
+                if (!event) return null;
+                return (
+                  <View key={index} style={styles.modalEvent}>
+                    <CalendarEventCard
+                      salonName={event.salonName}
+                      service={event.service}
+                      masterName={event.masterName}
+                      rating={event.rating}
+                      time={event.time}
+                      duration={event.duration}
+                      avatarUri={event.avatarUri}
+                      status={event.status}
+                      isMini={false}
+                    />
+                  </View>
+                );
+              })}
             </ScrollView>
             <TouchableOpacity
               style={styles.closeButton}

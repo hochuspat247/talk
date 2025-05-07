@@ -48,15 +48,16 @@ export const useRegisterLogic = ({
   }, []);
 
   const handleRegister = useCallback(() => {
+    console.log('handleRegister called with:', { phone, password, confirmPassword });
     if (phone && password === confirmPassword) {
+      console.log('Registering user...');
       registerUser(phone, password);
-      // Перенаправляем в PlayerNavigator вместо Home
-      navigation.navigate('PlayerNavigator');
-      setTimeout(() => {
-        onVerificationSuccess?.('user');
-      }, 1000);
+      console.log('Calling onVerificationSuccess with role: Client');
+      onVerificationSuccess?.('Client');
+    } else {
+      console.log('Registration failed: phone or password mismatch', { phone, password, confirmPassword });
     }
-  }, [password, confirmPassword, phone, navigation, onVerificationSuccess]);
+  }, [password, confirmPassword, phone, onVerificationSuccess]);
 
   const isRegisterDisabled = password === '' || password !== confirmPassword;
 

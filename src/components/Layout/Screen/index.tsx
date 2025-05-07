@@ -1,18 +1,13 @@
 import React from 'react';
-import { ScrollView, View, StyleProp, ViewStyle } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { styles } from './styled';
-
-interface ScreenProps {
-  children: React.ReactNode;
-  style?: StyleProp<ViewStyle>;
-  contentContainerStyle?: StyleProp<ViewStyle>;
-}
+import { ScreenProps } from './types';
 
 /**
  * Компонент-обёртка для экрана с прокруткой и заданными отступами.
- * @param children - Дочерние элементы.
- * @param style - Стили для внешнего контейнера.
- * @param contentContainerStyle - Стили для контейнера содержимого ScrollView.
+ *
+ * @param {ScreenProps} props - Пропсы компонента.
+ * @returns {JSX.Element} Компонент экрана.
  */
 const Screen: React.FC<ScreenProps> = ({ children, style, contentContainerStyle }) => {
   return (

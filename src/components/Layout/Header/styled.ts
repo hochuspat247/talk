@@ -1,27 +1,19 @@
 import { StyleSheet } from 'react-native';
 import { Colors } from '@constants/Colors';
-import { FONTS } from '@constants/Fonts';
 
 export const styles = StyleSheet.create({
   container: {
-    paddingVertical: 10,
+    padding: 16,
   },
   topContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between', // Логотип слева, иконки справа
+    justifyContent: 'space-between',
     alignItems: 'center',
+    marginBottom: 8,
   },
   title: {
-    fontFamily: FONTS.MANROPE_BOLD,
-    fontSize: 31,
-    color: Colors.text,
-  },
-  subtitleContainer: {
-    marginTop: 4, // Отступ сверху от верхнего блока
-  },
-  subtitle: {
-    fontFamily: FONTS.MANROPE_BOLD,
     fontSize: 24,
+    fontWeight: 'bold',
     color: Colors.text,
   },
   iconsContainer: {
@@ -36,18 +28,24 @@ export const styles = StyleSheet.create({
     position: 'absolute',
     top: -2,
     right: -2,
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: Colors.notification,
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: Colors.primary,
   },
   avatarContainer: {
     marginLeft: 16,
   },
   avatar: {
-    width: 54,
-    height: 54,
-    borderRadius: 160,
-    backgroundColor: Colors.grayLight,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+  },
+  subtitleContainer: {
+    marginTop: 4,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: Colors.text,
   },
 });

@@ -1,29 +1,24 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleProp, ViewStyle } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { styles } from './styled';
+import { PeriodSwitchProps, PeriodConfig } from './types';
+import { PERIODS } from './constants';
 
-export type PeriodType = 'today' | 'week' | 'month';
-
-interface PeriodSwitchProps {
-  selectedPeriod: PeriodType;
-  onPeriodChange: (period: PeriodType) => void;
-  style?: StyleProp<ViewStyle>;
-}
-
+/**
+ * Компонент переключателя периодов (Сегодня, Неделя, Месяц).
+ * Позволяет пользователю выбирать временной период с визуальным выделением активного состояния.
+ *
+ * @param {PeriodSwitchProps} props - Пропсы компонента.
+ * @returns {JSX.Element} Компонент переключателя периодов.
+ */
 const PeriodSwitch: React.FC<PeriodSwitchProps> = ({
   selectedPeriod,
   onPeriodChange,
   style,
 }) => {
-  const periods: { label: string; value: PeriodType }[] = [
-    { label: 'Сегодня', value: 'today' },
-    { label: 'Неделя', value: 'week' },
-    { label: 'Месяц', value: 'month' },
-  ];
-
   return (
     <View style={[styles.container, style]}>
-      {periods.map((period) => (
+      {PERIODS.map((period: PeriodConfig) => (
         <TouchableOpacity
           key={period.value}
           style={[

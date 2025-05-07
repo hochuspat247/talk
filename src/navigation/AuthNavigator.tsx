@@ -8,7 +8,6 @@ import PasswordScreen from '@screens/auth/Password/PasswordScreen';
 import { Colors } from '@constants/Colors';
 import { FONTS } from '@constants/Fonts';
 import { TEXTS } from '@constants/Texts';
-import { PlayerNavigator } from '@navigation/PlayerNavigator'; // Импортируем PlayerNavigator
 
 export type RootStackParamList = {
   Welcome: undefined;
@@ -17,8 +16,7 @@ export type RootStackParamList = {
   Verification: { phone: string; userId: number; isRegistered: boolean };
   Password: { phone: string };
   Home: undefined;
-  AdminNavigator: undefined;
-  PlayerNavigator: undefined; // Добавляем PlayerNavigator в типы
+  MasterNavigator: undefined;
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -34,14 +32,15 @@ export const AuthNavigator = ({ onVerificationSuccess }: AuthNavigatorProps) => 
       <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
       <Stack.Screen
         name="Register"
-        component={RegisterScreen}
         options={{
           title: TEXTS.REGISTER_TITLE,
           headerStyle: { backgroundColor: Colors.white },
           headerTintColor: Colors.text,
           headerTitleStyle: { fontFamily: FONTS.MANROPE_SEMI_BOLD, fontSize: 18 },
         }}
-      />
+      >
+        {(props) => <RegisterScreen {...props} onVerificationSuccess={onVerificationSuccess} />}
+      </Stack.Screen>
       <Stack.Screen
         name="Verification"
         options={{
@@ -62,19 +61,8 @@ export const AuthNavigator = ({ onVerificationSuccess }: AuthNavigatorProps) => 
           headerTitleStyle: { fontFamily: FONTS.MANROPE_SEMI_BOLD, fontSize: 18 },
         }}
       >
-        {(props) => <PasswordScreen {...props} onVerificationSuccess={onVerificationSuccess} />}
+        {(props) => <VerificationScreen {...props} onVerificationSuccess={onVerificationSuccess} />}
       </Stack.Screen>
-      <Stack.Screen
-        name="PlayerNavigator"
-        component={PlayerNavigator}
-        options={{ headerShown: false }}
-        listeners={{
-          // Сбрасываем стек навигации, чтобы пользователь не мог вернуться назад
-          beforeRemove: (e) => {
-            e.preventDefault(); // Предотвращаем возврат назад
-          },
-        }}
-      />
     </Stack.Navigator>
   );
 };

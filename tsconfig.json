@@ -12,7 +12,8 @@
       "@assets/*": ["../assets/*"],
       "@utils/*": ["utils/*"], // Добавлено для src/utils/
       "@types/*": ["types/*"], // Добавлено для src/types/
-      "@hooks/*": ["hooks/*"]
+      "@hooks/*": ["hooks/*"],
+      "@mocks/*": ["mocks/*"]
     }
   }
 }

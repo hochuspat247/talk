@@ -33,7 +33,7 @@ Tallk
 ├─ src
 │  ├─ navigation
 │  │  ├─ AuthNavigator.tsx
-│  │  ├─ PlayerNavigator.tsx
+│  │  ├─ ClientNavigator.tsx
 │  │  └─ AdminNavigator.tsx
 │  ├─ screens
 │  │  ├─ WelcomeScreen.tsx
@@ -55,23 +55,15 @@ Tallk
 │  │  │     ├─ styled.ts
 │  │  │     ├─ PasswordScreen.tsx
 │  │  │     └─ types.ts
-│  │  ├─ player
+│  │  ├─ Client
 │  │  │  ├─ index.tsx
-│  │  │  ├─ Home
-│  │  │  │  ├─ HomeScreen.tsx
-│  │  │  │  └─ styled.ts
-│  │  │  ├─ Bookings
-│  │  │  │  ├─ BookingsScreen.tsx
-│  │  │  │  └─ styled.ts
-│  │  │  └─ Profile
-│  │  │     ├─ ProfileScreen.tsx
-│  │  │     └─ styled.ts
-│  │  └─ admin
+│  │  │  └─ Home
+│  │  │     ├─ HomeScreen.tsx
+│  │  │     ├─ styled.ts
+│  │  │     └─ mockData.ts
+│  │  └─ Master
 │  │     ├─ Home
 │  │     │  ├─ HomeScreen.tsx
-│  │     │  └─ styled.ts
-│  │     ├─ Bookings
-│  │     │  ├─ BookingsScreen.tsx
 │  │     │  └─ styled.ts
 │  │     ├─ Profile
 │  │     │  └─ ProfileScreen.tsx
@@ -79,31 +71,11 @@ Tallk
 │  │     │  └─ SelectUserScreen.tsx
 │  │     ├─ Filter
 │  │     │  └─ FilterScreen.tsx
-│  │     ├─ ProfileOptions
-│  │     │  ├─ ProfileOptionsScreen.tsx
-│  │     │  └─ styled.ts
-│  │     └─ Home
-│  │        └─ HomeScreen.tsx
+│  │     └─ ProfileOptions
+│  │        ├─ ProfileOptionsScreen.tsx
+│  │        └─ styled.ts
 │  ├─ components
 │  │  ├─ index.tsx
-│  │  ├─ BottomNavigator
-│  │  │  ├─ index.tsx
-│  │  │  └─ styled.ts
-│  │  ├─ DatePicker
-│  │  │  ├─ index.tsx
-│  │  │  └─ styled.ts
-│  │  ├─ TimePicker
-│  │  │  ├─ index.tsx
-│  │  │  └─ styled.ts
-│  │  ├─ CourtSelector
-│  │  │  ├─ index.tsx
-│  │  │  └─ styled.ts
-│  │  ├─ BookingConfirmation
-│  │  │  ├─ index.tsx
-│  │  │  └─ styled.ts
-│  │  ├─ ContactCard
-│  │  │  ├─ index.tsx
-│  │  │  └─ styled.ts
 │  │  ├─ UI
 │  │  │  ├─ Button
 │  │  │  │  ├─ index.tsx
@@ -140,18 +112,32 @@ Tallk
 │  │  │  │  └─ hooks
 │  │  │  │     ├─ useSecureEntry.ts
 │  │  │  │     └─ usePasswordStrength.ts
-│  │  │  └─ PeriodSwitch
+│  │  │  ├─ PeriodSwitch
+│  │  │  │  ├─ index.tsx
+│  │  │  │  └─ styled.ts
+│  │  │  ├─ CalendarEventCard
+│  │  │  │  ├─ index.tsx
+│  │  │  │  └─ stled.ts
+│  │  │  ├─ CalendarEventList
+│  │  │  │  └─ index.tsx
+│  │  │  └─ BottomNavigator
 │  │  │     ├─ index.tsx
 │  │  │     └─ styled.ts
 │  │  └─ Layout
 │  │     ├─ Screen
-│  │     │  ├─ Screen.tsx
+│  │     │  ├─ index.tsx
 │  │     │  └─ styled.ts
 │  │     ├─ TransparentContainer
 │  │     │  ├─ index.tsx
 │  │     │  ├─ styled.ts
 │  │     │  └─ types.ts
-│  │     └─ Header
+│  │     ├─ Header
+│  │     │  ├─ index.tsx
+│  │     │  └─ styled.ts
+│  │     ├─ BookingSummary
+│  │     │  ├─ index.tsx
+│  │     │  └─ styled.ts
+│  │     └─ TimePicker
 │  │        ├─ index.tsx
 │  │        └─ styled.ts
 │  ├─ constants
@@ -160,8 +146,6 @@ Tallk
 │  │  ├─ Texts.ts
 │  │  ├─ FontSizes.ts
 │  │  └─ phone.ts
-│  ├─ context
-│  │  └─ BookingContext.tsx
 │  ├─ api
 │  │  ├─ auth.ts
 │  │  ├─ bookings.ts
@@ -194,9 +178,9 @@ Tallk
 │        ├─ usePasswordLogic.ts
 │        ├─ useRegisterLogic.ts
 │        └─ useVerificationLogic.ts
-├─ package-lock.json
 ├─ README.md
 ├─ app.json
+├─ package-lock.json
 ├─ android
 │  ├─ app
 │  │  ├─ build.gradle
@@ -210,59 +194,67 @@ Tallk
 │  │        │  └─ com
 │  │        │     └─ tallk
 │  │        │        └─ app
-│  │        │           ├─ MainApplication.kt
-│  │        │           └─ MainActivity.kt
-│  │        ├─ res
-│  │        │  ├─ drawable
-│  │        │  │  ├─ ic_launcher_background.xml
-│  │        │  │  └─ rn_edit_text_material.xml
-│  │        │  ├─ drawable-hdpi
-│  │        │  │  └─ splashscreen_logo.png
-│  │        │  ├─ drawable-mdpi
-│  │        │  │  └─ splashscreen_logo.png
-│  │        │  ├─ drawable-xhdpi
-│  │        │  │  └─ splashscreen_logo.png
-│  │        │  ├─ drawable-xxhdpi
-│  │        │  │  └─ splashscreen_logo.png
-│  │        │  ├─ drawable-xxxhdpi
-│  │        │  │  └─ splashscreen_logo.png
-│  │        │  ├─ mipmap-hdpi
-│  │        │  │  ├─ ic_launcher.webp
-│  │        │  │  ├─ ic_launcher_round.webp
-│  │        │  │  └─ ic_launcher_foreground.webp
-│  │        │  ├─ mipmap-mdpi
-│  │        │  │  ├─ ic_launcher.webp
-│  │        │  │  ├─ ic_launcher_round.webp
-│  │        │  │  └─ ic_launcher_foreground.webp
-│  │        │  ├─ mipmap-xhdpi
-│  │        │  │  ├─ ic_launcher.webp
-│  │        │  │  ├─ ic_launcher_round.webp
-│  │        │  │  └─ ic_launcher_foreground.webp
-│  │        │  ├─ mipmap-xxhdpi
-│  │        │  │  ├─ ic_launcher.webp
-│  │        │  │  ├─ ic_launcher_round.webp
-│  │        │  │  └─ ic_launcher_foreground.webp
-│  │        │  ├─ mipmap-xxxhdpi
-│  │        │  │  ├─ ic_launcher.webp
-│  │        │  │  ├─ ic_launcher_round.webp
-│  │        │  │  └─ ic_launcher_foreground.webp
-│  │        │  ├─ values
-│  │        │  │  ├─ colors.xml
-│  │        │  │  ├─ strings.xml
-│  │        │  │  └─ styles.xml
-│  │        │  ├─ mipmap-anydpi-v26
-│  │        │  │  ├─ ic_launcher.xml
-│  │        │  │  └─ ic_launcher_round.xml
-│  │        │  └─ values-night
-│  │        │     └─ colors.xml
-│  │        └─ assets
-│  │           └─ fonts
-│  │              ├─ NEXTART_Bold.otf
-│  │              ├─ Manrope-Regular.ttf
-│  │              ├─ Manrope-ExtraBold.ttf
-│  │              ├─ Manrope-Bold.ttf
-│  │              ├─ Manrope-Medium.ttf
-│  │              └─ Manrope-SemiBold.ttf
+│  │        │           ├─ MainActivity.kt
+│  │        │           └─ MainApplication.kt
+│  │        └─ res
+│  │           ├─ drawable
+│  │           │  ├─ ic_launcher_background.xml
+│  │           │  ├─ rn_edit_text_material.xml
+│  │           │  └─ splashscreen.xml
+│  │           ├─ drawable-hdpi
+│  │           │  ├─ splashscreen_logo.png
+│  │           │  └─ splashscreen_image.png
+│  │           ├─ drawable-mdpi
+│  │           │  ├─ splashscreen_logo.png
+│  │           │  └─ splashscreen_image.png
+│  │           ├─ drawable-xhdpi
+│  │           │  ├─ splashscreen_logo.png
+│  │           │  └─ splashscreen_image.png
+│  │           ├─ drawable-xxhdpi
+│  │           │  ├─ splashscreen_logo.png
+│  │           │  └─ splashscreen_image.png
+│  │           ├─ drawable-xxxhdpi
+│  │           │  ├─ splashscreen_logo.png
+│  │           │  └─ splashscreen_image.png
+│  │           ├─ mipmap-hdpi
+│  │           │  ├─ ic_launcher.webp
+│  │           │  ├─ ic_launcher_round.webp
+│  │           │  ├─ ic_launcher.png
+│  │           │  ├─ ic_launcher_round.png
+│  │           │  └─ ic_launcher_foreground.png
+│  │           ├─ mipmap-mdpi
+│  │           │  ├─ ic_launcher.webp
+│  │           │  ├─ ic_launcher_round.webp
+│  │           │  ├─ ic_launcher.png
+│  │           │  ├─ ic_launcher_round.png
+│  │           │  └─ ic_launcher_foreground.png
+│  │           ├─ mipmap-xhdpi
+│  │           │  ├─ ic_launcher.webp
+│  │           │  ├─ ic_launcher_round.webp
+│  │           │  ├─ ic_launcher.png
+│  │           │  ├─ ic_launcher_round.png
+│  │           │  └─ ic_launcher_foreground.png
+│  │           ├─ mipmap-xxhdpi
+│  │           │  ├─ ic_launcher.webp
+│  │           │  ├─ ic_launcher_round.webp
+│  │           │  ├─ ic_launcher.png
+│  │           │  ├─ ic_launcher_round.png
+│  │           │  └─ ic_launcher_foreground.png
+│  │           ├─ mipmap-xxxhdpi
+│  │           │  ├─ ic_launcher.webp
+│  │           │  ├─ ic_launcher_round.webp
+│  │           │  ├─ ic_launcher.png
+│  │           │  ├─ ic_launcher_round.png
+│  │           │  └─ ic_launcher_foreground.png
+│  │           ├─ values
+│  │           │  ├─ colors.xml
+│  │           │  ├─ strings.xml
+│  │           │  └─ styles.xml
+│  │           ├─ mipmap-anydpi-v26
+│  │           │  ├─ ic_launcher.xml
+│  │           │  └─ ic_launcher_round.xml
+│  │           └─ values-night
+│  │              └─ colors.xml
 │  ├─ build
 │  │  └─ generated
 │  │     └─ autolinking
@@ -277,8 +269,7 @@ Tallk
 │  ├─ gradle.properties
 │  ├─ gradlew
 │  ├─ gradlew.bat
-│  ├─ settings.gradle
-│  └─ link-assets-manifest.json
+│  └─ settings.gradle
 └─ package.json
 
 ```

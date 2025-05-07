@@ -1,28 +1,16 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Image, StyleProp, ViewStyle } from 'react-native';
+import { View, Text, TouchableOpacity, Image } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { styles } from './styled';
+import { HeaderProps } from './types';
+import { DEFAULT_AVATAR } from './constants';
 import { Colors } from '@constants/Colors';
 
-interface HeaderProps {
-  title?: string;
-  subtitle?: string;
-  showNotification?: boolean;
-  showSearch?: boolean;
-  showAvatar?: boolean;
-  avatarUri?: string;
-  hasNotification?: boolean;
-  onNotificationPress?: () => void;
-  onSearchPress?: () => void;
-  onAvatarPress?: () => void;
-  style?: StyleProp<ViewStyle>;
-}
-
-const defaultAvatar = require('@assets/images/default-avatar.png');
-
 /**
- * Компонент заголовка с логотипом, подзаголовком, иконками уведомлений, поиска и аватара.
- * @param props - Пропсы компонента.
+ * Компонент заголовка с логотипом, подзаголовком и иконками уведомлений, поиска и аватара.
+ *
+ * @param {HeaderProps} props - Пропсы компонента.
+ * @returns {JSX.Element} Компонент заголовка.
  */
 const Header: React.FC<HeaderProps> = ({
   title = 'TALLC',
@@ -57,7 +45,7 @@ const Header: React.FC<HeaderProps> = ({
           {showAvatar && (
             <TouchableOpacity onPress={onAvatarPress} style={styles.avatarContainer}>
               <Image
-                source={avatarUri ? { uri: avatarUri } : defaultAvatar}
+                source={avatarUri ? { uri: avatarUri } : DEFAULT_AVATAR}
                 style={styles.avatar}
               />
             </TouchableOpacity>

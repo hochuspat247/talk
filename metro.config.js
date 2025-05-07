@@ -14,6 +14,7 @@ config.resolver.extraNodeModules = {
   '@utils': `${__dirname}/src/utils`,
   '@types': `${__dirname}/src/types`,
   '@hooks': `${__dirname}/src/hooks`, // Добавлен алиас для hooks
+  '@mocks': `${__dirname}/src/mocks`, // Добавлен алиас для hooks
 };
 // Исключаем $RECYCLE.BIN из сканирования
 config.resolver.blockList = [/\$RECYCLE\.BIN/];

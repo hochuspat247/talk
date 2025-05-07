@@ -7,7 +7,7 @@ export interface User {
   birth_date: string | null;
   phone: string;
   photo: string | null;
-  role: 'user' | 'admin';
+  role: 'user' | 'Master';
   is_active: boolean;
 }
 
@@ -19,7 +19,7 @@ export interface UserCreate {
   phone: string;
   photo: string | null;
   password: string;
-  is_admin: boolean;
+  is_Master: boolean;
 }
 
 export interface Token {
@@ -41,7 +41,7 @@ export interface Booking {
   end_time: string; // ISO 8601
   status: 'active' | 'canceled';
   price: number;
-  user_name?: string; // For admins
+  user_name?: string; // For Masters
   date?: string; // YYYY-MM-DD, for frontend
   time?: string; // HH:MM-HH:MM, for frontend
 }
@@ -51,14 +51,14 @@ export interface BookingCreate {
   start_time: string; // ISO 8601
   end_time: string; // ISO 8601
   price: number;
-  user_id?: number; // Optional, for admins
+  user_id?: number; // Optional, for Masters
 }
 
 export interface BookingAvailability {
   start: string; // HH:MM
   end: string; // HH:MM
   is_booked: boolean;
-  name?: string; // For admins
+  name?: string; // For Masters
 }
 
 // Типы для кортов
