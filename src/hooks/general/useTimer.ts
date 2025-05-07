@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
 
-/**
- * Хук для управления таймером с возможностью сброса.
- * @param initialTime - Начальное значение таймера в секундах.
- * @returns Объект с текущим значением таймера и функцией сброса.
- */
+
+
+
+
+
 export const useTimer = (initialTime: number) => {
   const [timer, setTimer] = useState(initialTime);
 

@@ -7,11 +7,11 @@ import { useRegisterLogic } from '@hooks/auth/useRegisterLogic';
 import { styles } from './styled';
 import { RegisterScreenProps } from './types';
 
-/**
- * Экран регистрации для создания нового пользователя.
- * Позволяет ввести пароль, подтвердить его и зарегистрироваться.
- * @param props - Пропсы экрана, включая навигацию и параметры маршрута.
- */
+
+
+
+
+
 const RegisterScreen: React.FC<RegisterScreenProps> = ({ route, navigation, onVerificationSuccess }) => {
   const {
     password,
@@ -53,7 +53,7 @@ const RegisterScreen: React.FC<RegisterScreenProps> = ({ route, navigation, onVe
           title={TEXTS.REGISTER_BUTTON}
           onPress={handleRegister}
           variant="primary"
-          block={isRegisterDisabled} // Меняем disabled на block
+          block={isRegisterDisabled} 
         />
       </View>
     </View>

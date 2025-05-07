@@ -1,4 +1,4 @@
-// src/components/ToggleSwitch/index.tsx
+
 import React, { useState } from 'react';
 import { TouchableOpacity, Text, View } from 'react-native';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';

@@ -3,20 +3,19 @@ import { View, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { styles } from './styled';
-import { BottomNavigatorProps, RootStackParamList, TabConfig } from './types';
+import { TabConfig, TabName } from './types';
 import { TABS, ACTIVE_TAB_COLOR, INACTIVE_TAB_COLOR, ICON_SIZE } from './constants';
 
-/**
- * Компонент нижней навигационной панели с вкладками.
- * Отображает иконки для каждой вкладки и индикатор активной вкладки.
- *
- * @param {BottomNavigatorProps} props - Пропсы компонента.
- * @returns {JSX.Element} Компонент нижней навигации.
- */
-const BottomNavigator: React.FC<BottomNavigatorProps> = ({ activeTab }) => {
-  const navigation = useNavigation<RootStackParamList>();
 
-  const handleTabPress = (tab: BottomNavigatorProps['activeTab']) => {
+export interface BottomNavigatorProps<T extends object> {
+  activeTab: TabName;
+}
+
+
+const BottomNavigator = <T extends object>({ activeTab }: BottomNavigatorProps<T>) => {
+  const navigation = useNavigation<any>(); 
+
+  const handleTabPress = (tab: TabName) => {
     navigation.navigate(tab);
   };
 

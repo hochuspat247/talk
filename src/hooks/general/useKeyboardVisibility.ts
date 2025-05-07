@@ -1,11 +1,11 @@
-// src/hooks/general/useKeyboardVisibility.ts
+
 import { useState, useEffect } from 'react';
 import { Keyboard } from 'react-native';
 
-/**
- * Хук для отслеживания видимости клавиатуры.
- * @returns Булево значение, указывающее, видима ли клавиатура.
- */
+
+
+
+
 export const useKeyboardVisibility = () => {
   const [isKeyboardVisible, setKeyboardVisible] = useState<boolean>(false);
 

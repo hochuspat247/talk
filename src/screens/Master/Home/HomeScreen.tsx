@@ -81,7 +81,7 @@ const HomeScreen = ({ navigation }: HomeScreenProps) => {
     fetchUserProfile();
   }, []);
 
-  // Загрузка списка кортов
+  
   useEffect(() => {
     const fetchCourts = async () => {
       setIsLoading(true);
@@ -113,7 +113,7 @@ const HomeScreen = ({ navigation }: HomeScreenProps) => {
 
 
 
-  // Форматирование временного диапазона
+  
   const formatTimeRange = (slots: string[]): string => {
     if (!slots.length) return '';
     const sortedSlots = [...slots].sort();

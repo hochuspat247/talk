@@ -1,4 +1,4 @@
-// src/components/ToggleSwitch/variants.ts
+
 import { TabValue } from './types';
 
 type IconName = 'emoticon-happy-outline' | 'crown';

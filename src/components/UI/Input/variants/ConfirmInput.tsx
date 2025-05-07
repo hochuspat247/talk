@@ -66,7 +66,7 @@ const ConfirmInput: React.FC<ConfirmInputProps> = ({
         >
           <Ionicons
             name={internalIsSuccess ? 'checkmark' : isSecure ? 'eye-off' : 'eye'}
-            size={28} // Увеличиваем размер иконки
+            size={28} 
             color={internalIsSuccess ? '#00FF00' : Colors.text}
           />
         </TouchableOpacity>

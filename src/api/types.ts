@@ -1,4 +1,4 @@
-// Типы для пользователей
+
 export interface User {
   id: number;
   email: string;
@@ -24,44 +24,44 @@ export interface UserCreate {
 
 export interface Token {
   access_token: string;
-  refresh_token: string; // Обязательное поле
+  refresh_token: string; 
   token_type: string;
   role: string;
   user_id: number;
-  expires_in: number; // Обязательное поле
+  expires_in: number; 
 }
 
-// Типы для бронирований
+
 export interface Booking {
   id: number;
   court_id: number;
-  court?: string; // Optional, populated on frontend
+  court?: string; 
   user_id: number;
-  start_time: string; // ISO 8601
-  end_time: string; // ISO 8601
+  start_time: string; 
+  end_time: string; 
   status: 'active' | 'canceled';
   price: number;
-  user_name?: string; // For Masters
-  date?: string; // YYYY-MM-DD, for frontend
-  time?: string; // HH:MM-HH:MM, for frontend
+  user_name?: string; 
+  date?: string; 
+  time?: string; 
 }
 
 export interface BookingCreate {
   court_id: number;
-  start_time: string; // ISO 8601
-  end_time: string; // ISO 8601
+  start_time: string; 
+  end_time: string; 
   price: number;
-  user_id?: number; // Optional, for Masters
+  user_id?: number; 
 }
 
 export interface BookingAvailability {
-  start: string; // HH:MM
-  end: string; // HH:MM
+  start: string; 
+  end: string; 
   is_booked: boolean;
-  name?: string; // For Masters
+  name?: string; 
 }
 
-// Типы для кортов
+
 export interface Court {
   id: number;
   name: string;
@@ -73,7 +73,7 @@ export interface CourtCreate {
   description: string | null;
 }
 
-// Типы для ошибок
+
 export interface ApiError {
   status: string;
   message: string;

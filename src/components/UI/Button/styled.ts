@@ -1,4 +1,4 @@
-// src/components/Button/styled.ts
+
 import { StyleSheet } from 'react-native';
 import { Colors } from '@constants/Colors';
 import { FONTS } from '@constants/Fonts';
@@ -20,13 +20,13 @@ export const styles = StyleSheet.create({
   buttonText: {
     fontFamily: FONTS.MANROPE_REGULAR,
     fontSize: 18,
-    color: Colors.white, // #FFFFFF
+    color: Colors.white, 
     textAlign: 'center',
   },
   textButtonText: {
     fontFamily: FONTS.MANROPE_REGULAR,
     fontSize: 18,
-    color: Colors.text, // #333333
+    color: Colors.text, 
   },
   iconNoFill: {
     backgroundColor: 'transparent',
@@ -38,38 +38,38 @@ export const styles = StyleSheet.create({
     display: 'none',
   },
   primary: {
-    backgroundColor: Colors.primary, // #363636
+    backgroundColor: Colors.primary, 
   },
   secondary: {
-    backgroundColor: Colors.secondary, // #FF7F7F
+    backgroundColor: Colors.secondary, 
   },
   text: {
-    backgroundColor: Colors.white, // #FFFFFF
+    backgroundColor: Colors.white, 
   },
   accent: {
-    backgroundColor: Colors.accent, // #5856D6
+    backgroundColor: Colors.accent, 
   },
   disabled: {
-    backgroundColor: Colors.disabled, // #ADADAD
+    backgroundColor: Colors.disabled, 
   },
   blocked: {
-    backgroundColor: Colors.primary, // #363636
+    backgroundColor: Colors.primary, 
   },
   blockedText: {
     fontFamily: FONTS.MANROPE_REGULAR,
     fontSize: 18,
-    color: Colors.blockedText, // #96989F
+    color: Colors.blockedText, 
     textAlign: 'center',
   },
   iconVariantSmall: {
-    backgroundColor: Colors.accent, // #5856D6 (замена для #F4A8D6)
+    backgroundColor: Colors.accent, 
     height: 48,
     borderRadius: 16,
     justifyContent: 'center',
     alignItems: 'center',
   },
   iconVariantFull: {
-    backgroundColor: Colors.accent, // #5856D6 (замена для #F4A8D6)
+    backgroundColor: Colors.accent, 
     height: 61,
     borderRadius: 16,
     paddingVertical: 10,

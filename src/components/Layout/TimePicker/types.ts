@@ -1,14 +1,14 @@
 export interface TimeSlot {
-    /** Начало временного слота (например, "08:00"). */
+    
     start: string;
   
-    /** Конец временного слота (например, "09:00"). */
+    
     end: string;
   
-    /** Флаг, указывающий, забронирован ли слот. */
+    
     isBooked: boolean;
   
-    /** Список событий в слоте. */
+    
     events: Array<{
       salonName: string;
       service: string;
@@ -22,13 +22,13 @@ export interface TimeSlot {
   }
   
   export interface TimePickerProps {
-    /** Обработчик выбора временных слотов (опционально). */
+    
     onSelectionChange?: (selectedSlots: string[]) => void;
   
-    /** Список забронированных слотов (опционально). */
+    
     bookedSlots?: TimeSlot[];
   
-    /** Дата в формате YYYY-MM-DD (опционально). */
+    
     date?: string;
   }
   

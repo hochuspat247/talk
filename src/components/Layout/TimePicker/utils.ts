@@ -1,13 +1,13 @@
 import moment from 'moment';
 import { CalculatePositionParams, PositionData, TimeSlot } from './types';
 
-/**
- * Инициализирует временные слоты на основе забронированных слотов.
- *
- * @param {TimeSlot[]} bookedSlots - Список забронированных слотов.
- * @param {number} startHour - Начальный час для слотов.
- * @returns {TimeSlot[]} Массив временных слотов.
- */
+
+
+
+
+
+
+
 export const initializeTimeSlots = (bookedSlots: TimeSlot[], startHour: number): TimeSlot[] => {
   const slots: TimeSlot[] = [];
 
@@ -29,12 +29,12 @@ export const initializeTimeSlots = (bookedSlots: TimeSlot[], startHour: number):
   return slots;
 };
 
-/**
- * Рассчитывает позицию текущей временной линии на основе текущего времени и параметров слотов.
- *
- * @param {CalculatePositionParams} params - Параметры для расчёта позиции.
- * @returns {PositionData} Данные о позиции линии.
- */
+
+
+
+
+
+
 export const calculatePosition = ({
   timeSlots,
   currentDate,

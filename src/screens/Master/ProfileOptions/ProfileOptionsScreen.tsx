@@ -17,7 +17,7 @@ import Screen from "@components/Layout/Screen"
 import { getProfile, updateProfile } from '@api/profile';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// Типы для навигации
+
 type RootStackParamList = {
   Home: undefined;
   Bookings: { court: string; date: string; time: string; status: 'active' | 'canceled'; fromMyBookings?: boolean; selectedSlots?: string[] };
@@ -90,12 +90,12 @@ const ProfileScreen: React.FC<ProfileScreenProps> = () => {
     }
   };
 
-  // Обработка нажатия на поле
+  
   const handleFieldPress = (field: string) => {
     setEditingField(field);
   };
 
-  // Валидация полей
+  
   const validateField = (field: string, value: string) => {
     const newErrors: { [key: string]: string } = { ...errors };
 
@@ -146,7 +146,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  // Форматирование даты рождения
+  
   const formatBirthDate = (text: string) => {
     let cleaned = text.replace(/[^0-9]/g, '');
     if (cleaned.length > 8) cleaned = cleaned.slice(0, 8);
@@ -161,7 +161,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = () => {
     return formatted;
   };
 
-  // Форматирование номера телефона
+  
   const formatPhoneNumber = (text: string) => {
     let cleaned = text.replace(/\D/g, '');
     if (cleaned.startsWith('7') || cleaned.startsWith('8')) cleaned = cleaned.slice(1);
@@ -181,7 +181,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = () => {
     return formatted;
   };
 
-  // Сохранение изменений
+  
   const handleSave = async (field: string, directValue?: string) => {
     const value = directValue ?? tempData[field];
     if (field !== 'selectedImage' && !validateField(field, value)) return;

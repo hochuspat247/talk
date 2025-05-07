@@ -1,4 +1,4 @@
-// @mocks/mockData.ts
+
 
 export interface MockUser {
     firstName: string;
@@ -22,7 +22,7 @@ export interface MockUser {
       rating: number;
       time: string;
       duration: string;
-      guests: number; // Добавляем поле для гостей каждого события
+      guests: number; 
       avatarUri?: string;
       status: 'confirmed' | 'active';
     }>;
@@ -44,7 +44,7 @@ export interface MockUser {
       start: '11:00',
       end: '12:00',
       isBooked: true,
-      guests: 10, // 4 + 3 + 3
+      guests: 10, 
       events: [
         {
           salonName: 'BEAUTYLAB STORE',
@@ -72,7 +72,7 @@ export interface MockUser {
           masterName: 'Мария Сидорова',
           rating: 4.8,
           time: '11:30',
-          duration: '56мин', // Исправлено с 30мин на 56мин
+          duration: '56мин', 
           guests: 3,
           status: 'active',
         },

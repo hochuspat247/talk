@@ -7,8 +7,8 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#F090F10A',
     paddingVertical: 10,
-    borderTopLeftRadius: 43, // Закругление 43
-    borderTopRightRadius: 43, // Закругление 43
+    borderTopLeftRadius: 43, 
+    borderTopRightRadius: 43, 
   },
   tab: {
     alignItems: 'center',

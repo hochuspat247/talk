@@ -1,6 +1,6 @@
-import { useCallback, useState } from 'react'; // Добавлен useState
+import { useCallback, useState } from 'react'; 
 
-// Hooks
+
 import { useKeyboardVisibility } from '@hooks';
 
 interface UseTextInputParams {
@@ -16,14 +16,14 @@ interface UseTextInputReturn {
   isKeyboardVisible: boolean;
 }
 
-/**
- * Хук для управления текстовым вводом, валидацией и видимостью клавиатуры.
- * @param params - Параметры хука.
- * @param params.initialValue - Начальное значение поля ввода.
- * @param params.validate - Функция валидации значения.
- * @param params.onChange - Дополнительный обработчик изменения значения.
- * @returns Объект с состоянием и обработчиками.
- */
+
+
+
+
+
+
+
+
 export const useTextInput = ({
   initialValue = '',
   validate = () => true,

@@ -1,10 +1,10 @@
-// src/api/client.ts
+
 import { InternalAxiosRequestConfig, AxiosResponse } from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { refreshToken, initializeAuth } from './auth';
 import client from './axiosInstance';
 
-// Перехватчик для запросов
+
 client.interceptors.request.use(
   async (config: InternalAxiosRequestConfig) => {
     const token = await AsyncStorage.getItem('token');
@@ -16,7 +16,7 @@ client.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Перехватчик для ответов
+
 client.interceptors.response.use(
   (response: AxiosResponse) => response,
   async (error) => {
@@ -41,7 +41,7 @@ client.interceptors.response.use(
   }
 );
 
-// Экспортируем функцию для инициализации
+
 export const setupAuth = async (): Promise<string | null> => {
   return await initializeAuth();
 };

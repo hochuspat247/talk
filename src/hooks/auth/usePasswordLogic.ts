@@ -23,11 +23,11 @@ interface UsePasswordLogicReturn {
   handlePasswordSubmit: () => void;
 }
 
-/**
- * Хук для управления логикой экрана ввода пароля.
- * @param params - Параметры хука, включая route и onVerificationSuccess.
- * @returns Объект с состоянием и обработчиками.
- */
+
+
+
+
+
 export const usePasswordLogic = ({
   route,
   navigation,
@@ -48,7 +48,7 @@ export const usePasswordLogic = ({
   const formattedPhone = usePhoneFormatter(phone);
 
   const handlePasswordSubmit = useCallback(() => {
-    if (password === CORRECT_PASSWORD) { // Убираем проверку passwordStrength
+    if (password === CORRECT_PASSWORD) { 
       setHasError(false);
       navigation?.navigate('Home');
       setTimeout(() => {

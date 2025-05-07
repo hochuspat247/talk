@@ -18,7 +18,7 @@ export const styles = StyleSheet.create({
   },
   slotWrapper: {
     marginLeft: 45,
-    borderWidth: 1, // Добавляем рамку вокруг слота
+    borderWidth: 1, 
     borderColor: Colors.border,
     borderRadius: 8,
     marginVertical: 4,
@@ -26,7 +26,7 @@ export const styles = StyleSheet.create({
   },
   emptySlot: {
     height: 60,
-    borderWidth: 1, // Добавляем рамку для пустого слота
+    borderWidth: 1, 
     borderColor: Colors.border,
     borderStyle: 'dashed',
     borderRadius: 8,
@@ -34,7 +34,7 @@ export const styles = StyleSheet.create({
   eventListWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 4, // Добавляем отступы внутри списка
+    paddingVertical: 4, 
   },
   eventListContent: {
     flexGrow: 1,

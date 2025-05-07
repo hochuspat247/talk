@@ -10,12 +10,12 @@ export interface Event {
   }
   
   export interface CalendarEventListProps {
-    /** Список событий для отображения. */
+    
     events: Event[];
   
-    /** Обработчик нажатия на кнопку "Показать больше" (опционально). */
+    
     onMorePress?: () => void;
   
-    /** Мини-режим отображения карточек (по умолчанию true). */
+    
     isMini?: boolean;
   }

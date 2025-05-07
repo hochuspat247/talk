@@ -15,7 +15,7 @@ import BottomNavigator from '@components/UI/BottomNavigator';
 import { getProfile } from '@api/profile';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// Определяем типы для параметров навигации
+
 type RootStackParamList = {
   Home: undefined;
   Bookings: {
@@ -37,7 +37,7 @@ type RootStackParamList = {
 type ProfileOptionsScreenProps = StackScreenProps<RootStackParamList, 'ProfileOptions'>;
 
 const ProfileOptionsScreen: React.FC<ProfileOptionsScreenProps> = ({ navigation }) => {
-  // Состояние для данных профиля
+  
   const [profile, setProfile] = useState({
     name: '',
     photo: null as string | null,
@@ -67,7 +67,7 @@ const ProfileOptionsScreen: React.FC<ProfileOptionsScreenProps> = ({ navigation 
 
   const handleMyDataPress = () => {
     console.log('Переход на экран "Мои данные"');
-    navigation.navigate('ProfileOptions'); // Предполагается, что это экран редактирования профиля
+    navigation.navigate('ProfileOptions'); 
   };
 
   const handleAddFriendPress = () => {

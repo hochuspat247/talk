@@ -13,7 +13,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Court, User } from '@api/types';
 import moment from 'moment-timezone';
 
-// Устанавливаем таймзону
+
 moment.tz.setDefault('Europe/Moscow');
 
 type RootStackParamList = {
@@ -30,8 +30,8 @@ type RootStackParamList = {
 };
 
 type FilterData = {
-  dateFrom?: string; // YYYY-MM-DD, необязательный
-  dateTo?: string; // YYYY-MM-DD, необязательный
+  dateFrom?: string; 
+  dateTo?: string; 
   court: string;
   userIds: number[];
 };
@@ -51,28 +51,28 @@ const FilterScreen: React.FC<FilterScreenProps> = ({ navigation, route }) => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Загрузка кортов и пользователей
+  
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        // Проверка, что пользователь — админ
+        
         const userId = await AsyncStorage.getItem('userId');
         if (!userId) throw new Error('Идентификатор пользователя не найден');
         const user = await getProfile(Number(userId));
         if (user.role !== 'Master') throw new Error('Пользователь не является администратором');
 
-        // Загрузка кортов
+        
         const courtsData: Court[] = await getAllCourts();
         const courtNames = courtsData.map((court) => court.name);
         setCourts(courtNames);
         if (!selectedCourt && courtNames.length > 0) setSelectedCourt(courtNames[0]);
 
-        // Загрузка пользователей
+        
         const usersData: User[] = await getAllUsers();
         setUsers(usersData);
 
-        // Инициализация выбранных пользователей из фильтров
+        
         if (initialFilters?.userIds && initialFilters.userIds.length > 0) {
           const selected = usersData
             .filter((user) => initialFilters.userIds.includes(user.id))
@@ -93,7 +93,7 @@ const FilterScreen: React.FC<FilterScreenProps> = ({ navigation, route }) => {
     fetchData();
   }, [initialFilters]);
 
-  // Фильтрация пользователей по поисковому запросу
+  
   const filteredUsers = users.filter(
     (user) =>
       `${user.first_name} ${user.last_name}`.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -142,12 +142,12 @@ const FilterScreen: React.FC<FilterScreenProps> = ({ navigation, route }) => {
 
     console.log('Применение фильтров:', filters);
 
-    // Переходим на MyBookings с фильтрами
+    
     navigation.navigate('MyBookings', { filters });
   };
 
   const handleResetFilters = () => {
-    // Очищаем все поля фильтров
+    
     setDateFrom('');
     setDateTo('');
     setSelectedCourt(courts[0] || '');
@@ -174,7 +174,7 @@ const FilterScreen: React.FC<FilterScreenProps> = ({ navigation, route }) => {
     return moment(date, 'YYYY-MM-DD').format('DD.MM.YYYY');
   };
 
-  // Форматирование имени в "Имя Ф."
+  
   const formatUserName = (user: User) => {
     return `${user.first_name} ${user.last_name.charAt(0)}.`;
   };

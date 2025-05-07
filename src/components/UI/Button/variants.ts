@@ -1,4 +1,4 @@
-// src/components/Button/variants.ts
+
 import { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { Colors } from '@constants/Colors';
 import { styles } from './styled';
@@ -51,5 +51,5 @@ export const DISABLED_CONFIG: VariantConfig = {
 export const BLOCKED_CONFIG: VariantConfig = {
   buttonStyle: styles.blocked,
   textStyle: styles.blockedText,
-  iconColor: Colors.disabled, // Используем disabled вместо gray
+  iconColor: Colors.disabled, 
 };

@@ -1,4 +1,4 @@
-// src/screens/PasswordScreen/PasswordScreen.tsx
+
 import React from 'react';
 import {
   View,
@@ -10,19 +10,19 @@ import {
   Keyboard,
 } from 'react-native';
 
-// Components
+
 import Input from '@components/UI/Input';
 
-// Hooks
+
 import { usePasswordLogic, useKeyboardVisibility } from '@hooks';
 
-// Types
+
 import { Props } from './types';
 
-// Styles
+
 import { styles } from './styled';
 
-// Constants
+
 
 const PasswordScreen: React.FC<Props> = ({ route, onVerificationSuccess }) => {
   const { phone, password, setPassword, hasError, passwordStrength, handlePasswordSubmit } =

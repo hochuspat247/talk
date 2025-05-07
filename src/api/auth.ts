@@ -1,4 +1,4 @@
-// src/api/auth.ts
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as SecureStore from 'expo-secure-store';
 import client from './axiosInstance';
@@ -34,7 +34,7 @@ export const verify = async (phone: string, code: string): Promise<Token> => {
       const expirationTime = Date.now() + response.data.expires_in * 1000;
       await AsyncStorage.setItem('tokenExpiration', expirationTime.toString());
 
-      // Сохраняем в SecureStore для персистентного хранения
+      
       await SecureStore.setItemAsync('refreshToken', response.data.refresh_token);
       await SecureStore.setItemAsync('userId', response.data.user_id.toString());
       await SecureStore.setItemAsync('phone', phone);
@@ -68,7 +68,7 @@ export const refreshToken = async (): Promise<{ access_token: string; expires_in
       throw new Error('No refresh token found');
     }
 
-    // Отправляем refresh_token как query-параметр
+    
     const response = await client.post('/api/auth/refresh', {}, {
       params: {
         refresh_token: refreshTokenStored,
@@ -81,7 +81,7 @@ export const refreshToken = async (): Promise<{ access_token: string; expires_in
     const expirationTime = Date.now() + expiresIn * 1000;
     await AsyncStorage.setItem('tokenExpiration', expirationTime.toString());
 
-    // Если сервер вернул новый refresh_token, сохраняем его
+    
     if (response.data.refresh_token) {
       await SecureStore.setItemAsync('refreshToken', response.data.refresh_token);
       await AsyncStorage.setItem('refreshToken', response.data.refresh_token);
@@ -111,7 +111,7 @@ export const resendCode = async (phone: string): Promise<{ status: string; messa
 
 export const logout = async (): Promise<{ status: string; message: string }> => {
   try {
-    // Очищаем только AsyncStorage, SecureStore сохраняется
+    
     await AsyncStorage.clear();
     console.log('AsyncStorage after logout:', await AsyncStorage.multiGet(['token', 'refreshToken', 'tokenExpiration', 'userId', 'role']));
     console.log('SecureStore after logout:', {
@@ -131,7 +131,7 @@ export const initializeAuth = async (): Promise<string | null> => {
     console.log('initializeAuth - AsyncStorage keys:', keys);
     const [token, refreshTokenStored, tokenExpiration, userId, role] = keys.map(([_, value]) => value);
 
-    // Проверяем SecureStore для персистентных данных
+    
     const secureRefreshToken = await SecureStore.getItemAsync('refreshToken');
     const secureUserId = await SecureStore.getItemAsync('userId');
     console.log('initializeAuth - SecureStore keys:', { refreshToken: secureRefreshToken, userId: secureUserId });
@@ -149,12 +149,12 @@ export const initializeAuth = async (): Promise<string | null> => {
       }
     } else {
       console.log('Missing refreshToken or userId in SecureStore');
-      // Проверяем phone для автоматического входа
+      
       const phone = await SecureStore.getItemAsync('phone');
       if (phone) {
         console.log('Found phone in SecureStore, attempting auto-login:', phone);
         const loginResponse = await login(phone);
-        // Здесь можно перенаправить на экран ввода кода, но для initializeAuth просто возвращаем null
+        
         return null;
       }
       return null;

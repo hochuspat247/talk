@@ -33,7 +33,7 @@ export const getAllBookings = async (): Promise<Booking[]> => {
 
 export const getBooking = async (id: number): Promise<Booking> => {
   try {
-    const response = await client.get(`/api/bookings/${id}`); // Исправлено
+    const response = await client.get(`/api/bookings/${id}`); 
     return response.data;
   } catch (error: any) {
     throw error.response?.data || { status: 'error', message: 'Failed to get booking', code: 500 };
@@ -42,7 +42,7 @@ export const getBooking = async (id: number): Promise<Booking> => {
 
 export const deleteBooking = async (id: number): Promise<{ status: string; message: string }> => {
   try {
-    const response = await client.delete(`/api/bookings/${id}`); // Исправлено
+    const response = await client.delete(`/api/bookings/${id}`); 
     return response.data;
   } catch (error: any) {
     throw error.response?.data || { status: 'error', message: 'Failed to delete booking', code: 500 };
@@ -78,7 +78,7 @@ export const getAvailability = async (courtId: number, date: string): Promise<Bo
           user_ids: params.user_ids && Array.isArray(params.user_ids) && params.user_ids.length > 0 ? params.user_ids : undefined,
         },
         paramsSerializer: (params) => {
-          // Сериализация параметров для корректной отправки user_ids
+          
           const searchParams = new URLSearchParams();
           for (const key in params) {
             if (Array.isArray(params[key])) {

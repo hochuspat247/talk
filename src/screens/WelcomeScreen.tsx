@@ -20,16 +20,16 @@ const WelcomeScreen: React.FC<Props> = ({ navigation }) => {
     <View style={styles.container}>
 
       
-      {/* Фоновые волны */}
+      {}
       <WaveBackground colorScheme="default" />
       
-      {/* Заголовок */}
+      {}
       <View style={styles.header}>
         <Text style={styles.title}>{TEXTS.WELCOME_TITLE}</Text>
         <Text style={styles.subtitle}>{TEXTS.WELCOME_MESSAGE}</Text>
       </View>
       
-      {/* Прозрачный контейнер с переключателем, кнопкой и текстом версии */}
+      {}
       <TransparentContainer>
         <ToggleSwitch
           onChange={(value) => setRole(value)}

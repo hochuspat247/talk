@@ -4,13 +4,13 @@ import { styles } from './styled';
 import { BookingSummaryProps } from './types';
 import { calculateInfoFontSize, formatPrice } from './utils';
 
-/**
- * Компонент для отображения сводки бронирования с датой, количеством гостей и стоимостью.
- * Адаптивно регулирует размер шрифта для текстов гостей и стоимости в зависимости от ширины экрана.
- *
- * @param {BookingSummaryProps} props - Пропсы компонента.
- * @returns {JSX.Element} Компонент сводки бронирования.
- */
+
+
+
+
+
+
+
 const BookingSummary: React.FC<BookingSummaryProps> = ({ date, guests, price }) => {
   const [infoFontSize, setInfoFontSize] = useState(14);
 

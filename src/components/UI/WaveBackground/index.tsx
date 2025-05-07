@@ -1,4 +1,4 @@
-// src/components/WavesBackground/index.tsx
+
 import React from 'react';
 import { View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
@@ -13,7 +13,7 @@ const WavesBackground: React.FC<WavesBackgroundProps> = ({
 
   return (
     <View style={styles.container}>
-      {/* Жёлтая волна */}
+      {}
       <Svg
         viewBox="0 0 390 546"
         style={[styles.svg, styles.yellow]}
@@ -25,7 +25,7 @@ const WavesBackground: React.FC<WavesBackgroundProps> = ({
         />
       </Svg>
 
-      {/* Оранжевая волна */}
+      {}
       <Svg
         viewBox="0 0 349 600"
         style={[styles.svg, styles.orange]}

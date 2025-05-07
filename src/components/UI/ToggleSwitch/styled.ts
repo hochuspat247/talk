@@ -1,4 +1,4 @@
-// src/components/ToggleSwitch/styled.ts
+
 import { StyleSheet } from 'react-native';
 import { Colors } from '@constants/Colors';
 import { FONTS } from '@constants/Fonts';
@@ -6,7 +6,7 @@ import { FONTS } from '@constants/Fonts';
 export const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    backgroundColor: Colors.transparentDark10, // rgba(0, 0, 0, 0.1)
+    backgroundColor: Colors.transparentDark10, 
     borderRadius: 20,
     padding: 8,
     gap: 8,
@@ -21,7 +21,7 @@ export const styles = StyleSheet.create({
     borderRadius: 16,
   },
   activeTab: {
-    backgroundColor: Colors.transparentDark30, // rgba(0, 0, 0, 0.3)
+    backgroundColor: Colors.transparentDark30, 
   },
   inactiveTab: {
     backgroundColor: 'transparent',
@@ -29,7 +29,7 @@ export const styles = StyleSheet.create({
   tabText: {
     fontFamily: FONTS.MANROPE_REGULAR,
     fontSize: 18,
-    color: Colors.white, // #FFFFFF
+    color: Colors.white, 
     textAlign: 'center',
   },
   icon: {

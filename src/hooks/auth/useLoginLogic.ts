@@ -19,11 +19,11 @@ interface UseLoginLogicReturn {
   handleContinue: () => void;
 }
 
-/**
- * Хук для управления логикой экрана логина.
- * @param params - Параметры хука, включая навигацию.
- * @returns Объект с состоянием и обработчиками.
- */
+
+
+
+
+
 export const useLoginLogic = ({ navigation }: UseLoginLogicParams): UseLoginLogicReturn => {
   const { value: phoneNumber, setValue: setPhoneNumber, isValid: isPhoneNumberComplete, isKeyboardVisible } =
     useTextInput({

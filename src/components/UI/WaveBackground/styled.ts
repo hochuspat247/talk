@@ -1,4 +1,4 @@
-// src/components/WavesBackground/styled.ts
+
 import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
@@ -15,9 +15,9 @@ export const styles = StyleSheet.create({
     height: '100%',
   },
   orange: {
-    zIndex: 0, // Под
+    zIndex: 0, 
   },
   yellow: {
-    zIndex: 1, // Над
+    zIndex: 1, 
   },
 });

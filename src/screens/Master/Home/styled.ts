@@ -15,7 +15,7 @@ export const styles = StyleSheet.create({
   },
   bookButtonWrapper: {
     position: 'absolute',
-    bottom: -20, // высота BottomNavigator + небольшой отступ
+    bottom: -20, 
     borderRadius: 30,
     height: 130,
     left:22,

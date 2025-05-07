@@ -6,10 +6,10 @@ import { useVerificationLogic } from '@hooks/auth/useVerificationLogic';
 import { styles } from './styled';
 import { VerificationScreenProps } from './types';
 
-/**
- * Экран верификации, где пользователь вводит код для подтверждения номера телефона.
- * @param props - Пропсы экрана, включая навигацию и параметры маршрута.
- */
+
+
+
+
 const VerificationScreen: React.FC<VerificationScreenProps> = ({ navigation, route, onVerificationSuccess }) => {
   const { phone, isRegistered } = route.params;
   const {

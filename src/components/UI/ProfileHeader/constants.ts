@@ -1,0 +1,58 @@
+
+
+export const SIZES = {
+  
+  AVATAR: 70,
+  PLACEHOLDER_AVATAR: 50,
+  AVATAR_BORDER_RADIUS: 35,
+
+  
+  PREMIUM_BADGE_HEIGHT: 20,
+  PREMIUM_BADGE_WIDTH: 52,
+
+  
+  ICON_SIZE: 25,
+  STAR_SIZE: 16, 
+
+  
+  FONT_SIZES: {
+    NAME: 15,
+    RATING: 11,
+    PHONE: 14,
+    PLACEHOLDER: 28,
+    PREMIUM_TEXT: 8,
+  },
+
+  
+  PADDINGS: {
+    CONTAINER: 10,
+    AVATAR_CONTAINER: 5,
+    MARGINS: {
+      AVATAR_RIGHT: 15,
+      NAME_RIGHT: 10,
+      RATING_VERTICAL: 2,
+      PREMIUM_STAR_RIGHT: 3,
+      BACK_ICON_RIGHT: 10,
+      NAME_AND_RATING_BOTTOM: 2,
+    },
+  },
+};
+
+
+export const COLORS = {
+  PLACEHOLDER_AVATAR: '#ccc',
+  PREMIUM_BADGE: '#FF69B4',
+  PREMIUM_BORDER: '#fff',
+  NAME: '#000',
+  RATING_STAR: '#FFD700',
+  PHONE: '#666',
+  PREMIUM_TEXT: '#fff',
+  BACK_ICON: '#000',
+};
+
+
+export const PREMIUM_BADGE = {
+  BORDER_WIDTH: 2,
+  BORDER_RADIUS: 7,
+  STAR_SIZE: 10,
+};

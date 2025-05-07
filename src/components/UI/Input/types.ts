@@ -1,6 +1,6 @@
+
 import { StyleProp, ViewStyle, TextInputProps } from 'react-native';
 
-// Обновляем интерфейс InputProps
 export interface InputProps extends TextInputProps {
   value: string;
   onChangeText: (text: string) => void;
@@ -16,7 +16,7 @@ export interface InputProps extends TextInputProps {
   agreeMode?: boolean;
   onSubmitEditing?: () => void;
   confirmValue?: string;
-  testID?: string; // Добавляем testID
+  testID?: string;
 }
 
 export type InputVariant =
@@ -30,4 +30,5 @@ export type InputVariant =
   | 'copyable'
   | 'code'
   | 'phone'
-  | 'confirm';
+  | 'confirm'
+  | 'email'; 

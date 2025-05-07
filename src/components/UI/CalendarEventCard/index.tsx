@@ -7,13 +7,13 @@ import { DEFAULT_AVATAR, MAX_LENGTH_MINI, MAX_LENGTH_FULL } from './constants';
 import { Colors } from '@constants/Colors';
 import { truncateText } from './utils';
 
-/**
- * Компонент карточки события в календаре.
- * Отображает информацию о событии с адаптивным дизайном в зависимости от размера (мини или полный).
- *
- * @param {CalendarEventCardProps} props - Пропсы компонента.
- * @returns {JSX.Element} Компонент карточки события.
- */
+
+
+
+
+
+
+
 const CalendarEventCard: React.FC<CalendarEventCardProps> = ({
   salonName,
   service,

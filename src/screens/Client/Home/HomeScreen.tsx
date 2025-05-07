@@ -12,12 +12,12 @@ import { mockUser, mockCourts, mockAvailability } from '@mocks/mockData';
 import { formatDate, formatDateForBookingSummary, calculatePriceAndGuests } from './utils';
 import { PRICE_PER_SLOT } from './constants';
 
-/**
- * Главный экран приложения, отображающий бронирования, переключатель периодов и навигацию.
- *
- * @param {HomeScreenProps} props - Пропсы компонента.
- * @returns {JSX.Element} Компонент главного экрана.
- */
+
+
+
+
+
+
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [selectedCourt] = useState<string>(mockCourts[0].name);

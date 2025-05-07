@@ -1,4 +1,4 @@
-// src/components/index.tsx
+
 export { default as Input } from './UI/Input';
 export { default as Button } from './UI/Button';
 export { default as Screen } from './Layout/Screen';

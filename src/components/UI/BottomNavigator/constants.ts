@@ -4,7 +4,7 @@ export const TABS: TabConfig[] = [
   { name: 'Home', activeIcon: 'home', inactiveIcon: 'home-outline' },
   { name: 'Friends', activeIcon: 'people', inactiveIcon: 'people-outline' },
   { name: 'Wallet', activeIcon: 'wallet', inactiveIcon: 'wallet-outline' },
-  { name: 'Settings', activeIcon: 'settings', inactiveIcon: 'settings-outline' },
+  { name: 'Profile', activeIcon: 'person', inactiveIcon: 'person-outline' }, 
 ];
 
 export const ACTIVE_TAB_COLOR = '#F090F1';

@@ -6,13 +6,13 @@ import { CalendarEventListProps, Event } from './types';
 import { formatTotalDuration, parseDurationToMinutes } from './utils';
 import { MAX_VISIBLE_EVENTS } from './constants';
 
-/**
- * Компонент списка событий в календаре.
- * Отображает события в виде карточек с возможностью показать дополнительные события.
- *
- * @param {CalendarEventListProps} props - Пропсы компонента.
- * @returns {JSX.Element} Компонент списка событий.
- */
+
+
+
+
+
+
+
 const CalendarEventList: React.FC<CalendarEventListProps> = ({ events, onMorePress, isMini = true }) => {
   if (!events || events.length === 0) {
     return <View style={styles.container} />;

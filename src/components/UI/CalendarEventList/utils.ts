@@ -1,9 +1,9 @@
-/**
- * Парсит продолжительность из строки в минуты.
- *
- * @param {string} duration - Продолжительность в формате "Xч Yмин".
- * @returns {number} Продолжительность в минутах.
- */
+
+
+
+
+
+
 export const parseDurationToMinutes = (duration: string): number => {
     const parts = duration.match(/^(?:(\d+)ч)?\s*(?:(\d+)мин)?$/);
     if (!parts) return 0;
@@ -13,12 +13,12 @@ export const parseDurationToMinutes = (duration: string): number => {
     return hours * 60 + minutes;
   };
   
-  /**
-   * Форматирует общее количество минут в строку вида "Xч Yмин".
-   *
-   * @param {number} totalMinutes - Общее количество минут.
-   * @returns {string} Отформатированная строка продолжительности.
-   */
+  
+
+
+
+
+
   export const formatTotalDuration = (totalMinutes: number): string => {
     const hours = Math.floor(totalMinutes / 60);
     const minutes = totalMinutes % 60;

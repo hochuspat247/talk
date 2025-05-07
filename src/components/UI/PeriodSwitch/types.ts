@@ -8,12 +8,12 @@ export interface PeriodConfig {
 }
 
 export interface PeriodSwitchProps {
-  /** Текущий выбранный период. */
+  
   selectedPeriod: PeriodType;
 
-  /** Обработчик изменения периода. */
+  
   onPeriodChange: (period: PeriodType) => void;
 
-  /** Дополнительные стили контейнера (опционально). */
+  
   style?: StyleProp<ViewStyle>;
 }

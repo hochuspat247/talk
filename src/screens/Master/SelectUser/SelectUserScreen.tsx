@@ -8,7 +8,7 @@ import { StyleSheet } from 'react-native';
 import { getAllUsers } from '@api/users';
 import { User } from '@api/types';
 
-// Определяем типы для параметров навигации
+
 type RootStackParamList = {
   Home: undefined;
   SelectUser: {

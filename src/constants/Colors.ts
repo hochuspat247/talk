@@ -1,34 +1,34 @@
-// src/constants/Colors.ts
+
 export const Colors = {
-  primary: '#3B3D44', // Основной синий для кнопок и акцентов
-  disabled: '#ADADAD', // Серый для отключённых элементов
-  white: '#FFFFFF', // Белый для текста и иконок
-  background: '#F0F0F0', // Светло-серый фон экранов
-  secondary: '#FF7F7F', // Красный для вторичных акцентов
-  text: '#333333', // Тёмно-серый для основного текста
-  accent: '#D9D9D9', // Фиолетовый для выделения
-  success: '#34C759', // Зелёный для успешных состояний
-  error: '#B91C1C', // Тёмно-красный для ошибок
-  border: '#E0E0E0', // Светло-серый для границ
-  error_card: '#b91c1c', // Тёмно-красный для ошибок оплаты
-  transparentDark10: 'rgba(0, 0, 0, 0.1)', // Прозрачный чёрный (10%) для фонов
-  transparentDark30: 'rgba(0, 0, 0, 0.3)', // Прозрачный чёрный (30%) для активных элементов
-  waveOrange: '#FF9F69', // Оранжевый для волны (default)
-  waveYellow: '#FFD150', // Жёлтый для волны (default) и версии приложения
-  waveBlue: '#8097F0', // Синий для волны (alternate)
-  wavePink: '#F090F1', // Розовый для волны (alternate)
-  transparentWhite10: 'rgba(255, 255, 255, 0.1)', // Прозрачный белый для контейнеров
-  transparentWhite5: 'rgba(255, 255, 255, 0.05)', // Прозрачный белый для фона полей ввода
-  gray50Transparent: 'rgba(153, 153, 153, 0.5)', // Прозрачный серый для границ полей
-  black: '#000000', // Чёрный для текста и полосок
-  grayLight: '#cccccc', // Светло-серый для границ
-  successBright: '#00FF00', // Ярко-зелёный для успешных границ
-  grayMedium: '#999999', // Средний серый для подтекста
-  orangeHighlight: '#FF8C00', // Оранжевый для выделенного подтекста
-  errorLight: '#ff4d4f', // Светло-красный для слабой полоски
-  warning: '#faad14', // Жёлтый для средней полоски
-  successMedium: '#52c41a', // Средне-зелёный для сильной полоски
-  darkGray: '#1C2526', // Тёмно-серый для логотипа, текста приветствия и кнопок
-  blockedText: '#96989F', // Серый для текста заблокированной кнопки
+  primary: '#3B3D44', 
+  disabled: '#ADADAD', 
+  white: '#FFFFFF', 
+  background: '#F0F0F0', 
+  secondary: '#FF7F7F', 
+  text: '#333333', 
+  accent: '#D9D9D9', 
+  success: '#34C759', 
+  error: '#B91C1C', 
+  border: '#E0E0E0', 
+  error_card: '#b91c1c', 
+  transparentDark10: 'rgba(0, 0, 0, 0.1)', 
+  transparentDark30: 'rgba(0, 0, 0, 0.3)', 
+  waveOrange: '#FF9F69', 
+  waveYellow: '#FFD150', 
+  waveBlue: '#8097F0', 
+  wavePink: '#F090F1', 
+  transparentWhite10: 'rgba(255, 255, 255, 0.1)', 
+  transparentWhite5: 'rgba(255, 255, 255, 0.05)', 
+  gray50Transparent: 'rgba(153, 153, 153, 0.5)', 
+  black: '#000000', 
+  grayLight: '#cccccc', 
+  successBright: '#00FF00', 
+  grayMedium: '#999999', 
+  orangeHighlight: '#FF8C00', 
+  errorLight: '#ff4d4f', 
+  warning: '#faad14', 
+  successMedium: '#52c41a', 
+  darkGray: '#1C2526', 
+  blockedText: '#96989F', 
   notification:'#AEAEFF'
 };

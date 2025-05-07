@@ -6,12 +6,12 @@ import { HeaderProps } from './types';
 import { DEFAULT_AVATAR } from './constants';
 import { Colors } from '@constants/Colors';
 
-/**
- * Компонент заголовка с логотипом, подзаголовком и иконками уведомлений, поиска и аватара.
- *
- * @param {HeaderProps} props - Пропсы компонента.
- * @returns {JSX.Element} Компонент заголовка.
- */
+
+
+
+
+
+
 const Header: React.FC<HeaderProps> = ({
   title = 'TALLC',
   subtitle = 'Привет, Мастер ☀️',
@@ -27,7 +27,7 @@ const Header: React.FC<HeaderProps> = ({
 }) => {
   return (
     <View style={[styles.container, style]}>
-      {/* Верхний блок: логотип и иконки */}
+      {}
       <View style={styles.topContainer}>
         <Text style={styles.title}>{title}</Text>
         <View style={styles.iconsContainer}>
@@ -53,7 +53,7 @@ const Header: React.FC<HeaderProps> = ({
         </View>
       </View>
 
-      {/* Нижний блок: подзаголовок */}
+      {}
       {subtitle && (
         <View style={styles.subtitleContainer}>
           <Text style={styles.subtitle}>{subtitle}</Text>

@@ -1,4 +1,4 @@
-// src/hooks/index.ts
+
 export * from './general/useKeyboardVisibility';
 export * from './general/useTextInput';
 export * from './general/usePhoneFormatter';

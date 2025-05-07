@@ -1,4 +1,4 @@
-// src/components/Button/utils.ts
+
 import { StyleProp, ViewStyle } from 'react-native';
 import { styles } from './styled';
 import { ButtonVariant, ButtonSize } from './types';

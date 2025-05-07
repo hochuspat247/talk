@@ -4,13 +4,13 @@ import { styles } from './styled';
 import { PeriodSwitchProps, PeriodConfig } from './types';
 import { PERIODS } from './constants';
 
-/**
- * Компонент переключателя периодов (Сегодня, Неделя, Месяц).
- * Позволяет пользователю выбирать временной период с визуальным выделением активного состояния.
- *
- * @param {PeriodSwitchProps} props - Пропсы компонента.
- * @returns {JSX.Element} Компонент переключателя периодов.
- */
+
+
+
+
+
+
+
 const PeriodSwitch: React.FC<PeriodSwitchProps> = ({
   selectedPeriod,
   onPeriodChange,

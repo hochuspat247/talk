@@ -1,6 +1,8 @@
+
 import React from 'react';
 import { VARIANT_CONFIG } from './variants';
 import PasswordInput from './variants/PasswordInput';
+import BaseInput from './variants/BaseInput'; 
 import PhoneInput from './variants/PhoneInput';
 import ConfirmInput from './variants/ConfirmInput';
 import DescriptionInput from './variants/DescriptionInput';
@@ -82,6 +84,22 @@ const Input: React.FC<InputProps> = ({
           placeholder={config.placeholder}
         />
       );
+    case 'email': 
+      return (
+        <BaseInput
+          value={value}
+          onChangeText={onChangeText}
+          style={style}
+          isSuccess={isSuccess}
+          hasError={hasError}
+          hasValidationError={hasValidationError}
+          subText={subText}
+          onSubmitEditing={onSubmitEditing}
+          testID={testID}
+          placeholder={config.placeholder}
+          {...rest}
+        />
+      );
     case 'password':
     case 'map':
     case 'search':
@@ -106,6 +124,8 @@ const Input: React.FC<InputProps> = ({
           placeholder={config.placeholder}
           icon={config.icon}
           onIconPress={config.onPress}
+          variant={variant}
+          {...rest}
         />
       );
   }

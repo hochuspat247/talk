@@ -10,12 +10,12 @@ type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'Verificatio
 const VERIFICATION_CODE = '4444';
 const INITIAL_TIMER = 30;
 
-/**
- * Хук для управления логикой верификации.
- * Обрабатывает ввод кода, таймер и навигацию после успешной верификации.
- * @param params - Параметры, включая навигацию, номер телефона и статус регистрации.
- * @returns Объект с состоянием и обработчиками.
- */
+
+
+
+
+
+
 export const useVerificationLogic = ({
   navigation,
   phone,

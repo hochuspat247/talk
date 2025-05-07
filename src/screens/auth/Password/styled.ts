@@ -1,11 +1,11 @@
-// src/screens/PasswordScreen/styles.ts
+
 import { StyleSheet } from 'react-native';
 
-// Constants
+
 import { Colors } from '@constants/Colors';
 import { FONTS } from '@constants/Fonts';
 
-// Constants for margins
+
 const HEADER_TOP_MARGIN = 20;
 const CONTENT_TOP_MARGIN = 20;
 const INPUT_BOTTOM_MARGIN = 20;
@@ -19,7 +19,7 @@ export const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,
     justifyContent: 'flex-start',
-    paddingBottom: 60, // Extra padding to ensure content is not cut off
+    paddingBottom: 60, 
   },
   header: {
     marginTop: HEADER_TOP_MARGIN,

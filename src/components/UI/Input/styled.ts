@@ -8,7 +8,7 @@ export const styles = StyleSheet.create({
   },
   iconContainer: {
     width: '100%',
-    height: 56, // Добавляем фиксированную высоту
+    height: 56, 
     flexDirection: 'row',
     alignItems: 'center',
     position: 'relative',
@@ -22,9 +22,8 @@ export const styles = StyleSheet.create({
     borderRadius: 16,
     paddingHorizontal: 20,
     paddingVertical: 16,
-    paddingRight: 50,
     fontFamily: FONTS.MANROPE_REGULAR,
-    fontSize: 18,
+    fontSize: 16,
     lineHeight: 24,
     textAlignVertical: 'center',
     color: Colors.black,

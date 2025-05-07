@@ -1,4 +1,4 @@
-// src/components/TransparentContainer/index.tsx
+
 import React from 'react';
 import { View } from 'react-native';
 import { styles } from './styled';

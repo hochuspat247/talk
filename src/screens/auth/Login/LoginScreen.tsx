@@ -1,4 +1,4 @@
-// src/screens/LoginScreen/LoginScreen.tsx
+
 import React from 'react';
 import {
   View,
@@ -10,32 +10,32 @@ import {
   Keyboard,
 } from 'react-native';
 
-// Components
+
 import WaveBackground from '@components/UI/WaveBackground';
 import Input from '@components/UI/Input';
 import Button from '@components/UI/Button';
 import TransparentContainer from '@components/Layout/TransparentContainer';
 
-// Hooks
+
 import { useLoginLogic } from '@hooks';
 
-// Types
+
 import { Props } from './types';
 
-// Styles
+
 import { styles } from './styled';
 
-// Constants
+
 import { TEXTS } from '@constants/Texts';
 
-// Constants for keyboard
+
 const KEYBOARD_OFFSET_IOS = 0;
 const KEYBOARD_OFFSET_ANDROID = 20;
 
-/**
- * Экран логина, который позволяет пользователю ввести номер телефона и перейти к верификации.
- * @param navigation - Навигация для перехода на другие экраны.
- */
+
+
+
+
 const LoginScreen: React.FC<Props> = ({ navigation }) => {
   const {
     phoneNumber,
@@ -58,10 +58,10 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
           contentContainerStyle={styles.scrollContainer}
           keyboardShouldPersistTaps="handled"
         >
-          {/* Background wave animation */}
+          {}
           <WaveBackground colorScheme="alternate" />
 
-          {/* Header with title and subtitle, hidden when keyboard is visible */}
+          {}
           {!isKeyboardVisible && (
             <View style={styles.header}>
               <Text style={styles.title}>{TEXTS.WELCOME_TITLE}</Text>
@@ -69,7 +69,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
             </View>
           )}
 
-          {/* Input and button container */}
+          {}
           <TransparentContainer>
             <Input
               value={phoneNumber}

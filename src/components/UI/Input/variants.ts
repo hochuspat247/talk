@@ -1,3 +1,4 @@
+
 import { TEXTS } from '@constants/Texts';
 import { handleClear, handleCopy } from './utils';
 
@@ -14,5 +15,6 @@ export const VARIANT_CONFIG: Record<string, { icon?: IconName; placeholder: stri
   time: { placeholder: TEXTS.PLACEHOLDER_TIME },
   code: { placeholder: '' },
   phone: { icon: undefined, placeholder: TEXTS.LOGIN_PHONE_PLACEHOLDER },
-  confirm: { placeholder: TEXTS.CONFIRM_PASSWORD_PLACEHOLDER }, // Новый вариант для подтверждения
+  confirm: { placeholder: TEXTS.CONFIRM_PASSWORD_PLACEHOLDER },
+  email: { placeholder: TEXTS.EMAIL_PLACEHOLDER }, 
 };

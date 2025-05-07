@@ -11,13 +11,13 @@ import { START_HOUR, TIME_TEXT_HEIGHT, STANDARD_SLOT_HEIGHT, LARGE_CARD_HEIGHT, 
 
 moment.locale('ru');
 
-/**
- * Компонент для отображения временных слотов с возможностью прокрутки и отображения событий.
- * Поддерживает анимацию текущего времени и модальное окно для детального просмотра событий.
- *
- * @param {TimePickerProps} props - Пропсы компонента.
- * @returns {JSX.Element} Компонент TimePicker.
- */
+
+
+
+
+
+
+
 const TimePicker: React.FC<TimePickerProps> = ({ onSelectionChange, bookedSlots = [], date }) => {
   const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
@@ -30,7 +30,7 @@ const TimePicker: React.FC<TimePickerProps> = ({ onSelectionChange, bookedSlots 
   const currentDate = date ? moment(date, 'YYYY-MM-DD') : moment();
   const isToday = date ? moment(date, 'YYYY-MM-DD').isSame(moment(), 'day') : true;
 
-  // Инициализация временных слотов
+  
   useEffect(() => {
     const updateSlots = () => {
       const slots = initializeTimeSlots(bookedSlots, START_HOUR);
@@ -42,7 +42,7 @@ const TimePicker: React.FC<TimePickerProps> = ({ onSelectionChange, bookedSlots 
     return () => clearInterval(timer);
   }, [bookedSlots]);
 
-  // Анимация текущего времени
+  
   useEffect(() => {
     const updatePosition = () => {
       const positionData = calculatePosition({

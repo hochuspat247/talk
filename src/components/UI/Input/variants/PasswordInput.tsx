@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleProp, ViewStyle } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -8,21 +9,9 @@ import StrengthBars from '../components/StrengthBars';
 import BaseInput from './BaseInput';
 import { useSecureEntry } from '../hooks/useSecureEntry';
 import { usePasswordStrength } from '../hooks/usePasswordStrength';
+import { InputProps } from '../types'; 
 
-interface PasswordInputProps {
-  value: string;
-  onChangeText: (text: string) => void;
-  style?: StyleProp<ViewStyle>;
-  isSuccess?: boolean;
-  hasError?: boolean;
-  hasValidationError?: boolean;
-  subText?: string;
-  passwordStrength?: number;
-  showStrengthBar?: boolean;
-  agreeMode?: boolean;
-  onSubmitEditing?: () => void;
-  testID?: string;
-  placeholder?: string;
+interface PasswordInputProps extends InputProps {
   icon?: keyof typeof Ionicons.glyphMap;
   onIconPress?: (value: string, onChangeText: (text: string) => void) => void;
 }
@@ -43,8 +32,11 @@ const PasswordInput: React.FC<PasswordInputProps> = ({
   placeholder,
   icon,
   onIconPress,
+  variant,
 }) => {
-  const { isSecure, toggleSecureEntry } = useSecureEntry(true);
+  
+  const isPasswordVariant = variant === 'password';
+  const { isSecure, toggleSecureEntry } = useSecureEntry(isPasswordVariant);
   const internalPasswordStrength = usePasswordStrength(value, passwordStrength);
 
   const renderSubText = (message: string) => {
@@ -67,19 +59,19 @@ const PasswordInput: React.FC<PasswordInputProps> = ({
           value={value}
           onChangeText={onChangeText}
           placeholder={placeholder}
-          secureTextEntry={isSecure}
+          secureTextEntry={isPasswordVariant && isSecure} 
           style={[isSuccess && styles.successBorder, (hasError || hasValidationError) && styles.errorBorder]}
           onSubmitEditing={onSubmitEditing}
           testID={testID}
         />
-        {(isSecure || icon) && (
+        {(isPasswordVariant || icon) && (
           <TouchableOpacity
             style={styles.iconButton}
-            onPress={isSecure ? (isSuccess ? undefined : toggleSecureEntry) : () => onIconPress?.(value, onChangeText)}
+            onPress={isPasswordVariant ? (isSuccess ? undefined : toggleSecureEntry) : () => onIconPress?.(value, onChangeText)}
           >
             <Ionicons
-              name={isSuccess ? 'checkmark' : isSecure ? 'eye-off' : icon || 'eye'}
-              size={28} // Увеличиваем размер иконки
+              name={isSuccess ? 'checkmark' : isPasswordVariant && isSecure ? 'eye-off' : isPasswordVariant ? 'eye' : icon!}
+              size={28}
               color={isSuccess ? '#00FF00' : Colors.text}
             />
           </TouchableOpacity>
