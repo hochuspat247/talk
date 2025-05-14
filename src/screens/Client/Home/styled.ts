@@ -21,7 +21,4 @@ export const styles = StyleSheet.create({
   periodSwitch: {
     marginVertical: 10,
   },
-  navWrapper: {
-    marginBottom: 8,
-  },
 });

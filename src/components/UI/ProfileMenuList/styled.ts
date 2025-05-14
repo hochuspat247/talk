@@ -1,6 +1,9 @@
 import { StyleSheet } from 'react-native';
 import { SIZES, COLORS } from './constants';
 
+console.log('[styled.ts] SIZES =', SIZES);
+console.log('[styled.ts] COLORS =', COLORS);
+
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -12,9 +15,6 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: SIZES.PADDINGS.VERTICAL,
-    paddingHorizontal: SIZES.PADDINGS.HORIZONTAL,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.BORDER,
   },
   menuIcon: {
     marginRight: SIZES.PADDINGS.MARGINS.ICON_RIGHT,
@@ -31,7 +31,6 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: SIZES.PADDINGS.VERTICAL,
-    paddingHorizontal: SIZES.PADDINGS.HORIZONTAL,
     marginTop: SIZES.PADDINGS.MARGINS.LOGOUT_TOP,
   },
   logoutText: {

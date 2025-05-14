@@ -7,12 +7,8 @@ import { styles } from './styled';
 import { MENU_ITEMS, SIZES, COLORS } from './constants';
 import { navigateToScreen, handleLogout } from './utils';
 
-
-
-
-
-
-
+console.log('[ProfileMenuList] styles =', styles);
+console.log('[ProfileMenuList] styles.container =', styles?.container);
 
 const ProfileMenuList: React.FC<ProfileMenuListProps> = ({ onLogout }) => {
   const navigation = useNavigation<NavigationProp>();

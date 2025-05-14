@@ -1,75 +1,72 @@
 import React from 'react';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { View, Text, StyleSheet } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+
 import HomeScreen from '@screens/Client/Home/HomeScreen';
 import ProfileMenu from '@screens/Client/Profile/ProfileMenu';
 import ProfileSettingsScreen from '@screens/Client/Profile/ProfileSettings';
-import { View,Text } from 'react-native';
 
+// Определение типов для стековой навигации
 export type ClientStackParamList = {
-  Home: undefined;
-  Bookings: { court?: string };
-  BookingSuccess: undefined;
-  MyBookings: undefined;
-  Profile: undefined;
+  Tabs: undefined;
+  ProfileSettings: undefined;
   WorkSchedule: undefined;
   Services: undefined;
   BankDetails: undefined;
-  ProfileSettings: undefined;
+};
+
+// Определение типов для навигации по вкладкам
+export type ClientTabParamList = {
+  Home: undefined;
+  Friends: undefined;
+  Wallet: undefined;
+  Profile: undefined;
 };
 
 const Stack = createStackNavigator<ClientStackParamList>();
+const Tab = createBottomTabNavigator<ClientTabParamList>();
 
 interface ClientNavigatorProps {
   onLogout: () => void;
 }
 
-export const ClientNavigator: React.FC<ClientNavigatorProps> = ({ onLogout }) => {
-  const handleLogout = async () => {
-    try {
-      await AsyncStorage.removeItem('token');
-      await AsyncStorage.removeItem('role');
-      console.log('Calling onLogout from ClientNavigator');
-      onLogout();
-    } catch (error) {
-      console.error('Error during logout:', error);
-    }
-  };
+// Стили для розовой точки
+const styles = StyleSheet.create({
+  dot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: '#F090F1',
+    marginTop: 4,
+  },
+  empty: {
+    width: 6,
+    height: 6,
+    marginTop: 4,
+  },
+});
 
-  const PlaceholderScreen = () => (
+// Компонент-заглушка для экранов в разработке
+const PlaceholderScreen = () => {
+  return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Экран в разработке</Text>
+      <Text>В разработке</Text>
     </View>
   );
+};
 
+// Стек для Profile
+const ProfileStack: React.FC<{ onLogout: () => Promise<void> }> = ({ onLogout }) => {
   return (
     <Stack.Navigator>
       <Stack.Screen
-        name="Home"
-        component={HomeScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
         name="Profile"
-        component={ProfileMenu}
-        initialParams={{ onLogout: handleLogout }}
         options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="WorkSchedule"
-        component={PlaceholderScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="Services"
-        component={PlaceholderScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="BankDetails"
-        component={PlaceholderScreen}
-        options={{ headerShown: false }}
-      />
+      >
+        {props => <ProfileMenu {...props} onLogout={onLogout} />}
+      </Stack.Screen>
       <Stack.Screen
         name="ProfileSettings"
         component={ProfileSettingsScreen}
@@ -78,3 +75,81 @@ export const ClientNavigator: React.FC<ClientNavigatorProps> = ({ onLogout }) =>
     </Stack.Navigator>
   );
 };
+
+// Навигация по вкладкам
+const TabNavigator: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
+  return (
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ focused }) => {
+          let iconName: string;
+          if (route.name === 'Home') {
+            iconName = focused ? 'home' : 'home-outline';
+          } else if (route.name === 'Friends') {
+            iconName = focused ? 'people' : 'people-outline';
+          } else if (route.name === 'Wallet') {
+            iconName = focused ? 'wallet' : 'wallet-outline';
+          } else {
+            iconName = focused ? 'person' : 'person-outline';
+          }
+          return (
+            <Ionicons
+              name={iconName}
+              size={24}
+              color={focused ? '#F090F1' : '#666'}
+            />
+          );
+        },
+        tabBarLabel: ({ focused }) => (
+          <View style={focused ? styles.dot : styles.empty} />
+        ),
+        tabBarActiveTintColor: '#F090F1',
+        tabBarInactiveTintColor: '#666',
+        tabBarStyle: {
+          borderTopLeftRadius: 43,
+          borderTopRightRadius: 43,
+          paddingVertical: 10,
+        },
+        headerShown: false,
+      })}
+    >
+      <Tab.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{ tabBarTestID: 'home-tab' }}
+      />
+      <Tab.Screen
+        name="Friends"
+        component={PlaceholderScreen}
+        options={{ tabBarTestID: 'friends-tab' }}
+      />
+      <Tab.Screen
+        name="Wallet"
+        component={PlaceholderScreen}
+        options={{ tabBarTestID: 'wallet-tab' }}
+      />
+      <Tab.Screen
+        name="Profile"
+        options={{ tabBarTestID: 'profile-tab' }}
+      >
+        {props => <ProfileStack {...props} onLogout={onLogout} />}
+      </Tab.Screen>
+    </Tab.Navigator>
+  );
+};
+
+// Главный навигатор
+export const ClientNavigator: React.FC<ClientNavigatorProps> = ({ onLogout }) => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="Tabs"
+        options={{ headerShown: false }}
+      >
+        {props => <TabNavigator {...props} onLogout={onLogout} />}
+      </Stack.Screen>
+    </Stack.Navigator>
+  );
+};
+
+export default ClientNavigator;
