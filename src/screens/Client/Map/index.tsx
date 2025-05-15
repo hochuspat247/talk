@@ -28,6 +28,12 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: '#E3E3E3',
   },
+  addressText: {
+    fontSize: 16,
+    color: '#000',
+    marginBottom: 10,
+    textAlign: 'center',
+  },
   addButton: {
     backgroundColor: '#A8BFFA',
     paddingVertical: 12,
@@ -184,7 +190,6 @@ const MapScreen: React.FC = () => {
     if (selectedLocation) {
       console.log("Добавление адреса:", selectedLocation);
       navigation.navigate('NewBooking', { result: selectedLocation });
-      
     }
   };
 
@@ -219,6 +224,10 @@ const MapScreen: React.FC = () => {
           />
           {selectedLocation && !error && (
             <View style={styles.buttonContainer}>
+              {/* Отображаем выбранный адрес над кнопкой */}
+              <Text style={styles.addressText}>
+                {selectedLocation.address}
+              </Text>
               <TouchableOpacity style={styles.addButton} onPress={handleAdd}>
                 <Text style={styles.addButtonText}>Добавить</Text>
               </TouchableOpacity>

@@ -17,7 +17,7 @@ import Input from '@components/UI/Input';
 import { ClientFilterProps, FilterState } from './types';
 import { styles } from './styled';
 import { DEFAULT_FILTERS, FILTER_LABELS, COLORS, NEW_BOOKING_LABELS } from './constants';
-import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native'; // Добавляем useRoute
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ClientStackParamList } from '@navigation/ClientNavigator';
 
@@ -26,6 +26,11 @@ interface ClientFilterPropsExtended extends ClientFilterProps {
 }
 
 type NavigationProp = NativeStackNavigationProp<ClientStackParamList, 'NewBooking'>;
+type RouteProp = {
+  params: {
+    result?: { latitude: number; longitude: number; address: string };
+  };
+};
 
 const ClientFilter: React.FC<ClientFilterPropsExtended> = ({
   onChange,
@@ -33,6 +38,7 @@ const ClientFilter: React.FC<ClientFilterPropsExtended> = ({
   isNewBooking = false,
 }) => {
   const navigation = useNavigation<NavigationProp>();
+  const route = useRoute<RouteProp>(); // Получаем параметры текущего маршрута
   const [filters, setFilters] = useState<FilterState>({
     ...DEFAULT_FILTERS,
     ...initialValues,
@@ -51,19 +57,20 @@ const ClientFilter: React.FC<ClientFilterPropsExtended> = ({
   const [calendarMode, setCalendarMode] = useState<'repeat' | 'reminder' | null>(null);
 
   // Обработчик возврата с MapScreen
-  useFocusEffect(
-    React.useCallback(() => {
-      const unsubscribe = navigation.addListener('focus', () => {
-        // Проверяем, есть ли данные в параметрах возврата
-        const result = navigation.getState().routes.find((route) => route.name === 'MapScreen')?.params?.result;
-        if (result) {
-          setAddress(result.address);
-        }
-      });
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      // Получаем параметры текущего маршрута (NewBooking)
+      const result = route.params?.result;
+      console.log("Получен результат от MapScreen:", result);
+      if (result && result.address) {
+        setAddress(result.address);
+        // Очищаем параметры маршрута, чтобы избежать повторного использования
+        navigation.setParams({ result: undefined });
+      }
+    });
 
-      return unsubscribe;
-    }, [navigation])
-  );
+    return unsubscribe;
+  }, [navigation, route.params]);
 
   useEffect(() => {
     setFilters((prevFilters) => {
