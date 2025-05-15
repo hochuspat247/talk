@@ -7,6 +7,7 @@ import Screen from '@components/Layout/Screen';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ClientStackParamList } from '@navigation/ClientNavigator';
+import axios from 'axios';
 
 // Стили
 const styles = StyleSheet.create({
@@ -53,8 +54,26 @@ const MapScreen: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Ваш API-ключ от Яндекс.Карт
-  const YANDEX_API_KEY = '59f6a7a4-48c1-4a80-b6fa-56f91a40d14c'; // Замените на ваш API-ключ
+  const YANDEX_API_KEY = '59f6a7a4-48c1-4a80-b6fa-56f91a40d14c';
+
+  // Функция для геокодирования через Nominatim
+  const geocodeWithNominatim = async (latitude: number, longitude: number) => {
+    try {
+      const response = await axios.get(
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`,
+        {
+          headers: {
+            'User-Agent': 'MyBookingApp/1.0 (your.email@example.com)', // Укажите ваш email
+          },
+        }
+      );
+      console.log("Ответ Nominatim:", response.data);
+      return response.data.display_name || 'Адрес не найден';
+    } catch (err) {
+      console.error('Ошибка геокодирования через Nominatim:', err);
+      return `Координаты: ${latitude}, ${longitude}`;
+    }
+  };
 
   // HTML-код для загрузки карты через WebView
   const mapHtml = `
@@ -103,40 +122,13 @@ const MapScreen: React.FC = () => {
                 });
                 myMap.geoObjects.add(selectedPlacemark);
 
-                // Проверка доступности ymaps.geocode
-                if (typeof ymaps.geocode !== 'function') {
-                  console.error("ymaps.geocode недоступен");
-                  window.ReactNativeWebView.postMessage(JSON.stringify({
-                    error: "Геокодирование недоступно: ymaps.geocode не является функцией"
-                  }));
-                  return;
-                }
-
-                try {
-                  ymaps.geocode([latitude, longitude], { results: 1 }).then(function (res) {
-                    console.log("Ответ геокодирования:", res);
-                    const firstGeoObject = res.geoObjects.get(0);
-                    const address = firstGeoObject ? firstGeoObject.getAddressLine() : 'Адрес не найден';
-
-                    const data = {
-                      latitude: latitude,
-                      longitude: longitude,
-                      address: address,
-                    };
-                    console.log("Отправка сообщения в React Native:", data);
-                    window.ReactNativeWebView.postMessage(JSON.stringify(data));
-                  }, function (err) {
-                    console.error("Ошибка геокодирования:", err);
-                    window.ReactNativeWebView.postMessage(JSON.stringify({
-                      error: "Ошибка геокодирования: " + (err.message || "Неизвестная ошибка")
-                    }));
-                  });
-                } catch (err) {
-                  console.error("Исключение при геокодировании:", err);
-                  window.ReactNativeWebView.postMessage(JSON.stringify({
-                    error: "Исключение при геокодировании: " + err.message
-                  }));
-                }
+                const data = {
+                  latitude: latitude,
+                  longitude: longitude,
+                  address: "Координаты: " + latitude + ", " + longitude,
+                };
+                console.log("Отправка сообщения в React Native:", data);
+                window.ReactNativeWebView.postMessage(JSON.stringify(data));
               });
 
               ymaps.geolocation.get().then(function (res) {
@@ -157,7 +149,7 @@ const MapScreen: React.FC = () => {
           } catch (err) {
             console.error("Глобальная ошибка в скрипте:", err);
             window.ReactNativeWebView.postMessage(JSON.stringify({
-              error: "Глобальная ошибка в скрипте: " + err.message
+              error: "Глобальная ошибка в скрипте: " + (err.message || "Неизвестная ошибка")
             }));
           }
         </script>
@@ -165,7 +157,7 @@ const MapScreen: React.FC = () => {
     </html>
   `;
 
-  const handleMessage = (event: { nativeEvent: { data: string } }) => {
+  const handleMessage = async (event: { nativeEvent: { data: string } }) => {
     console.log("Получено сообщение из WebView:", event.nativeEvent.data);
     try {
       const data = JSON.parse(event.nativeEvent.data);
@@ -173,10 +165,12 @@ const MapScreen: React.FC = () => {
         setError(data.error);
         setLoading(false);
       } else {
+        // Выполняем геокодирование через Nominatim
+        const address = await geocodeWithNominatim(data.latitude, data.longitude);
         setSelectedLocation({
           latitude: data.latitude,
           longitude: data.longitude,
-          address: data.address,
+          address: address,
         });
         setError(null);
       }
@@ -190,7 +184,7 @@ const MapScreen: React.FC = () => {
     if (selectedLocation) {
       console.log("Добавление адреса:", selectedLocation);
       navigation.navigate('NewBooking', { result: selectedLocation });
-      navigation.goBack();
+      
     }
   };
 
