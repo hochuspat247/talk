@@ -1,8 +1,9 @@
+// Input.tsx
 
 import React from 'react';
 import { VARIANT_CONFIG } from './variants';
 import PasswordInput from './variants/PasswordInput';
-import BaseInput from './variants/BaseInput'; 
+import BaseInput from './variants/BaseInput';
 import PhoneInput from './variants/PhoneInput';
 import ConfirmInput from './variants/ConfirmInput';
 import DescriptionInput from './variants/DescriptionInput';
@@ -84,7 +85,8 @@ const Input: React.FC<InputProps> = ({
           placeholder={config.placeholder}
         />
       );
-    case 'email': 
+    case 'email':
+    case 'userNoIcon': // Добавляем новый вариант без иконки
       return (
         <BaseInput
           value={value}

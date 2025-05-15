@@ -47,7 +47,7 @@ export const styles = StyleSheet.create({
     backgroundColor: Colors.white, 
   },
   accent: {
-    backgroundColor: Colors.accent, 
+    backgroundColor: '#8097F0', 
   },
   disabled: {
     backgroundColor: Colors.disabled, 
@@ -62,7 +62,7 @@ export const styles = StyleSheet.create({
     textAlign: 'center',
   },
   iconVariantSmall: {
-    backgroundColor: Colors.accent, 
+    backgroundColor: '#F090F1', 
     height: 48,
     borderRadius: 16,
     justifyContent: 'center',

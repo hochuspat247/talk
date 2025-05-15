@@ -1,3 +1,5 @@
+// ClientNavigator.tsx
+
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -6,7 +8,9 @@ import { Ionicons } from '@expo/vector-icons';
 
 import HomeScreen from '@screens/Client/Home/HomeScreen';
 import ProfileMenu from '@screens/Client/Profile/ProfileMenu';
+import NewBookingScreen from '@screens/Client/NewBooking';
 import ProfileSettingsScreen from '@screens/Client/Profile/ProfileSettings';
+import MapScreen from '@screens/Client/Map'; // Добавляем новый экран
 
 // Определение типов для стековой навигации
 export type ClientStackParamList = {
@@ -15,6 +19,8 @@ export type ClientStackParamList = {
   WorkSchedule: undefined;
   Services: undefined;
   BankDetails: undefined;
+  NewBooking: undefined;
+  MapScreen: { onSelectLocation?: (location: { latitude: number; longitude: number; address: string }) => void }; // Добавляем MapScreen
 };
 
 // Определение типов для навигации по вкладкам
@@ -148,6 +154,16 @@ export const ClientNavigator: React.FC<ClientNavigatorProps> = ({ onLogout }) =>
       >
         {props => <TabNavigator {...props} onLogout={onLogout} />}
       </Stack.Screen>
+      <Stack.Screen
+        name="NewBooking"
+        component={NewBookingScreen}
+        options={{ headerTitle: 'Новая запись' }}
+      />
+      <Stack.Screen
+        name="MapScreen"
+        component={MapScreen}
+        options={{ headerTitle: 'Выбрать адрес на карте' }}
+      />
     </Stack.Navigator>
   );
 };

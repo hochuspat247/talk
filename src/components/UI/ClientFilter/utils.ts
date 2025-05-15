@@ -1,18 +1,5 @@
-import { FilterState } from './types';
+// utils.ts
 
-
-
-
-
-
-
-
-export const toggleFilter = (
-  key: keyof FilterState,
-  currentFilters: FilterState,
-  onChange: (filters: FilterState) => void
-): FilterState => {
-  const newFilters = { ...currentFilters, [key]: !currentFilters[key] };
-  onChange(newFilters);
-  return newFilters;
-};
+// Функция toggleFilter больше не нужна, так как мы используем useEffect
+// Можно удалить этот файл или оставить пустым, если он используется где-то ещё
+export {};

@@ -1,3 +1,4 @@
+// variants.ts
 
 import { TEXTS } from '@constants/Texts';
 import { handleClear, handleCopy } from './utils';
@@ -8,6 +9,7 @@ export const VARIANT_CONFIG: Record<string, { icon?: IconName; placeholder: stri
   map: { icon: 'map-outline', placeholder: TEXTS.PLACEHOLDER_DEFAULT },
   search: { icon: 'search-outline', placeholder: TEXTS.PLACEHOLDER_DEFAULT },
   user: { icon: 'person-outline', placeholder: TEXTS.LOGIN_PHONE_PLACEHOLDER },
+  userNoIcon: { icon: undefined, placeholder: TEXTS.LOGIN_PHONE_PLACEHOLDER }, // Новый вариант без иконки
   clearable: { icon: 'close-outline', placeholder: TEXTS.PLACEHOLDER_DEFAULT, onPress: handleClear },
   copyable: { icon: 'copy-outline', placeholder: TEXTS.PLACEHOLDER_DEFAULT, onPress: handleCopy },
   password: { placeholder: TEXTS.LOGIN_PASSWORD_PLACEHOLDER },
@@ -16,5 +18,5 @@ export const VARIANT_CONFIG: Record<string, { icon?: IconName; placeholder: stri
   code: { placeholder: '' },
   phone: { icon: undefined, placeholder: TEXTS.LOGIN_PHONE_PLACEHOLDER },
   confirm: { placeholder: TEXTS.CONFIRM_PASSWORD_PLACEHOLDER },
-  email: { placeholder: TEXTS.EMAIL_PLACEHOLDER }, 
+  email: { placeholder: TEXTS.EMAIL_PLACEHOLDER },
 };

@@ -1,4 +1,6 @@
-import { FilterState } from "./types";
+// constants.ts
+
+import { FilterState } from './types';
 
 export const DEFAULT_FILTERS: FilterState = {
   men: false,
@@ -10,6 +12,13 @@ export const FILTER_LABELS = {
   men: 'Мужчины',
   women: 'Женщины',
   children: 'Дети до 14 лет',
+};
+
+// Новые метки для режима "Новая запись"
+export const NEW_BOOKING_LABELS = {
+  men: 'Повторить запись',
+  women: 'Выезд по адресу',
+  children: 'Напоминание',
 };
 
 export const COLORS = {

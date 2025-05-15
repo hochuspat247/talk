@@ -20,11 +20,14 @@ import WeeklyEventsList from '@components/Layout/WeeklyEventsList';
 import AvailabilityCalendar from '@components/UI/AvailabilityCalendar';
 import DetailedEventCard from '@components/UI/DetailedEventCard';
 import Screen from '@components/Layout/Screen';
+import Button from '@components/UI/Button';
+import { useNavigation } from '@react-navigation/native'; // Импортируем хук для навигации
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack'; // Типизация для navigation
+import { ClientStackParamList } from '@navigation/ClientNavigator'; // Импортируем типы из ClientNavigator
 
 import { styles } from './styled';
-import { HomeScreenProps, MockBookingAvailability, MockUser } from './types';
+import { HomeScreenProps, MockBookingAvailability } from './types';
 import {
-  mockUser,
   mockAvailability,
   mockWeeklyDays,
   mockMonthlyAvailability,
@@ -38,7 +41,11 @@ import {
 // Локальное перечисление периодов
 type PeriodType = 'today' | 'yesterday' | 'tomorrow' | 'week' | 'month';
 
+// Типизация для navigation
+type NavigationProp = NativeStackNavigationProp<ClientStackParamList>;
+
 const HomeScreen: React.FC<HomeScreenProps> = () => {
+  const navigation = useNavigation<NavigationProp>(); // Получаем объект navigation
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [selectedPeriod, setSelectedPeriod] = useState<PeriodType>('today');
   const [bookedSlots] = useState<MockBookingAvailability[]>(mockAvailability);
@@ -104,11 +111,11 @@ const HomeScreen: React.FC<HomeScreenProps> = () => {
             ) : selectedPeriod === 'month' ? (
               <View style={{ flex: 1 }}>
                 {/* Календарь */}
- <AvailabilityCalendar
-   availability={availability}
-   selectedDate={moment(selectedDate).format('YYYY-MM-DD')}
-  onDatePress={iso => setSelectedDate(moment(iso, 'YYYY-MM-DD').toDate())}
- />
+                <AvailabilityCalendar
+                  availability={availability}
+                  selectedDate={moment(selectedDate).format('YYYY-MM-DD')}
+                  onDatePress={iso => setSelectedDate(moment(iso, 'YYYY-MM-DD').toDate())}
+                />
 
                 {/* Summary для выбранной даты */}
                 <BookingSummary
@@ -147,6 +154,22 @@ const HomeScreen: React.FC<HomeScreenProps> = () => {
           </ScrollView>
         </SafeAreaView>
       </Screen>
+
+      {/* Фиксированная кнопка в правом нижнем углу */}
+      <Button
+        title=""
+        onPress={() => navigation.navigate('NewBooking')} // Переход на NewBookingScreen
+        variant="icon"
+        showIcon
+        iconName="add"
+        size="small"
+        style={{
+          position: 'absolute',
+          bottom: 16,
+          right: 16,
+          zIndex: 1000,
+        }}
+      />
     </KeyboardAvoidingView>
   );
 };
