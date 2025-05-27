@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import styles from '@styles/NewBookingScreen.styles';
+import styles from './styled';
 import { mockTimeSlots } from '@mocks/mockData';
 
 interface TimeSlotsProps {

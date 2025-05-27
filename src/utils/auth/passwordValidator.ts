@@ -1,8 +1,3 @@
-
-
-
-
-
 export const usePasswordStrength = (password: string): number => {
   let strength = 0;
   if (password.length >= 4) strength += 1; 

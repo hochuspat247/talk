@@ -1,20 +1,20 @@
-// Размеры и отступы
+
 export const SIZES = {
-  // Размеры аватара
+  
   AVATAR: 70,
   PLACEHOLDER_AVATAR: 50,
   AVATAR_BORDER_RADIUS: 35,
 
-  // Размеры премиум-бейджа
+  
   PREMIUM_BADGE_HEIGHT: 20,
   PREMIUM_BADGE_WIDTH: 52,
 
-  // Размеры иконок
+  
   ICON_SIZE: 25,
-  STAR_SIZE: 16, // Исправлено: добавлен корректный размер звезды для рейтинга
+  STAR_SIZE: 16, 
 };
 
-// Размеры шрифтов
+
 export const FONT_SIZES = {
   NAME: 15,
   RATING: 11,
@@ -23,7 +23,7 @@ export const FONT_SIZES = {
   PREMIUM_TEXT: 8,
 };
 
-// Отступы
+
 export const PADDINGS = {
   CONTAINER: 10,
   AVATAR_CONTAINER: 5,
@@ -37,7 +37,7 @@ export const PADDINGS = {
   },
 };
 
-// Цвета
+
 export const COLORS = {
   PLACEHOLDER_AVATAR: '#ccc',
   PREMIUM_BADGE: '#FF69B4',
@@ -49,7 +49,7 @@ export const COLORS = {
   BACK_ICON: '#000',
 };
 
-// Настройки премиум-бейджа
+
 export const PREMIUM_BADGE = {
   BORDER_WIDTH: 2,
   BORDER_RADIUS: 7,

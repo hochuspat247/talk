@@ -1,4 +1,4 @@
-// ClientNavigator.tsx
+
 
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -6,13 +6,13 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { View, Text, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
-import HomeScreen from '@screens/Client/Home/HomeScreen';
+import HomeScreen from '@screens/Client/Home';
 import ProfileMenu from '@screens/Client/Profile/ProfileMenu';
 import NewBookingScreen from '@screens/Client/NewBooking';
 import ProfileSettingsScreen from '@screens/Client/Profile/ProfileSettings';
-import MapScreen from '@screens/Client/Map'; // Добавляем новый экран
+import MapScreen from '@screens/Client/Map'; 
 
-// Определение типов для стековой навигации
+
 export type ClientStackParamList = {
   Tabs: undefined;
   ProfileSettings: undefined;
@@ -20,10 +20,10 @@ export type ClientStackParamList = {
   Services: undefined;
   BankDetails: undefined;
   NewBooking: undefined;
-  MapScreen: { onSelectLocation?: (location: { latitude: number; longitude: number; address: string }) => void }; // Добавляем MapScreen
+  MapScreen: { onSelectLocation?: (location: { latitude: number; longitude: number; address: string }) => void }; 
 };
 
-// Определение типов для навигации по вкладкам
+
 export type ClientTabParamList = {
   Home: undefined;
   Friends: undefined;
@@ -38,7 +38,7 @@ interface ClientNavigatorProps {
   onLogout: () => void;
 }
 
-// Стили для розовой точки
+
 const styles = StyleSheet.create({
   dot: {
     width: 6,
@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
   },
 });
 
-// Компонент-заглушка для экранов в разработке
+
 const PlaceholderScreen = () => {
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -63,7 +63,7 @@ const PlaceholderScreen = () => {
   );
 };
 
-// Стек для Profile
+
 const ProfileStack: React.FC<{ onLogout: () => Promise<void> }> = ({ onLogout }) => {
   return (
     <Stack.Navigator>
@@ -82,7 +82,7 @@ const ProfileStack: React.FC<{ onLogout: () => Promise<void> }> = ({ onLogout })
   );
 };
 
-// Навигация по вкладкам
+
 const TabNavigator: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
   return (
     <Tab.Navigator
@@ -144,7 +144,7 @@ const TabNavigator: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
   );
 };
 
-// Главный навигатор
+
 export const ClientNavigator: React.FC<ClientNavigatorProps> = ({ onLogout }) => {
   return (
     <Stack.Navigator>

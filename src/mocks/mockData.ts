@@ -1,9 +1,8 @@
-// mockData.ts
 
-export interface MockBookingAvailability {
+export interface BookingAvailability {
   start: string;
   end: string;
-  isBooked: boolean;
+  is_booked: boolean;
   guests?: number;
   events?: Array<{
     salonName: string;
@@ -34,12 +33,12 @@ export interface MockUser {
   lastName: string;
 }
 
-// ваш старый mockAvailability
-export const mockAvailability: MockBookingAvailability[] = [
+
+export const mockAvailability: BookingAvailability[] = [
   {
     start: '11:00',
     end: '12:00',
-    isBooked: true,
+    is_booked: true,
     guests: 10,
     events: [
       {
@@ -77,7 +76,7 @@ export const mockAvailability: MockBookingAvailability[] = [
   {
     start: '14:00',
     end: '15:00',
-    isBooked: true,
+    is_booked: true,
     guests: 2,
     events: [
       {
@@ -94,14 +93,14 @@ export const mockAvailability: MockBookingAvailability[] = [
   },
 ];
 
-// пример mockUser
+
 export const mockUser: MockUser = {
   firstName: 'Иван',
   lastName: 'Петров',
 };
 
 
-// Ещё ваши готовые данные для недели, теперь на май 2025
+
 export interface WeeklyEvent {
   id: string;
   title: string;
@@ -112,7 +111,7 @@ export interface WeeklyEvent {
 }
 
 export interface DayEvents {
-  date: string;        // "YYYY-MM-DD"
+  date: string;        
   events: WeeklyEvent[];
 }
 
@@ -154,11 +153,11 @@ export const mockWeeklyDays: DayEvents[] = [
   { date: '2025-05-18', events: [] },
 ];
 
-/**
- * Мок-данные для отображения календаря за май 2025.
- * true  — есть свободные слоты (зелёная точка)
- * false — все занято (серая точка)
- */
+
+
+
+
+
 export const mockMonthlyAvailability: Record<string, boolean> = {
   '2025-05-01': false,
   '2025-05-02': true,
@@ -173,7 +172,7 @@ export const mockMonthlyAvailability: Record<string, boolean> = {
   '2025-05-11': true,
   '2025-05-12': false,
   '2025-05-13': false,
-  '2025-05-14': true,   // на эту дату есть события
+  '2025-05-14': true,   
   '2025-05-15': false,
   '2025-05-16': false,
   '2025-05-17': false,

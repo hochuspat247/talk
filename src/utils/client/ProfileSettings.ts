@@ -1,11 +1,5 @@
 import { useCallback } from 'react';
-import { GenderOption, ExperienceOption, ClientFilters, FormState } from './types';
-
-
-
-
-
-
+import { FormState } from '@screens/Client/Profile/ProfileSettings/types';
 
 export const createFieldChangeHandler = <K extends keyof FormState>(
   setState: React.Dispatch<React.SetStateAction<FormState>>,

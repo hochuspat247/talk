@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { ProfileHeaderProps, NavigationProp } from './types';
 import { formatPhoneNumber, formatRating, getInitial } from './utils';
 
-// Константы для стилей (перенесены из constants.ts)
+
 const SIZES = {
   AVATAR: 70,
   PLACEHOLDER_AVATAR: 50,
@@ -54,7 +54,7 @@ const PREMIUM_BADGE = {
   STAR_SIZE: 10,
 };
 
-// Стили (перенесены из styled.ts)
+
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
@@ -150,7 +150,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ name, rating, phoneNumber
   console.log('[ProfileHeader] styles:', styles);
   console.log('[ProfileHeader] styles.container:', styles?.container);
 
-  // Защитная проверка (оставляем для надёжности)
+  
   if (!styles || !styles.container) {
     console.warn('[ProfileHeader] styles or styles.container is undefined! Using fallback style.');
     return (

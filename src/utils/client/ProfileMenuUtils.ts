@@ -1,4 +1,7 @@
-import { NavigationProp } from './types';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { ClientStackParamList } from '@navigation/ClientNavigator';
+
+export type NavigationProp = NativeStackNavigationProp<ClientStackParamList>;
 
 export const navigateToScreen = (screen: string, navigation: NavigationProp) => {
   console.log('[ProfileMenuUtils] Navigating to:', screen);

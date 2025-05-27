@@ -12,20 +12,11 @@ import {
   INITIAL_FORM_STATE,
   INPUT_PLACEHOLDERS,
   INPUT_VARIANTS,
-} from './constants';
-import { createFieldChangeHandler } from './utils';
-
-
-
-
-
-
-
+} from '@constants/client/profile';
+import { createFieldChangeHandler } from '@utils/client/ProfileSettings';
 
 const ProfileSettingsScreen: React.FC<ProfileSettingsScreenProps> = () => {
     const [formState, setFormState] = useState<FormState>(INITIAL_FORM_STATE);
-  
-    
     const handleImageChange = createFieldChangeHandler(setFormState, 'selectedImage');
     const handleGenderChange = createFieldChangeHandler(setFormState, 'selectedGender');
     const handleExperienceChange = createFieldChangeHandler(setFormState, 'selectedExperience');

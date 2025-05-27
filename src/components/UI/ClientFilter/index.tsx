@@ -1,4 +1,4 @@
-// ClientFilter.tsx
+
 
 import React, { useState, useEffect } from 'react';
 import {
@@ -17,7 +17,7 @@ import Input from '@components/UI/Input';
 import { ClientFilterProps, FilterState } from './types';
 import { styles } from './styled';
 import { DEFAULT_FILTERS, FILTER_LABELS, COLORS, NEW_BOOKING_LABELS } from './constants';
-import { useNavigation, useRoute } from '@react-navigation/native'; // Добавляем useRoute
+import { useNavigation, useRoute } from '@react-navigation/native'; 
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ClientStackParamList } from '@navigation/ClientNavigator';
 
@@ -38,7 +38,7 @@ const ClientFilter: React.FC<ClientFilterPropsExtended> = ({
   isNewBooking = false,
 }) => {
   const navigation = useNavigation<NavigationProp>();
-  const route = useRoute<RouteProp>(); // Получаем параметры текущего маршрута
+  const route = useRoute<RouteProp>(); 
   const [filters, setFilters] = useState<FilterState>({
     ...DEFAULT_FILTERS,
     ...initialValues,
@@ -56,15 +56,15 @@ const ClientFilter: React.FC<ClientFilterPropsExtended> = ({
   const [showCalendar, setShowCalendar] = useState<boolean>(false);
   const [calendarMode, setCalendarMode] = useState<'repeat' | 'reminder' | null>(null);
 
-  // Обработчик возврата с MapScreen
+  
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      // Получаем параметры текущего маршрута (NewBooking)
+      
       const result = route.params?.result;
       console.log("Получен результат от MapScreen:", result);
       if (result && result.address) {
         setAddress(result.address);
-        // Очищаем параметры маршрута, чтобы избежать повторного использования
+        
         navigation.setParams({ result: undefined });
       }
     });

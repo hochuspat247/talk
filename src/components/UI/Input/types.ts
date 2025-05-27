@@ -1,4 +1,4 @@
-// types.ts
+
 
 import { StyleProp, ViewStyle, TextInputProps } from 'react-native';
 
@@ -25,7 +25,7 @@ export type InputVariant =
   | 'map'
   | 'search'
   | 'user'
-  | 'userNoIcon' // Новый вариант без иконки
+  | 'userNoIcon' 
   | 'description'
   | 'time'
   | 'clearable'

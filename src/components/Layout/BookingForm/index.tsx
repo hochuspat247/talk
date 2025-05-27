@@ -6,9 +6,9 @@ import Input from '@components/UI/Input';
 import AvailabilityCalendar from '@components/UI/AvailabilityCalendar';
 import ClientFilter from '@components/UI/ClientFilter';
 import Button from '@components/UI/Button';
-import TimeSlots from './TimeSlots';
-import styles from '@styles/NewBookingScreen.styles';
-import { FormState, Location } from '@types/booking.types';
+import TimeSlots from '@components/Layout/TimeSlots';
+import styles from './styled';
+import { FormState, Location } from './types';
 
 interface BookingFormProps {
   formState: FormState;

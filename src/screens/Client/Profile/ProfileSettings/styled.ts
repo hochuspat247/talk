@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { SIZES, COLORS } from './constants';
+import { SIZES, COLORS } from '@constants/client/profile';
 
 export const styles = StyleSheet.create({
   componentWrapper: {

@@ -1,4 +1,4 @@
-// Input.tsx
+
 
 import React from 'react';
 import { VARIANT_CONFIG } from './variants';
@@ -86,7 +86,7 @@ const Input: React.FC<InputProps> = ({
         />
       );
     case 'email':
-    case 'userNoIcon': // Добавляем новый вариант без иконки
+    case 'userNoIcon': 
       return (
         <BaseInput
           value={value}

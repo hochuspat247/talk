@@ -3,7 +3,7 @@ import { SafeAreaView, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import Screen from '@components/Layout/Screen';
-import BookingForm from './BookingForm';
+import BookingForm from '@components/Layout/BookingForm';
 import styles from './styled';
 import { ClientStackParamList } from '@navigation/ClientNavigator';
 import { FormState, Location } from './types';

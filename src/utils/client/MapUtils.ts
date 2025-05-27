@@ -1,4 +1,4 @@
-import { YANDEX_API_KEY } from '@constants/apiKeys';
+import { YANDEX_API_KEY } from '@constants/client/apiKeys';
 
 export const getMapHtml = (): string => `
   <!DOCTYPE html>

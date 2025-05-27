@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, ActivityIndicator, Text } from 'react-native';
 import { WebView } from 'react-native-webview';
-import { getMapHtml } from './utils';
-import { geocodeWithNominatim } from '@constants/geocoding';
+import { getMapHtml } from '@utils/client/MapUtils';
+import { geocodeWithNominatim } from '@constants/client/geocoding';
 import styles from './styled';
 import { Location } from './types';
 

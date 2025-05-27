@@ -12,17 +12,8 @@ Tallk
 │  ├─ icon.png
 │  ├─ splash-icon.png
 │  ├─ images
-│  │  ├─ welcome-bg.png
-│  │  ├─ login-bg.png
-│  │  ├─ register-bg.png
-│  │  ├─ default-avatar.png
-│  │  ├─ court-bg.png
-│  │  └─ rackets.png
+│  │  └─ default-avatar.png
 │  ├─ icons
-│  │  ├─ Upload Photo.svg
-│  │  ├─ Upload Photo.png
-│  │  ├─ check-icon.png
-│  │  └─ error-icon.png
 │  └─ fonts
 │     ├─ NEXTART_Bold.otf
 │     ├─ Manrope-Regular.ttf
@@ -57,26 +48,28 @@ Tallk
 │  │  │     └─ types.ts
 │  │  ├─ Client
 │  │  │  ├─ Home
-│  │  │  │  ├─ HomeScreen.tsx
+│  │  │  │  ├─ index.tsx
 │  │  │  │  ├─ styled.ts
-│  │  │  │  ├─ types.ts
-│  │  │  │  ├─ utils.ts
-│  │  │  │  └─ constants.ts
+│  │  │  │  └─ types.ts
 │  │  │  ├─ Profile
 │  │  │  │  ├─ ProfileMenu
 │  │  │  │  │  ├─ index.tsx
 │  │  │  │  │  ├─ styled.ts
-│  │  │  │  │  ├─ types.ts
-│  │  │  │  │  ├─ constants.ts
-│  │  │  │  │  └─ utils.ts
+│  │  │  │  │  └─ types.ts
 │  │  │  │  ├─ ProfileSettings
 │  │  │  │  │  ├─ index.tsx
 │  │  │  │  │  ├─ styled.ts
-│  │  │  │  │  ├─ types.ts
-│  │  │  │  │  ├─ constants.ts
-│  │  │  │  │  └─ utils.ts
+│  │  │  │  │  └─ types.ts
 │  │  │  │  └─ index.tsx
-│  │  │  └─ index.tsx
+│  │  │  ├─ index.tsx
+│  │  │  ├─ NewBooking
+│  │  │  │  ├─ index.tsx
+│  │  │  │  ├─ types.ts
+│  │  │  │  └─ styled.ts
+│  │  │  └─ Map
+│  │  │     ├─ index.tsx
+│  │  │     ├─ styled.ts
+│  │  │     └─ types.ts
 │  │  └─ Master
 │  ├─ components
 │  │  ├─ index.tsx
@@ -133,11 +126,6 @@ Tallk
 │  │  │  │  ├─ types.ts
 │  │  │  │  ├─ utils.ts
 │  │  │  │  └─ constants.ts
-│  │  │  ├─ BottomNavigator
-│  │  │  │  ├─ index.tsx
-│  │  │  │  ├─ styled.ts
-│  │  │  │  ├─ types.ts
-│  │  │  │  └─ constants.ts
 │  │  │  ├─ ProfileHeader
 │  │  │  │  ├─ index.tsx
 │  │  │  │  ├─ styled.ts
@@ -168,12 +156,28 @@ Tallk
 │  │  │  │  ├─ types.ts
 │  │  │  │  ├─ constants.ts
 │  │  │  │  └─ utils.ts
-│  │  │  └─ ClientFilter
+│  │  │  ├─ ClientFilter
+│  │  │  │  ├─ index.tsx
+│  │  │  │  ├─ styled.ts
+│  │  │  │  ├─ types.ts
+│  │  │  │  ├─ constants.ts
+│  │  │  │  └─ utils.ts
+│  │  │  ├─ DetailedEventCard
+│  │  │  │  ├─ index.tsx
+│  │  │  │  ├─ types.ts
+│  │  │  │  ├─ styled.ts
+│  │  │  │  ├─ utils.ts
+│  │  │  │  ├─ Header.tsx
+│  │  │  │  └─ InfoRow.tsx
+│  │  │  └─ AvailabilityCalendar
 │  │  │     ├─ index.tsx
-│  │  │     ├─ styled.ts
 │  │  │     ├─ types.ts
-│  │  │     ├─ constants.ts
-│  │  │     └─ utils.ts
+│  │  │     ├─ styled.ts
+│  │  │     ├─ utils.ts
+│  │  │     ├─ hooks.ts
+│  │  │     ├─ Header.tsx
+│  │  │     ├─ WeekDays.tsx
+│  │  │     └─ DaysGrid.tsx
 │  │  └─ Layout
 │  │     ├─ Screen
 │  │     │  ├─ index.tsx
@@ -193,18 +197,40 @@ Tallk
 │  │     │  ├─ styled.ts
 │  │     │  ├─ types.ts
 │  │     │  └─ utils.ts
-│  │     └─ TimePicker
+│  │     ├─ TimePicker
+│  │     │  ├─ index.tsx
+│  │     │  ├─ styled.ts
+│  │     │  ├─ types.ts
+│  │     │  ├─ utils.ts
+│  │     │  └─ constants.ts
+│  │     ├─ WeeklyEventsList
+│  │     │  ├─ index.tsx
+│  │     │  ├─ types.ts
+│  │     │  ├─ styled.ts
+│  │     │  ├─ utils.ts
+│  │     │  └─ DayBlock.tsx
+│  │     ├─ MapWebView
+│  │     │  ├─ index.tsx
+│  │     │  ├─ styled.ts
+│  │     │  └─ types.ts
+│  │     ├─ BookingForm
+│  │     │  ├─ index.tsx
+│  │     │  ├─ styled.ts
+│  │     │  └─ types.ts
+│  │     └─ TimeSlots
 │  │        ├─ index.tsx
-│  │        ├─ styled.ts
-│  │        ├─ types.ts
-│  │        ├─ utils.ts
-│  │        └─ constants.ts
+│  │        └─ styled.ts
 │  ├─ constants
 │  │  ├─ Colors.ts
 │  │  ├─ Fonts.ts
 │  │  ├─ Texts.ts
 │  │  ├─ FontSizes.ts
-│  │  └─ phone.ts
+│  │  ├─ phone.ts
+│  │  └─ client
+│  │     ├─ apiKeys.ts
+│  │     ├─ geocoding.ts
+│  │     ├─ booking.ts
+│  │     └─ profile.ts
 │  ├─ api
 │  │  ├─ auth.ts
 │  │  ├─ bookings.ts
@@ -213,15 +239,22 @@ Tallk
 │  │  ├─ profile.ts
 │  │  ├─ types.ts
 │  │  ├─ client.ts
-│  │  └─ axiosInstance.ts
+│  │  ├─ axiosInstance.ts
+│  │  └─ models
+│  │     └─ booking.ts
 │  ├─ utils
 │  │  ├─ index.ts
 │  │  ├─ auth
 │  │  │  ├─ passwordValidator.ts
 │  │  │  └─ registeredUsers.ts
-│  │  └─ formatters
-│  │     ├─ phoneFormatter.ts
-│  │     └─ formatters.ts
+│  │  ├─ formatters
+│  │  │  ├─ phoneFormatter.ts
+│  │  │  └─ formatters.ts
+│  │  └─ client
+│  │     ├─ HomeBookingUtils.ts
+│  │     ├─ MapUtils.ts
+│  │     ├─ ProfileMenuUtils.ts
+│  │     └─ ProfileSettings.ts
 │  ├─ hooks
 │  │  ├─ index.ts
 │  │  ├─ general
@@ -231,12 +264,13 @@ Tallk
 │  │  │  ├─ usePhoneFormatter.ts
 │  │  │  ├─ useTextInput.ts
 │  │  │  └─ useTimer.ts
-│  │  └─ auth
-│  │     ├─ index.ts
-│  │     ├─ useLoginLogic.ts
-│  │     ├─ usePasswordLogic.ts
-│  │     ├─ useRegisterLogic.ts
-│  │     └─ useVerificationLogic.ts
+│  │  ├─ auth
+│  │  │  ├─ index.ts
+│  │  │  ├─ useLoginLogic.ts
+│  │  │  ├─ usePasswordLogic.ts
+│  │  │  ├─ useRegisterLogic.ts
+│  │  │  └─ useVerificationLogic.ts
+│  │  └─ client
 │  └─ mocks
 │     └─ mockData.ts
 ├─ README.md

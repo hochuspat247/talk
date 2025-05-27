@@ -6,8 +6,8 @@ import ProfileHeader from '@components/UI/ProfileHeader';
 import ProfileMenuList from '@components/UI/ProfileMenuList';
 import { NavigationProp } from './types';
 import { styles } from './styled';
-import { PROFILE_DATA } from './constants';
-import { handleLogout } from './utils';
+import { PROFILE_DATA } from '@constants/client/profile';
+import { handleLogout } from '@utils/client/ProfileMenuUtils';
 
 interface ProfileMenuProps {
   onLogout: () => Promise<void>;
